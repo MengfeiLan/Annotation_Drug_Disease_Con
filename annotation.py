@@ -11,6 +11,23 @@ import base64
 GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]  # replace with a secret in Streamlit secrets
 REPO_NAME = "MengfeiLan/Annotation_Drug_Disease_Con"
 
+st.set_page_config(
+    page_title="Drug–Disease Annotation",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': None
+    }
+)
+hide_streamlit_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 
 def load_annotations_from_github():
@@ -598,6 +615,7 @@ with col_next:
         save_annotation()
         st.session_state.current_idx += 1
         st.rerun()
+
 
 
 
