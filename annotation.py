@@ -2,90 +2,48 @@ import streamlit as st
 import pandas as pd
 from pathlib import Path
 import re
+import os
+GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
+REPO_NAME = st.secrets["REPO_NAME"]
 from github import Github
-import pandas as pd
-import io
+import base64
 
-# -----------------------
-# GitHub Setup
-# -----------------------
-GITHUB_TOKEN = st.secrets["github"]["token"]
-GITHUB_REPO = st.secrets["github"]["repo"]
-GITHUB_BRANCH = st.secrets["github"]["branch"]
-GITHUB_FILE_PATH = st.secrets["github"]["file_path"]
+GITHUB_TOKEN = "YOUR_PERSONAL_ACCESS_TOKEN"  # replace with a secret in Streamlit secrets
+REPO_NAME = "your-username/annotations-storage"
+GITHUB_FILE_PATH = "annotations.csv"  # path inside the repo
 
-@st.cache_resource
-def get_repo():
-    from github import Github
-    g = Github(st.secrets["github"]["token"])
-    return g.get_repo(st.secrets["github"]["repo"])
+def push_annotations_to_github(local_file_path, commit_msg="Update annotations"):
+    g = Github(GITHUB_TOKEN)
+    repo = g.get_repo(REPO_NAME)
 
-repo = get_repo()
-
-
-# -----------------------
-# Load annotations from GitHub
-# -----------------------
-def load_annotations():
-    try:
-        file_content = repo.get_contents(GITHUB_FILE_PATH, ref=GITHUB_BRANCH)
-        csv_bytes = file_content.decoded_content
-        df = pd.read_csv(io.BytesIO(csv_bytes))
-        return df.fillna("")
-    except:
-        # If file doesn't exist or is empty
-        return pd.DataFrame(columns=["id","label","contextual_agreement","contextual_factors","contextual_explanation","annotator"])
-# @st.cache_data(ttl=60)
-# def load_annotations(path, branch):
-#     try:
-#         contents = repo.get_contents(path, ref=branch)
-#         return pd.read_csv(io.BytesIO(contents.decoded_content))
-#     except Exception:
-#         return pd.DataFrame(columns=[
-#             "id","label","contextual_agreement",
-#             "contextual_factors","contextual_explanation","annotator"
-#         ])
-
-annotations = load_annotations()
-
-# -----------------------
-# Save annotation to GitHub
-# -----------------------
-def save_annotation_to_github(new_row):
-    global annotations
-    # Remove previous annotation by this user for this id
-    annotations = annotations[~((annotations["id"] == new_row["id"]) & (annotations["annotator"] == new_row["annotator"]))]
-    annotations = pd.concat([annotations, pd.DataFrame([new_row])], ignore_index=True)
-
-    csv_buffer = io.StringIO()
-    annotations.to_csv(csv_buffer, index=False)
-    csv_data = csv_buffer.getvalue()
+    # Read local CSV content
+    with open(local_file_path, "r", encoding="utf-8") as f:
+        content = f.read()
 
     try:
-        # Update file if exists
-        contents = repo.get_contents(GITHUB_FILE_PATH, ref=GITHUB_BRANCH)
-        repo.update_file(
-            path=GITHUB_FILE_PATH,
-            message=f"Update annotation {new_row['id']} by {new_row['annotator']}",
-            content=csv_data,
-            sha=contents.sha,
-            branch=GITHUB_BRANCH,
-        )
+        # Try to get the file from repo
+        file = repo.get_contents(GITHUB_FILE_PATH)
+        repo.update_file(file.path, commit_msg, content, file.sha)
     except:
-        # Create file if doesn't exist
-        repo.create_file(
-            path=GITHUB_FILE_PATH,
-            message=f"Create annotations file with {new_row['id']} by {new_row['annotator']}",
-            content=csv_data,
-            branch=GITHUB_BRANCH,
-        )
+        # If file doesn't exist, create it
+        repo.create_file(GITHUB_FILE_PATH, commit_msg, content)
+
+
+def load_annotations_from_github():
+    g = Github(GITHUB_TOKEN)
+    repo = g.get_repo(REPO_NAME)
+    try:
+        file = repo.get_contents(GITHUB_FILE_PATH)
+        content = file.decoded_content.decode()
+        return pd.read_csv(pd.compat.StringIO(content))
+    except:
+        return pd.DataFrame()
 
 
 # -----------------------
 # Configuration
 # -----------------------
 DATA_PATH = "annotation_file.csv"
-OUTPUT_PATH = "annotations.csv"
 
 USERS = {
     "halil": "password123",
@@ -136,6 +94,10 @@ if not st.session_state.logged_in:
             st.error("Invalid username or password")
     st.stop()  # Stop execution until login is successful
 
+ANNOTATION_DIR = Path("annotations")
+ANNOTATION_DIR.mkdir(exist_ok=True)
+
+OUTPUT_PATH = ANNOTATION_DIR / f"{st.session_state.username}.csv"
 
 # -----------------------
 # Helpers
@@ -148,7 +110,7 @@ def scroll_to_top():
 # -----------------------
 @st.cache_data
 def load_data():
-    return pd.read_csv(DATA_PATH)[:50]
+    return pd.read_csv(DATA_PATH)
 df = load_data()
 
 if Path(OUTPUT_PATH).exists():
@@ -168,44 +130,54 @@ for col in [
         annotations[col] = ""
 
 
-# =======================
-# 🔹 SIDEBAR: TRACE-BACK (per-user)
-# =======================
+@st.cache_data
+def load_data():
+    return pd.read_csv(DATA_PATH)
+
+df = load_data()
+
+# -----------------------
+# Load per-user annotations
+# -----------------------
+USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}.csv"
+if USER_CSV.exists():
+    annotations = pd.read_csv(USER_CSV)
+else:
+    annotations = pd.DataFrame(columns=[
+        "id", "label", "contextual_agreement", "contextual_factors",
+        "contextual_explanation", "annotator"
+    ])
+
+# -----------------------
+# Sidebar: Progress & Traceback
+# -----------------------
 with st.sidebar:
     st.header("📌 Annotation Trace-back")
-
-    # Filter annotations for current user
-    user_annotations = annotations[annotations["annotator"] == st.session_state.username]
+    user_annotations = annotations
 
     total = len(df)
     done = user_annotations["id"].nunique()
-
     st.metric("Progress", f"{done} / {total}")
 
     st.markdown("---")
-
     annotated_ids = user_annotations["id"].tolist()
-
     if annotated_ids:
-        selected_id = st.selectbox(
-            "Jump to annotated example",
-            options=annotated_ids,
-        )
-
+        selected_id = st.selectbox("Jump to annotated example", options=annotated_ids)
         if st.button("🔎 Go to selected example"):
             idx = df.index[df["id"] == selected_id][0]
             st.session_state.current_idx = idx
-            st.stop()  # stop to refresh the page with the selected example
-
-        st.markdown("### 🧾 Saved Annotation Preview")
+            st.stop()
         r = user_annotations[user_annotations["id"] == selected_id].iloc[0]
+        st.markdown("### 🧾 Saved Annotation Preview")
         st.write(f"**Label:** {r['label']}")
         st.write(f"**Contextual agreement:** {r['contextual_agreement']}")
         st.write(f"**Contextual factors:** {r['contextual_factors']}")
         if r["contextual_explanation"]:
-            st.write(f"**Explanation for \"Other\" category:** {r['contextual_explanation']}")
+            st.write(f"**Explanation for \"Other\":** {r['contextual_explanation']}")
     else:
         st.info("No annotations yet for your account.")
+
+
 
 
 # -----------------------
@@ -240,7 +212,9 @@ if "contextual_explanation" not in st.session_state:
 # Load annotation for current example
 # -----------------------
 def load_existing_annotation(example_id):
+    # No need to filter by annotator
     match = annotations[annotations["id"] == example_id]
+
     if not match.empty:
         r = match.iloc[0]
         st.session_state.label_radio = next(
@@ -360,7 +334,6 @@ disagree, the annotators are asked to select the taxonomy factors that could exp
 # Configuration
 # -----------------------
 DATA_PATH = "annotation_file.csv"
-OUTPUT_PATH = "annotations.csv"
 
 LABELS = {
     "LLM is correct: there's a contradiction in the drug-disease association across the claims": "correct",
@@ -403,6 +376,11 @@ if Path(OUTPUT_PATH).exists():
 else:
     annotations = pd.DataFrame()
 
+
+if "annotator" not in annotations.columns:
+    annotations["annotator"] = ""
+
+
 # -----------------------
 # Backward compatibility (IMPORTANT)
 # -----------------------
@@ -438,28 +416,17 @@ if "contextual_explanation" not in st.session_state:
     st.session_state.contextual_explanation = ""
 
 # -----------------------
-# Load annotation for current example
+# Helper: Load existing annotation
 # -----------------------
 def load_existing_annotation(example_id):
-    match = annotations[annotations["id"] == example_id]
-
+    match = annotations[(annotations["id"] == example_id) &
+                        (annotations["annotator"] == st.session_state.username)]
     if not match.empty:
         r = match.iloc[0]
-
-        st.session_state.label_radio = next(
-            (k for k, v in LABELS.items() if v == r["label"]), None
-        )
-        st.session_state.selected_label = r["label"] or None
-
-        st.session_state.contextual_agreement = (
-            r["contextual_agreement"] if r["contextual_agreement"] else None
-        )
-
-        if r["contextual_factors"] and r["contextual_factors"] != "Agree":
-            st.session_state.contextual_factors = r["contextual_factors"].split("; ")
-        else:
-            st.session_state.contextual_factors = []
-
+        st.session_state.label_radio = next((k for k, v in LABELS.items() if v == r["label"]), None)
+        st.session_state.selected_label = r["label"]
+        st.session_state.contextual_agreement = r["contextual_agreement"] or None
+        st.session_state.contextual_factors = r["contextual_factors"].split("; ") if pd.notna(r["contextual_factors"]) and r["contextual_factors"] not in ["", "Agree"] else []
         st.session_state.contextual_explanation = r["contextual_explanation"] or ""
     else:
         st.session_state.label_radio = None
@@ -469,13 +436,10 @@ def load_existing_annotation(example_id):
         st.session_state.contextual_explanation = ""
 
 # Clamp index
-st.session_state.current_idx = max(
-    0, min(st.session_state.current_idx, len(df) - 1)
-)
-
+st.session_state.current_idx = max(0, min(st.session_state.current_idx, len(df) - 1))
 row = df.iloc[st.session_state.current_idx]
 
-if st.session_state.get("loaded_id") != row["id"]:
+if st.session_state.loaded_id != row["id"]:
     load_existing_annotation(row["id"])
     st.session_state.loaded_id = row["id"]
 
@@ -518,20 +482,10 @@ with st.container(border=True):
         st.markdown("### LLM Decision")
         st.write(f"**{row.get('prediction', 'N/A')}**")
 # -----------------------
-# Task 1: Contradiction
+# Task 1: Contradiction Detection
 # -----------------------
-
-st.markdown(
-    "<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>",
-    unsafe_allow_html=True,
-)
-
-st.radio(
-    "",
-    options=list(LABELS.keys()),
-    key="label_radio",
-)
-
+st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>", unsafe_allow_html=True)
+st.radio("", options=list(LABELS.keys()), key="label_radio")
 st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
 
 # -----------------------
@@ -540,94 +494,82 @@ st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
 if st.session_state.selected_label == "correct":
     st.markdown("---")
     st.subheader("🧩 Task 2: Contextual Resolution")
+    st.markdown("### 🤖 LLM Contextual Judgment")
+    st.write(f"**{row.get('contextual_factor', 'N/A')}**")
+    if row.get("contextual_factor_explanation"):
+        st.text_area("", value=row["contextual_factor_explanation"], height=180, disabled=True)
 
-    with st.container(border=True):
-        st.markdown("### 🤖 LLM Contextual Judgment")
-        st.write(f"**{row.get('contextual_factor', 'N/A')}**")
-
-        if row.get("contextual_factor_explanation"):
-            st.text_area(
-                "",
-                value=row["contextual_factor_explanation"],
-                height=180,
-                disabled=True,
-            )
-
-    st.markdown(
-        "<p style='color:red; font-size:22px; font-weight:600;'>Do you agree with the LLM’s contextual judgment?</p>",
-        unsafe_allow_html=True,
-    )
-
-    st.radio(
-        "",
-        options=["Agree", "Disagree"],
-        key="contextual_agreement",
-        horizontal=True,
-    )
+    st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Do you agree with the LLM’s contextual judgment?</p>", unsafe_allow_html=True)
+    st.radio("", options=["Agree", "Disagree"], key="contextual_agreement", horizontal=True)
 
     if st.session_state.contextual_agreement == "Disagree":
-        st.multiselect(
-            "Which contextual factors explain the contradiction?",
-            options=CONTEXTUAL_FACTORS,
-            key="contextual_factors",
-        )
-
-        st.text_area(
-            "If choose \"Other - None of the listed factors explain the contradiction\", explain:",
-            key="contextual_explanation",
-            height=120,
-        )
-
-    if st.session_state.contextual_agreement == "Agree":
+        st.multiselect("Which contextual factors explain the contradiction?", options=CONTEXTUAL_FACTORS, key="contextual_factors")
+        st.text_area("If choosing 'Other', explain:", key="contextual_explanation", height=120)
+    elif st.session_state.contextual_agreement == "Agree":
         st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
 
+# -----------------------
+# Save annotation
+# -----------------------
+# def save_annotation():
+#     global annotations
+#     new_row = {
+#         "id": row["id"],
+#         "label": st.session_state.selected_label,
+#         "contextual_agreement": st.session_state.contextual_agreement or "",
+#         "contextual_factors": "Agree" if st.session_state.contextual_agreement == "Agree" else "; ".join(st.session_state.contextual_factors),
+#         "contextual_explanation": "" if st.session_state.contextual_agreement == "Agree" else st.session_state.contextual_explanation.strip(),
+#         "annotator": st.session_state.username,
+#     }
+#
+#     # Remove old annotation for this example
+#     annotations = annotations[~((annotations["id"] == row["id"]) & (annotations["annotator"] == st.session_state.username))]
+#     annotations = pd.concat([annotations, pd.DataFrame([new_row])], ignore_index=True)
+#     annotations.to_csv(USER_CSV, index=False)
+
 def save_annotation():
+    global annotations
     new_row = {
         "id": row["id"],
         "label": st.session_state.selected_label,
         "contextual_agreement": st.session_state.contextual_agreement or "",
-        "contextual_factors": (
-            "Agree"
-            if st.session_state.contextual_agreement == "Agree"
-            else "; ".join(st.session_state.contextual_factors)
-        ),
-        "contextual_explanation": (
-            ""
-            if st.session_state.contextual_agreement == "Agree"
-            else st.session_state.contextual_explanation.strip()
-        ),
+        "contextual_factors": "Agree" if st.session_state.contextual_agreement == "Agree" else "; ".join(st.session_state.contextual_factors),
+        "contextual_explanation": "" if st.session_state.contextual_agreement == "Agree" else st.session_state.contextual_explanation.strip(),
         "annotator": st.session_state.username,
     }
 
-    save_annotation_to_github(new_row)
+    # Remove old annotation for this example
+    annotations = annotations[~((annotations["id"] == row["id"]) & (annotations["annotator"] == st.session_state.username))]
+    annotations = pd.concat([annotations, pd.DataFrame([new_row])], ignore_index=True)
+
+    # Save locally
+    USER_CSV.parent.mkdir(exist_ok=True)
+    annotations.to_csv(USER_CSV, index=False)
+
+    # Push to GitHub
+    push_annotations_to_github(USER_CSV)
+
 
 # -----------------------
-# Navigation + Submit
+# Navigation + Save buttons
 # -----------------------
 st.markdown("---")
-col_prev, col_submit, col_next = st.columns([1, 2, 1])
+col_prev, col_save, col_next = st.columns([1, 2, 1])
 
 with col_prev:
     if st.button("⬅ Previous", disabled=st.session_state.current_idx == 0):
+        save_annotation()
         st.session_state.current_idx -= 1
         st.rerun()
-        scroll_to_top()
 
-with col_submit:
-    if st.button("💾 Save annotation", use_container_width=True):
+with col_save:
+    if st.button("💾 Save annotation"):
         if st.session_state.selected_label is None:
             st.warning("Please select whether the LLM is correct.")
-        elif (
-            st.session_state.selected_label == "correct"
-            and st.session_state.contextual_agreement is None
-        ):
+        elif st.session_state.selected_label == "correct" and st.session_state.contextual_agreement is None:
             st.warning("Please indicate agreement with the LLM’s contextual judgment.")
-        elif (
-            st.session_state.selected_label == "correct"
-            and st.session_state.contextual_agreement == "Disagree"
-            and not st.session_state.contextual_factors
-        ):
+        elif st.session_state.selected_label == "correct" and st.session_state.contextual_agreement == "Disagree" and not st.session_state.contextual_factors:
             st.warning("Please select at least one contextual factor.")
         else:
             save_annotation()
@@ -638,12 +580,3 @@ with col_next:
         save_annotation()
         st.session_state.current_idx += 1
         st.rerun()
-
-        scroll_to_top()
-
-
-
-
-
-
-
