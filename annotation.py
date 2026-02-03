@@ -8,8 +8,8 @@ REPO_NAME = st.secrets["REPO_NAME"]
 from github import Github
 import base64
 
-GITHUB_TOKEN = "YOUR_PERSONAL_ACCESS_TOKEN"  # replace with a secret in Streamlit secrets
-REPO_NAME = "your-username/annotations-storage"
+GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]  # replace with a secret in Streamlit secrets
+REPO_NAME = "MengfeiLan/Annotation_Drug_Disease_Con"
 
 
 
@@ -580,3 +580,4 @@ with col_next:
         save_annotation()
         st.session_state.current_idx += 1
         st.rerun()
+
