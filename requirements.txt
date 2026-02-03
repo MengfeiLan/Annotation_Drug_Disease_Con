@@ -1,3 +1,2 @@
-gspread
-gspread_dataframe
-oauth2client
+PyGithub 
+pandas
