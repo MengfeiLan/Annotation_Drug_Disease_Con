@@ -64,26 +64,6 @@ def save_annotation_to_github(new_row):
             branch=GITHUB_BRANCH,
         )
 
-def save_annotation():
-    new_row = {
-        "id": row["id"],
-        "label": st.session_state.selected_label,
-        "contextual_agreement": st.session_state.contextual_agreement or "",
-        "contextual_factors": (
-            "Agree"
-            if st.session_state.contextual_agreement == "Agree"
-            else "; ".join(st.session_state.contextual_factors)
-        ),
-        "contextual_explanation": (
-            ""
-            if st.session_state.contextual_agreement == "Agree"
-            else st.session_state.contextual_explanation.strip()
-        ),
-        "annotator": st.session_state.username,
-    }
-
-    save_annotation_to_github(new_row)
-
 
 # -----------------------
 # Configuration
@@ -586,32 +566,25 @@ if st.session_state.selected_label == "correct":
         st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
 
-# # -----------------------
-# # Save annotation helper
-# # -----------------------
-# def save_annotation():
-#     global annotations
+def save_annotation():
+    new_row = {
+        "id": row["id"],
+        "label": st.session_state.selected_label,
+        "contextual_agreement": st.session_state.contextual_agreement or "",
+        "contextual_factors": (
+            "Agree"
+            if st.session_state.contextual_agreement == "Agree"
+            else "; ".join(st.session_state.contextual_factors)
+        ),
+        "contextual_explanation": (
+            ""
+            if st.session_state.contextual_agreement == "Agree"
+            else st.session_state.contextual_explanation.strip()
+        ),
+        "annotator": st.session_state.username,
+    }
 
-#     new_row = {
-#         "id": row["id"],
-#         "label": st.session_state.selected_label,
-#         "contextual_agreement": st.session_state.contextual_agreement or "",
-#         "contextual_factors": (
-#             "Agree"
-#             if st.session_state.contextual_agreement == "Agree"
-#             else "; ".join(st.session_state.contextual_factors)
-#         ),
-#         "contextual_explanation": (
-#             ""
-#             if st.session_state.contextual_agreement == "Agree"
-#             else st.session_state.contextual_explanation.strip()
-#         ),
-#         "annotator": st.session_state.username,  # <--- Add user here
-#     }
-
-#     annotations = annotations[annotations["id"] != row["id"]]
-#     annotations = pd.concat([annotations, pd.DataFrame([new_row])], ignore_index=True)
-#     annotations.to_csv(OUTPUT_PATH, index=False)
+    save_annotation_to_github(new_row)
 
 # -----------------------
 # Navigation + Submit
@@ -651,5 +624,6 @@ with col_next:
         st.rerun()
 
         scroll_to_top()
+
 
 
