@@ -26,25 +26,25 @@ repo = get_repo()
 # -----------------------
 # Load annotations from GitHub
 # -----------------------
-# def load_annotations():
-#     try:
-#         file_content = repo.get_contents(GITHUB_FILE_PATH, ref=GITHUB_BRANCH)
-#         csv_bytes = file_content.decoded_content
-#         df = pd.read_csv(io.BytesIO(csv_bytes))
-#         return df.fillna("")
-#     except:
-#         # If file doesn't exist or is empty
-#         return pd.DataFrame(columns=["id","label","contextual_agreement","contextual_factors","contextual_explanation","annotator"])
-@st.cache_data(ttl=60)
-def load_annotations(path, branch):
+def load_annotations():
     try:
-        contents = repo.get_contents(path, ref=branch)
-        return pd.read_csv(io.BytesIO(contents.decoded_content))
-    except Exception:
-        return pd.DataFrame(columns=[
-            "id","label","contextual_agreement",
-            "contextual_factors","contextual_explanation","annotator"
-        ])
+        file_content = repo.get_contents(GITHUB_FILE_PATH, ref=GITHUB_BRANCH)
+        csv_bytes = file_content.decoded_content
+        df = pd.read_csv(io.BytesIO(csv_bytes))
+        return df.fillna("")
+    except:
+        # If file doesn't exist or is empty
+        return pd.DataFrame(columns=["id","label","contextual_agreement","contextual_factors","contextual_explanation","annotator"])
+# @st.cache_data(ttl=60)
+# def load_annotations(path, branch):
+#     try:
+#         contents = repo.get_contents(path, ref=branch)
+#         return pd.read_csv(io.BytesIO(contents.decoded_content))
+#     except Exception:
+#         return pd.DataFrame(columns=[
+#             "id","label","contextual_agreement",
+#             "contextual_factors","contextual_explanation","annotator"
+#         ])
 
 annotations = load_annotations()
 
@@ -640,6 +640,7 @@ with col_next:
         st.rerun()
 
         scroll_to_top()
+
 
 
 
