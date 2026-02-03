@@ -91,19 +91,22 @@ for col in [
 
 
 # =======================
-# 🔹 SIDEBAR: TRACE-BACK
+# 🔹 SIDEBAR: TRACE-BACK (per-user)
 # =======================
 with st.sidebar:
     st.header("📌 Annotation Trace-back")
 
+    # Filter annotations for current user
+    user_annotations = annotations[annotations["annotator"] == st.session_state.username]
+
     total = len(df)
-    done = annotations["id"].nunique()
+    done = user_annotations["id"].nunique()
 
     st.metric("Progress", f"{done} / {total}")
 
     st.markdown("---")
 
-    annotated_ids = annotations["id"].tolist()
+    annotated_ids = user_annotations["id"].tolist()
 
     if annotated_ids:
         selected_id = st.selectbox(
@@ -114,17 +117,18 @@ with st.sidebar:
         if st.button("🔎 Go to selected example"):
             idx = df.index[df["id"] == selected_id][0]
             st.session_state.current_idx = idx
-            st.rerun()
+            st.stop()  # stop to refresh the page with the selected example
 
         st.markdown("### 🧾 Saved Annotation Preview")
-        r = annotations[annotations["id"] == selected_id].iloc[0]
+        r = user_annotations[user_annotations["id"] == selected_id].iloc[0]
         st.write(f"**Label:** {r['label']}")
         st.write(f"**Contextual agreement:** {r['contextual_agreement']}")
         st.write(f"**Contextual factors:** {r['contextual_factors']}")
         if r["contextual_explanation"]:
-            st.write(f"**Explaination for \"Other\" category:** {r['contextual_explanation']}")
+            st.write(f"**Explanation for \"Other\" category:** {r['contextual_explanation']}")
     else:
-        st.info("No annotations yet.")
+        st.info("No annotations yet for your account.")
+
 
 # -----------------------
 # Load / initialize annotations
@@ -565,3 +569,4 @@ with col_next:
         st.rerun()
 
         scroll_to_top()
+
