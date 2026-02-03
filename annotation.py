@@ -2,6 +2,88 @@ import streamlit as st
 import pandas as pd
 from pathlib import Path
 import re
+from github import Github
+import pandas as pd
+import io
+
+# -----------------------
+# GitHub Setup
+# -----------------------
+GITHUB_TOKEN = st.secrets["github"]["token"]
+GITHUB_REPO = st.secrets["github"]["repo"]
+GITHUB_BRANCH = st.secrets["github"]["branch"]
+GITHUB_FILE_PATH = st.secrets["github"]["file_path"]
+
+g = Github(GITHUB_TOKEN)
+repo = g.get_repo(GITHUB_REPO)
+
+# -----------------------
+# Load annotations from GitHub
+# -----------------------
+def load_annotations():
+    try:
+        file_content = repo.get_contents(GITHUB_FILE_PATH, ref=GITHUB_BRANCH)
+        csv_bytes = file_content.decoded_content
+        df = pd.read_csv(io.BytesIO(csv_bytes))
+        return df.fillna("")
+    except:
+        # If file doesn't exist or is empty
+        return pd.DataFrame(columns=["id","label","contextual_agreement","contextual_factors","contextual_explanation","annotator"])
+
+annotations = load_annotations()
+
+# -----------------------
+# Save annotation to GitHub
+# -----------------------
+def save_annotation_to_github(new_row):
+    global annotations
+    # Remove previous annotation by this user for this id
+    annotations = annotations[~((annotations["id"] == new_row["id"]) & (annotations["annotator"] == new_row["annotator"]))]
+    annotations = pd.concat([annotations, pd.DataFrame([new_row])], ignore_index=True)
+
+    csv_buffer = io.StringIO()
+    annotations.to_csv(csv_buffer, index=False)
+    csv_data = csv_buffer.getvalue()
+
+    try:
+        # Update file if exists
+        contents = repo.get_contents(GITHUB_FILE_PATH, ref=GITHUB_BRANCH)
+        repo.update_file(
+            path=GITHUB_FILE_PATH,
+            message=f"Update annotation {new_row['id']} by {new_row['annotator']}",
+            content=csv_data,
+            sha=contents.sha,
+            branch=GITHUB_BRANCH,
+        )
+    except:
+        # Create file if doesn't exist
+        repo.create_file(
+            path=GITHUB_FILE_PATH,
+            message=f"Create annotations file with {new_row['id']} by {new_row['annotator']}",
+            content=csv_data,
+            branch=GITHUB_BRANCH,
+        )
+
+def save_annotation():
+    new_row = {
+        "id": row["id"],
+        "label": st.session_state.selected_label,
+        "contextual_agreement": st.session_state.contextual_agreement or "",
+        "contextual_factors": (
+            "Agree"
+            if st.session_state.contextual_agreement == "Agree"
+            else "; ".join(st.session_state.contextual_factors)
+        ),
+        "contextual_explanation": (
+            ""
+            if st.session_state.contextual_agreement == "Agree"
+            else st.session_state.contextual_explanation.strip()
+        ),
+        "annotator": st.session_state.username,
+    }
+
+    save_annotation_to_github(new_row)
+
 
 # -----------------------
 # Configuration
@@ -504,32 +586,32 @@ if st.session_state.selected_label == "correct":
         st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
 
-# -----------------------
-# Save annotation helper
-# -----------------------
-def save_annotation():
-    global annotations
+# # -----------------------
+# # Save annotation helper
+# # -----------------------
+# def save_annotation():
+#     global annotations
 
-    new_row = {
-        "id": row["id"],
-        "label": st.session_state.selected_label,
-        "contextual_agreement": st.session_state.contextual_agreement or "",
-        "contextual_factors": (
-            "Agree"
-            if st.session_state.contextual_agreement == "Agree"
-            else "; ".join(st.session_state.contextual_factors)
-        ),
-        "contextual_explanation": (
-            ""
-            if st.session_state.contextual_agreement == "Agree"
-            else st.session_state.contextual_explanation.strip()
-        ),
-        "annotator": st.session_state.username,  # <--- Add user here
-    }
+#     new_row = {
+#         "id": row["id"],
+#         "label": st.session_state.selected_label,
+#         "contextual_agreement": st.session_state.contextual_agreement or "",
+#         "contextual_factors": (
+#             "Agree"
+#             if st.session_state.contextual_agreement == "Agree"
+#             else "; ".join(st.session_state.contextual_factors)
+#         ),
+#         "contextual_explanation": (
+#             ""
+#             if st.session_state.contextual_agreement == "Agree"
+#             else st.session_state.contextual_explanation.strip()
+#         ),
+#         "annotator": st.session_state.username,  # <--- Add user here
+#     }
 
-    annotations = annotations[annotations["id"] != row["id"]]
-    annotations = pd.concat([annotations, pd.DataFrame([new_row])], ignore_index=True)
-    annotations.to_csv(OUTPUT_PATH, index=False)
+#     annotations = annotations[annotations["id"] != row["id"]]
+#     annotations = pd.concat([annotations, pd.DataFrame([new_row])], ignore_index=True)
+#     annotations.to_csv(OUTPUT_PATH, index=False)
 
 # -----------------------
 # Navigation + Submit
@@ -569,4 +651,5 @@ with col_next:
         st.rerun()
 
         scroll_to_top()
+
 
