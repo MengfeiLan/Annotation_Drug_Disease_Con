@@ -93,11 +93,11 @@ def push_annotations_to_github(local_file_path, commit_msg="Update annotations")
 
     try:
         # Try to get the file from repo
-        file = repo.get_contents(OUTPUT_PATH)
+        file = repo.get_contents(local_file_path)
         repo.update_file(file.path, commit_msg, content, file.sha)
     except:
         # If file doesn't exist, create it
-        repo.create_file(OUTPUT_PATH, commit_msg, content)
+        repo.create_file(local_file_path, commit_msg, content)
 
 # -----------------------
 # Helpers
@@ -580,6 +580,7 @@ with col_next:
         save_annotation()
         st.session_state.current_idx += 1
         st.rerun()
+
 
 
 
