@@ -90,7 +90,7 @@ def push_annotations_to_github(local_file_path, commit_msg="Update annotations")
     # Read local CSV content
     with open(local_file_path, "r", encoding="utf-8") as f:
         content = f.read()
-
+    print(local_file_path)
     try:
         # Try to get the file from repo
         file = repo.get_contents(local_file_path)
@@ -580,6 +580,7 @@ with col_next:
         save_annotation()
         st.session_state.current_idx += 1
         st.rerun()
+
 
 
 
