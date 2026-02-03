@@ -148,6 +148,7 @@ else:
         "contextual_explanation", "annotator"
     ])
 
+USER_CSV = str(USER_CSV)
 # -----------------------
 # Sidebar: Progress & Traceback
 # -----------------------
@@ -580,4 +581,5 @@ with col_next:
         save_annotation()
         st.session_state.current_idx += 1
         st.rerun()
+
 
