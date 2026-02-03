@@ -162,11 +162,29 @@ with st.sidebar:
     st.markdown("---")
     annotated_ids = user_annotations["id"].tolist()
     if annotated_ids:
-        selected_id = st.selectbox("Jump to annotated example", options=annotated_ids)
+        # selected_id = st.selectbox("Jump to annotated example", options=annotated_ids)
+        # if st.button("🔎 Go to selected example"):
+        #     idx = df.index[df["id"] == selected_id][0]
+        #     st.session_state.current_idx = idx
+        #     st.stop()
+
+        # store selected annotated example
+        if "selected_example_id" not in st.session_state:
+            st.session_state.selected_example_id = None
+        
+        selected_id = st.selectbox(
+            "Jump to annotated example", options=annotated_ids,
+            index=annotated_ids.index(st.session_state.selected_example_id) if st.session_state.selected_example_id in annotated_ids else 0
+        )
+        
+        st.session_state.selected_example_id = selected_id
+        
         if st.button("🔎 Go to selected example"):
-            idx = df.index[df["id"] == selected_id][0]
+            # find index of the selected example in the main dataframe
+            idx = df.index[df["id"] == st.session_state.selected_example_id][0]
             st.session_state.current_idx = idx
-            st.stop()
+            st.rerun()  # rerun so UI updates to the selected example
+
         r = user_annotations[user_annotations["id"] == selected_id].iloc[0]
         st.markdown("### 🧾 Saved Annotation Preview")
         st.write(f"**Label:** {r['label']}")
@@ -580,6 +598,7 @@ with col_next:
         save_annotation()
         st.session_state.current_idx += 1
         st.rerun()
+
 
 
 
