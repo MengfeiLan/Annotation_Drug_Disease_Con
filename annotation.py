@@ -594,29 +594,55 @@ def save_annotation():
 st.markdown("---")
 col_prev, col_save, col_next = st.columns([1, 2, 1])
 
+# -----------------------
+# Helper: Validate before navigating
+# -----------------------
+def validate_and_save():
+    """
+    Validate required fields before moving to another example.
+    Automatically saves annotation if validation passes.
+    Returns True if navigation can proceed.
+    """
+    # Task 1 validation
+    if st.session_state.selected_label is None:
+        st.warning("Please select whether the LLM is correct.")
+        return False
+
+    # Task 2 validation
+    if st.session_state.selected_label == "correct":
+        if st.session_state.contextual_agreement is None:
+            st.warning("Please indicate agreement with the LLM’s contextual judgment.")
+            return False
+        if st.session_state.contextual_agreement == "Disagree" and not st.session_state.contextual_factors:
+            st.warning("Please select at least one contextual factor.")
+            return False
+
+    # If validation passes, save
+    save_annotation()
+    return True
+
+# -----------------------
+# Navigation + Save buttons
+# -----------------------
+st.markdown("---")
+col_prev, col_save, col_next = st.columns([1, 2, 1])
+
 with col_prev:
     if st.button("⬅ Previous", disabled=st.session_state.current_idx == 0):
-        save_annotation()
-        st.session_state.current_idx -= 1
-        st.rerun()
+        if validate_and_save():
+            st.session_state.current_idx -= 1
+            st.rerun()
 
 with col_save:
     if st.button("💾 Save annotation"):
-        if st.session_state.selected_label is None:
-            st.warning("Please select whether the LLM is correct.")
-        elif st.session_state.selected_label == "correct" and st.session_state.contextual_agreement is None:
-            st.warning("Please indicate agreement with the LLM’s contextual judgment.")
-        elif st.session_state.selected_label == "correct" and st.session_state.contextual_agreement == "Disagree" and not st.session_state.contextual_factors:
-            st.warning("Please select at least one contextual factor.")
-        else:
-            save_annotation()
+        if validate_and_save():
             st.success("Annotation saved.")
 
 with col_next:
     if st.button("Next ➡", disabled=st.session_state.current_idx == len(df) - 1):
-        save_annotation()
-        st.session_state.current_idx += 1
-        st.rerun()
+        if validate_and_save():
+            st.session_state.current_idx += 1
+            st.rerun()
 
 
 
