@@ -86,7 +86,7 @@ OUTPUT_PATH = ANNOTATION_DIR / f"{st.session_state.username}.csv"
 def push_annotations_to_github(local_file_path, commit_msg="Update annotations"):
     g = Github(GITHUB_TOKEN)
     repo = g.get_repo(REPO_NAME)
-
+    local_file_path = local_file_path.as_posix()
     # Read local CSV content
     with open(local_file_path, "r", encoding="utf-8") as f:
         content = f.read()
@@ -580,6 +580,7 @@ with col_next:
         save_annotation()
         st.session_state.current_idx += 1
         st.rerun()
+
 
 
 
