@@ -130,10 +130,7 @@ def scroll_to_top():
 # -----------------------
 # Load data
 # -----------------------
-@st.cache_data
-def load_data():
-    return pd.read_csv(DATA_PATH)
-df = load_data()
+
 
 if Path(OUTPUT_PATH).exists():
     annotations = pd.read_csv(OUTPUT_PATH)
@@ -154,7 +151,7 @@ for col in [
 
 @st.cache_data
 def load_data():
-    return pd.read_csv(DATA_PATH)
+    return pd.read_csv(DATA_PATH)[:50]
 
 df = load_data()
 
@@ -620,6 +617,7 @@ with col_next:
         save_annotation()
         st.session_state.current_idx += 1
         st.rerun()
+
 
 
 
