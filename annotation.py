@@ -10,23 +10,7 @@ import base64
 
 GITHUB_TOKEN = "YOUR_PERSONAL_ACCESS_TOKEN"  # replace with a secret in Streamlit secrets
 REPO_NAME = "your-username/annotations-storage"
-GITHUB_FILE_PATH = "annotations.csv"  # path inside the repo
 
-def push_annotations_to_github(local_file_path, commit_msg="Update annotations"):
-    g = Github(GITHUB_TOKEN)
-    repo = g.get_repo(REPO_NAME)
-
-    # Read local CSV content
-    with open(local_file_path, "r", encoding="utf-8") as f:
-        content = f.read()
-
-    try:
-        # Try to get the file from repo
-        file = repo.get_contents(GITHUB_FILE_PATH)
-        repo.update_file(file.path, commit_msg, content, file.sha)
-    except:
-        # If file doesn't exist, create it
-        repo.create_file(GITHUB_FILE_PATH, commit_msg, content)
 
 
 def load_annotations_from_github():
@@ -99,6 +83,22 @@ ANNOTATION_DIR.mkdir(exist_ok=True)
 
 OUTPUT_PATH = ANNOTATION_DIR / f"{st.session_state.username}.csv"
 
+def push_annotations_to_github(local_file_path, commit_msg="Update annotations"):
+    g = Github(GITHUB_TOKEN)
+    repo = g.get_repo(REPO_NAME)
+
+    # Read local CSV content
+    with open(local_file_path, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    try:
+        # Try to get the file from repo
+        file = repo.get_contents(OUTPUT_PATH)
+        repo.update_file(file.path, commit_msg, content, file.sha)
+    except:
+        # If file doesn't exist, create it
+        repo.create_file(OUTPUT_PATH, commit_msg, content)
+
 # -----------------------
 # Helpers
 # -----------------------
@@ -113,21 +113,10 @@ def load_data():
     return pd.read_csv(DATA_PATH)
 df = load_data()
 
-# if Path(OUTPUT_PATH).exists():
-#     annotations = pd.read_csv(OUTPUT_PATH)
-# else:
-#     annotations = pd.DataFrame()
-
-
-annotations = load_annotations_from_github()
-
-# Ensure necessary columns exist for backward compatibility
-for col in [
-    "id", "label", "contextual_agreement", 
-    "contextual_factors", "contextual_explanation", "annotator"
-]:
-    if col not in annotations.columns:
-        annotations[col] = ""
+if Path(OUTPUT_PATH).exists():
+    annotations = pd.read_csv(OUTPUT_PATH)
+else:
+    annotations = pd.DataFrame()
 
 # Backward compatibility
 for col in [
@@ -591,4 +580,3 @@ with col_next:
         save_annotation()
         st.session_state.current_idx += 1
         st.rerun()
-
