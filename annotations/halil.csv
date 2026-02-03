@@ -1,3 +1,4 @@
 annotator,id,label,contextual_agreement,contextual_factors,contextual_explanation
-halil,1,correct,Agree,Agree,
 halil,2,correct,Disagree,"b. Population: The claims target different human subpopulations, such as differences in age, sex, genetic background, comorbidities, ethnicity, or risk profiles.; f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
+halil,1,correct,Disagree,,
+halil,3,,,Agree,
