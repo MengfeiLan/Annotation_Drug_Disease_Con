@@ -16,10 +16,12 @@ GITHUB_FILE_PATH = st.secrets["github"]["file_path"]
 
 @st.cache_resource
 def get_repo():
-    g = Github(GITHUB_TOKEN, per_page=100)
-    return g.get_repo(GITHUB_REPO)
+    from github import Github
+    g = Github(st.secrets["github"]["token"])
+    return g.get_repo(st.secrets["github"]["repo"])
 
 repo = get_repo()
+
 
 # -----------------------
 # Load annotations from GitHub
@@ -632,6 +634,7 @@ with col_next:
         st.rerun()
 
         scroll_to_top()
+
 
 
 
