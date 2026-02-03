@@ -10,8 +10,11 @@ DATA_PATH = "annotation_file.csv"
 OUTPUT_PATH = "annotations.csv"
 
 USERS = {
-    "alice": "password123",
-    "bob": "securepass",
+    "halil": "password123",
+    "mengfei": "password456",
+    "shiwei": "password789",
+    "joe": "password101112"
+
 }
 
 LABELS = {
@@ -67,7 +70,7 @@ def scroll_to_top():
 # -----------------------
 @st.cache_data
 def load_data():
-    return pd.read_csv(DATA_PATH)
+    return pd.read_csv(DATA_PATH)[:50]
 df = load_data()
 
 if Path(OUTPUT_PATH).exists():
@@ -560,4 +563,5 @@ with col_next:
         save_annotation()
         st.session_state.current_idx += 1
         st.rerun()
+
         scroll_to_top()
