@@ -113,10 +113,21 @@ def load_data():
     return pd.read_csv(DATA_PATH)
 df = load_data()
 
-if Path(OUTPUT_PATH).exists():
-    annotations = pd.read_csv(OUTPUT_PATH)
-else:
-    annotations = pd.DataFrame()
+# if Path(OUTPUT_PATH).exists():
+#     annotations = pd.read_csv(OUTPUT_PATH)
+# else:
+#     annotations = pd.DataFrame()
+
+
+annotations = load_annotations_from_github()
+
+# Ensure necessary columns exist for backward compatibility
+for col in [
+    "id", "label", "contextual_agreement", 
+    "contextual_factors", "contextual_explanation", "annotator"
+]:
+    if col not in annotations.columns:
+        annotations[col] = ""
 
 # Backward compatibility
 for col in [
@@ -580,3 +591,4 @@ with col_next:
         save_annotation()
         st.session_state.current_idx += 1
         st.rerun()
+
