@@ -605,7 +605,7 @@ if st.session_state.selected_label == "correct":
                 padding: 10px;
                 border-radius: 6px;
                 border: 1px solid #ddd;
-                font-size: 30px;
+                font-size: 15px;
                 background-color: transparent;
                 white-space: pre-wrap;
             ">
@@ -846,6 +846,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
