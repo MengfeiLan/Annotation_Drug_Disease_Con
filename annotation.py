@@ -566,16 +566,6 @@ with st.container(border=True):
     st.write(f"**{row.get('prediction', 'N/A')}**")
 
 # -----------------------
-# Human judgment
-# -----------------------
-st.markdown(
-    "<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>",
-    unsafe_allow_html=True,
-)
-st.radio("", options=list(LABELS.keys()), key="label_radio")
-st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
-
-# -----------------------
 # Task 1: Contradiction Detection
 # -----------------------
 st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>", unsafe_allow_html=True)
@@ -700,6 +690,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
