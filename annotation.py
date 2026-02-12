@@ -624,22 +624,20 @@ if st.session_state.selected_label == "correct":
     # ======================
 
     st.markdown(
-            f"""
-            <div style="
-                max-height: 180px;
-                overflow-y: auto;
-                padding: 10px;
-                border-radius: 6px;
-                border: 1px solid #ddd;
-                font-size: 20px;
-                background-color: transparent;
-                white-space: pre-wrap;
-            ">
-               Contextual Factors Reference
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        """
+        <div style="
+            margin-top: 24px;
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #444;
+        ">
+            Contextual Factors Reference
+        </div>
+        <hr style="margin-top: 4px; margin-bottom: 16px; border: none; border-top: 1px solid #eee;">
+        """,
+        unsafe_allow_html=True
+    )
 
     with st.expander("🧬 Species", expanded=False):
         st.markdown("""
@@ -848,6 +846,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
