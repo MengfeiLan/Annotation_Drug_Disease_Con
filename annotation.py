@@ -481,86 +481,56 @@ if st.session_state.loaded_id != row["id"]:
     load_existing_annotation(row["id"])
     st.session_state.loaded_id = row["id"]
 
+# -----------------------
+# Display claims
+# -----------------------
+col1, col2 = st.columns(2)
 
+with col1:
+    st.subheader("Claim 1")
+    with st.container(border=True):
+        st.markdown(
+            re.sub(r"\.(?=[A-Z])", ". ", row["claim_1"])
+        )
+    with st.expander("Claim 1 – Full Abstract"):
+        st.write(f"**PMID:** {row['pmid_1']}")
+        st.write(row["claims_abs_1"])
+
+with col2:
+    st.subheader("Claim 2")
+    with st.container(border=True):
+        st.markdown(
+            re.sub(r"\.(?=[A-Z])", ". ", row["claim_2"])
+        )
+    with st.expander("Claim 2 – Full Abstract"):
+        st.write(f"**PMID:** {row['pmid_2']}")
+        st.write(re.sub(r"\.(?=[A-Z])", ". ", row["claims_abs_2"]))
+
+
+# ----------------------- # LLM reasoning # ----------------------- st.markdown("---")
+st.subheader("🤖 Task 1: Annotation for Contradiction Detection")
+with st.container(border=True):
+    col_l, col_r, col_n = st.columns(3)
+    with col_l:
+        st.markdown("### Structured Extraction")
+        st.write(f"**Drug:** {row.get('drug', 'N/A')}")
+        st.write(f"**Disease:** {row.get('disease', 'N/A')}")
+        st.markdown("**Claim 1 Relation:**")
+        st.code(str(row.get("claim_1_dd_relation", "")))
+        st.markdown("**Claim 2 Relation:**")
+        st.code(str(row.get("claim_2_dd_relation", "")))
+    with col_r:
+        st.markdown("### LLM Explanation")
+        st.text_area( "", value=str(row.get("reasoning", "")).replace("Task(1): ", "").replace("Task(2): ", ""), height=220, disabled=True, )
+    with col_n:
+        st.markdown("### LLM Decision")
+        st.write(f"**{row.get('prediction', 'N/A')}**")
 # -----------------------
 # Task 1: Contradiction Detection
 # -----------------------
 st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>", unsafe_allow_html=True)
 st.radio("", options=list(LABELS.keys()), key="label_radio")
 st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
-
-# # -----------------------
-# # Display claims
-# # -----------------------
-# col1, col2 = st.columns(2)
-
-# with col1:
-#     st.subheader("Claim 1")
-#     with st.container(border=True):
-#         st.markdown(
-#             re.sub(r"\.(?=[A-Z])", ". ", row["claim_1"])
-#         )
-#     with st.expander("Claim 1 – Full Abstract"):
-#         st.write(f"**PMID:** {row['pmid_1']}")
-#         st.write(row["claims_abs_1"])
-
-# with col2:
-#     st.subheader("Claim 2")
-#     with st.container(border=True):
-#         st.markdown(
-#             re.sub(r"\.(?=[A-Z])", ". ", row["claim_2"])
-#         )
-#     with st.expander("Claim 2 – Full Abstract"):
-#         st.write(f"**PMID:** {row['pmid_2']}")
-#         st.write(re.sub(r"\.(?=[A-Z])", ". ", row["claims_abs_2"]))
-
-
-# # ----------------------- # LLM reasoning # ----------------------- st.markdown("---")
-# st.subheader("🤖 Task 1: Annotation for Contradiction Detection")
-# with st.container(border=True):
-#     col_l, col_r, col_n = st.columns(3)
-#     with col_l:
-#         st.markdown("### Structured Extraction")
-#         st.write(f"**Drug:** {row.get('drug', 'N/A')}")
-#         st.write(f"**Disease:** {row.get('disease', 'N/A')}")
-#         st.markdown("**Claim 1 Relation:**")
-#         st.code(str(row.get("claim_1_dd_relation", "")))
-#         st.markdown("**Claim 2 Relation:**")
-#         st.code(str(row.get("claim_2_dd_relation", "")))
-#     with col_r:
-#         st.markdown("### LLM Explanation")
-    
-#         explanation = (
-#             str(row.get("reasoning", ""))
-#             .replace("Task(1): ", "")
-#             .replace("Task(2): ", "")
-#             .strip()
-#         )
-    
-#         st.markdown(
-#             f"""
-#             <div style="
-#                 background-color: #f8f9fa;
-#                 padding: 12px;
-#                 border-radius: 6px;
-#                 line-height: 1.6;
-#                 white-space: pre-wrap;
-#                 max-height: 220px;
-#                 overflow-y: auto;
-#             ">
-#             {explanation}
-#             </div>
-#             """,
-#             unsafe_allow_html=True,
-#         )
-
-
-#     with col_n:
-#         st.markdown("### LLM Decision")
-#         st.write(f"**{row.get('prediction', 'N/A')}**")
-
-
-
 
 # -----------------------
 # Task 2: Contextual Resolution
@@ -582,105 +552,6 @@ if st.session_state.selected_label == "correct":
     elif st.session_state.contextual_agreement == "Agree":
         st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
-
-# =========================================================
-# 🤖 Task 1: Structured Extraction (SHOW FIRST)
-# =========================================================
-st.subheader("🤖 Task 1: Structured Claim Extraction")
-
-with st.container(border=True):
-    col_l, col_r = st.columns(2)
-
-    with col_l:
-        st.markdown("### Core Drug–Disease Pair")
-        st.write(f"**Drug:** {row.get('drug', 'N/A')}")
-        st.write(f"**Disease:** {row.get('disease', 'N/A')}")
-
-    with col_r:
-        st.markdown("### Extracted Relations")
-        st.markdown("**Claim 1 Relation:**")
-        st.code(str(row.get("claim_1_dd_relation", "")))
-        st.markdown("**Claim 2 Relation:**")
-        st.code(str(row.get("claim_2_dd_relation", "")))
-
-st.markdown("---")
-
-# =========================================================
-# 📄 Claim Presentation (EVIDENCE SECOND)
-# =========================================================
-st.subheader("📄 Claims")
-
-col1, col2 = st.columns(2)
-
-with col1:
-    st.markdown("### Claim 1")
-    with st.container(border=True):
-        st.markdown(
-            re.sub(r"\.(?=[A-Z])", ". ", row["claim_1"])
-        )
-    with st.expander("Claim 1 – Full Abstract"):
-        st.write(f"**PMID:** {row['pmid_1']}")
-        st.write(row["claims_abs_1"])
-
-with col2:
-    st.markdown("### Claim 2")
-    with st.container(border=True):
-        st.markdown(
-            re.sub(r"\.(?=[A-Z])", ". ", row["claim_2"])
-        )
-    with st.expander("Claim 2 – Full Abstract"):
-        st.write(f"**PMID:** {row['pmid_2']}")
-        st.write(
-            re.sub(r"\.(?=[A-Z])", ". ", row["claims_abs_2"])
-        )
-
-st.markdown("---")
-
-# =========================================================
-# 🧠 LLM Reasoning (WHY A CONTRADICTION EXISTS)
-# =========================================================
-st.subheader("🧠 LLM Explanation for Contradiction")
-
-explanation = (
-    str(row.get("reasoning", ""))
-    .replace("Task(1): ", "")
-    .replace("Task(2): ", "")
-    .strip()
-)
-
-with st.container(border=True):
-    st.markdown(
-        f"""
-        <div style="
-            background-color: #f8f9fa;
-            padding: 14px;
-            border-radius: 6px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-        ">
-        {explanation}
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-st.markdown("---")
-
-# =========================================================
-# ✅ LLM Decision (FINAL JUDGMENT)
-# =========================================================
-st.subheader("✅ LLM Contradiction Decision")
-
-with st.container(border=True):
-    st.markdown(
-        f"""
-        <span style="font-size:18px; font-weight:600;">
-        {row.get('prediction', 'N/A')}
-        </span>
-        """,
-        unsafe_allow_html=True,
-    )
-
 
 # -----------------------
 # Save annotation
@@ -779,22 +650,4 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
