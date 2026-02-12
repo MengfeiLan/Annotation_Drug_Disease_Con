@@ -491,7 +491,7 @@ with st.container(border=True):
     # =====================================================
     # 1. Structured Extraction
     # =====================================================
-    st.markdown("### Structured Extraction")
+    st.markdown("### Structured Claim Summary")
 
     col_se_l, col_se_r = st.columns(2)
 
@@ -690,6 +690,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
