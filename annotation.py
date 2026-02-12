@@ -562,7 +562,7 @@ with st.container(border=True):
                 border-radius: 6px;
                 line-height: 1.6;
                 white-space: pre-wrap;
-                max-height: 260px;
+                max-height: 150px;
                 overflow-y: auto;
             ">
             {cleaned_explanation}
@@ -705,6 +705,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
