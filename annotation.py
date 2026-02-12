@@ -546,8 +546,7 @@ with st.container(border=True):
     
     raw_explanation = str(row.get("reasoning", "")).strip()
     
-    # Clean prefixes
-    cleaned = (
+    cleaned_explanation = (
         raw_explanation
         .replace("Task(1):", "")
         .replace("Task(2):", "")
@@ -558,19 +557,22 @@ with st.container(border=True):
         st.markdown(
             f"""
             <div style="
-                background-color: #fdfdfd;
+                background-color: #f9f9f9;
                 padding: 14px;
-                border-left: 4px solid #4b77be;
+                border-radius: 6px;
                 line-height: 1.6;
                 white-space: pre-wrap;
+                max-height: 260px;
+                overflow-y: auto;
             ">
-            {cleaned}
+            {cleaned_explanation}
             </div>
             """,
             unsafe_allow_html=True,
         )
     
     st.markdown("---")
+
 
     # =====================================================
     # 4. LLM Decision
@@ -703,6 +705,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
