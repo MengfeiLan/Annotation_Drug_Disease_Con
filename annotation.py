@@ -537,12 +537,15 @@ with st.container(border=True):
                 border-radius: 6px;
                 line-height: 1.6;
                 white-space: pre-wrap;
+                max-height: 220px;
+                overflow-y: auto;
             ">
             {explanation}
             </div>
             """,
             unsafe_allow_html=True,
         )
+
 
     with col_n:
         st.markdown("### LLM Decision")
@@ -672,6 +675,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
