@@ -641,8 +641,7 @@ if st.session_state.selected_label == "correct":
 
     with st.expander("🧬 Species", expanded=False):
         st.markdown("""
-    Contradictions in drug–effect associations may result from cross-species differences  
-    (Ioannidis et al., 2005; van der Worp et al., 2010; Rosemblat et al., 2019).
+    Contradictions in drug–effect associations may result from cross-species differences.
     
     > *PMID 1595111:*  
     > **Wistar rats** (experiment 1)…  
@@ -846,6 +845,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
