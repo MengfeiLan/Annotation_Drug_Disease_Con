@@ -541,22 +541,35 @@ with st.container(border=True):
     # =====================================================
     # 3. LLM Explanation
     # =====================================================
-    st.markdown("### LLM Explanation")
 
-    explanation = (
-        str(row.get("reasoning", ""))
-        .replace("Task(1): ", "")
-        .replace("Task(2): ", "")
+    st.markdown("### Model Reasoning")
+    
+    raw_explanation = str(row.get("reasoning", "")).strip()
+    
+    # Clean prefixes
+    cleaned = (
+        raw_explanation
+        .replace("Task(1):", "")
+        .replace("Task(2):", "")
         .strip()
     )
-
-    st.text_area(
-        "",
-        value=explanation,
-        height=220,
-        disabled=True,
-    )
-
+    
+    with st.container(border=True):
+        st.markdown(
+            f"""
+            <div style="
+                background-color: #fdfdfd;
+                padding: 14px;
+                border-left: 4px solid #4b77be;
+                line-height: 1.6;
+                white-space: pre-wrap;
+            ">
+            {cleaned}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    
     st.markdown("---")
 
     # =====================================================
@@ -690,6 +703,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
