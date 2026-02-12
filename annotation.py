@@ -335,7 +335,7 @@ a. Species: Contradictions in drug–effect associations may result from cross-s
 
 b. Population: Claims may target different demographic or genetic subpopulations (e.g., age, sex, or location), leading to variant results.
 
-c. Transient physiological context: Different results may arise when the same intervention is 
+c. Physiological context: Different results may arise when the same intervention is 
 evaluated under different transient physiological conditions, even within the same species and 
 population. Such contexts include exertion level, environmental conditions, current disease, or 
 short-term physiological states.
@@ -665,7 +665,7 @@ if st.session_state.selected_label == "correct":
     The apparent contradiction arises from population differences. The prevalence of G6PD deficiency differs across regions, allowing these claims to coexist when population context is considered.
     """)
     
-    with st.expander("⚡ Transient Physiological Context", expanded=False):
+    with st.expander("⚡ Physiological Context", expanded=False):
         st.markdown("""
     Different results may arise when the same intervention is evaluated under different transient physiological conditions.
     
@@ -845,6 +845,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
