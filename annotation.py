@@ -728,16 +728,6 @@ if st.session_state.selected_label == "correct":
         st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
 
-
-    st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Do you agree with the LLM’s contextual judgment?</p>", unsafe_allow_html=True)
-    st.radio("", options=["Agree", "Disagree"], key="contextual_agreement", horizontal=True)
-
-    if st.session_state.contextual_agreement == "Disagree":
-        st.multiselect("Which contextual factors explain the contradiction?", options=CONTEXTUAL_FACTORS, key="contextual_factors")
-        st.text_area("If choosing 'Other', explain:", key="contextual_explanation", height=120)
-    elif st.session_state.contextual_agreement == "Agree":
-        st.session_state.contextual_factors = []
-        st.session_state.contextual_explanation = ""
         
 # -----------------------
 # Save annotation
@@ -836,6 +826,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
