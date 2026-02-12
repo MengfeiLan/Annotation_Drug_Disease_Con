@@ -594,7 +594,7 @@ if st.session_state.selected_label == "correct":
     st.subheader("🧩 Task 2: Contextual Resolution")
     st.markdown("### 🤖 LLM Contextual Judgment")
     
-    st.write(f"**Predicted factor:** {row.get('contextual_factor', 'N/A')}")
+    st.write(f"**The LLM identifies the following contextual conditions that may explain the apparent contradiction :** {row.get('contextual_factor', 'N/A')}")
     
     if row.get("contextual_factor_explanation"):
         st.markdown(
@@ -845,6 +845,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
