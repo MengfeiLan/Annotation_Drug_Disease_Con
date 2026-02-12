@@ -294,7 +294,7 @@ st.title("📝 Annotation for Drug–Disease Contradiction and Resolution")
 
 st.write(f"Example {st.session_state.current_idx + 1} / {len(df)}")
 
-with st.expander:
+with st.expander(Annotation Guideline):
     st.markdown(
     """
 Randomized controlled trials (RCTs) are the gold standard of biomedical evidence, 
@@ -644,6 +644,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
