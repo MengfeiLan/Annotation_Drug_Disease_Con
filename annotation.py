@@ -605,7 +605,7 @@ if st.session_state.selected_label == "correct":
                 padding: 10px;
                 border-radius: 6px;
                 border: 1px solid #ddd;
-                font-size: 13px;
+                font-size: 20px;
                 background-color: transparent;
                 white-space: pre-wrap;
             ">
@@ -622,8 +622,24 @@ if st.session_state.selected_label == "correct":
     # ======================
     # Internal-to-the-patient
     # ======================
-    
-    st.markdown("### 📚 Contextual Factors Reference")
+
+    st.markdown(
+            f"""
+            <div style="
+                max-height: 180px;
+                overflow-y: auto;
+                padding: 10px;
+                border-radius: 6px;
+                border: 1px solid #ddd;
+                font-size: 20px;
+                background-color: transparent;
+                white-space: pre-wrap;
+            ">
+               Contextual Factors Reference
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     with st.expander("🧬 Species", expanded=False):
         st.markdown("""
@@ -832,6 +848,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
