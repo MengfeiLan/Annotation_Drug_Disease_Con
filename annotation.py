@@ -525,6 +525,32 @@ with st.container(border=True):
     with col_n:
         st.markdown("### LLM Decision")
         st.write(f"**{row.get('prediction', 'N/A')}**")
+
+    col1, col2 = st.columns(2)
+
+    st.markdown("### Claims Under Comparison")
+
+    with col1:
+        st.markdown("**Claim 1**")
+        with st.container(border=True):
+            st.markdown(
+                re.sub(r"\.(?=[A-Z])", ". ", row["claim_1"])
+            )
+        with st.expander("Claim 1 – Full Abstract"):
+            st.write(f"**PMID:** {row['pmid_1']}")
+            st.write(row["claims_abs_1"])
+
+    with col2:
+        st.markdown("**Claim 2**")
+        with st.container(border=True):
+            st.markdown(
+                re.sub(r"\.(?=[A-Z])", ". ", row["claim_2"])
+            )
+        with st.expander("Claim 2 – Full Abstract"):
+            st.write(f"**PMID:** {row['pmid_2']}")
+            st.write(
+                re.sub(r"\.(?=[A-Z])", ". ", row["claims_abs_2"])
+            )
 # -----------------------
 # Task 1: Contradiction Detection
 # -----------------------
@@ -650,4 +676,5 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
