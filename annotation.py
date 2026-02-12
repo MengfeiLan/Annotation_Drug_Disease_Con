@@ -521,7 +521,29 @@ with st.container(border=True):
         st.code(str(row.get("claim_2_dd_relation", "")))
     with col_r:
         st.markdown("### LLM Explanation")
-        st.text_area( "", value=str(row.get("reasoning", "")).replace("Task(1): ", "").replace("Task(2): ", ""), height=220, disabled=True, )
+    
+        explanation = (
+            str(row.get("reasoning", ""))
+            .replace("Task(1): ", "")
+            .replace("Task(2): ", "")
+            .strip()
+        )
+    
+        st.markdown(
+            f"""
+            <div style="
+                background-color: #f8f9fa;
+                padding: 12px;
+                border-radius: 6px;
+                line-height: 1.6;
+                white-space: pre-wrap;
+            ">
+            {explanation}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
     with col_n:
         st.markdown("### LLM Decision")
         st.write(f"**{row.get('prediction', 'N/A')}**")
@@ -650,6 +672,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
