@@ -587,112 +587,7 @@ st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM c
 st.radio("", options=list(LABELS.keys()), key="label_radio")
 st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
 
-# -----------------------
-# Task 2: Contextual Resolution
-# -----------------------
 
-# ======================
-# Internal-to-the-patient
-# ======================
-
-with st.expander("🧬 Species", expanded=False):
-    st.markdown("""
-Contradictions in drug–effect associations may result from cross-species differences  
-(Ioannidis et al., 2005; van der Worp et al., 2010; Rosemblat et al., 2019).
-
-> *PMID 1595111:*  
-> **Wistar rats** (experiment 1)…  
-> **Claim 1:** Tirilazad reduces cortical infarction in transient but not permanent ischemia, an effect not related to improvement in regional cerebral blood flow. Tirilazad might prove to be useful as an adjuvant therapy after successful thrombolysis in acute stroke patients.
->
-> *PMID 11687138:*  
-> **Claim 2:** Tirilazad mesylate increased the combined end-point of “death or disability” by about one-fifth when given to **patients** with acute ischaemic stroke.
-
-These claims appear contradictory at first glance. However, Claim 1 is based on preclinical experiments in rats, whereas Claim 2 reports results from human clinical trials. Differences in disease manifestation and pharmacokinetics across species limit direct comparability. Therefore, the claims reflect **species-specific effects rather than a true contradiction**.
-""")
-
-with st.expander("👥 Population", expanded=False):
-    st.markdown("""
-Claims may target different demographic or genetic subpopulations (e.g., age, sex, or location).
-
-> *PMID 1595111:*  
-> **Claim 1:** A full course of 8-aminoquinolines should be added to mass drug administration to eliminate malaria in **four villages of the Lao PDR**.
->
-> **Claim 2:** G6PD deficiency is common in **African patients**, making 8-aminoquinoline use problematic.
-
-The apparent contradiction arises from population differences. The prevalence of G6PD deficiency differs across regions, allowing these claims to coexist when population context is considered.
-""")
-
-with st.expander("⚡ Transient Physiological Context", expanded=False):
-    st.markdown("""
-Different results may arise when the same intervention is evaluated under different transient physiological conditions.
-
-> *PMID 3942723:*  
-> **Claim 1:** Caffeine reduced reaction time and delayed fatigue during **successive taekwondo combats**.
->
-> *PMID 5306327:*  
-> **Claim 2:** Caffeine improved endurance during **high-intensity cycling under hypoxia** without reducing fatigue.
-
-Differences in exercise modality and physiological environment explain these findings. We therefore extend prior taxonomies to explicitly include **transient physiological context**.
-""")
-
-# ======================
-# External-to-the-patient
-# ======================
-
-st.markdown("### External-to-the-Patient Factors")
-
-with st.expander("💊 Dosage and Exposure Duration", expanded=False):
-    st.markdown("""
-Different doses or exposure durations may produce different biological effects.
-
-> *PMID 27795670:*  
-> **Claim 1:** 10 mg intravenous dexamethasone showed no impact on postoperative pain.
->
-> *PMID 34749994:*  
-> **Claim 2:** Dexamethasone 1 mg/kg reduced pain and improved recovery.
-
-Differences in dosage and administration timing explain the divergent outcomes.
-""")
-
-with st.expander("💉 Route of Administration", expanded=False):
-    st.markdown("""
-Different delivery routes may change tissue targeting or absorption.
-
-> **Intravaginal misoprostol** was reported as safe and effective.  
-> **Sublingual misoprostol** showed higher rates of tachysystole.
-
-Route of administration explains the differing safety profiles.
-""")
-
-with st.expander("📈 Evolving Scientific Evidence", expanded=False):
-    st.markdown("""
-Early hypotheses may be revised by later trials.
-
-> **Claim 1:** Adjunctive rifampicin was hypothesized to improve outcomes.  
-> **Claim 2:** Later trials showed no overall benefit.
-
-These findings represent different stages of scientific understanding.
-""")
-
-with st.expander("⚠️ Known Controversy", expanded=False):
-    st.markdown("""
-Some claims explicitly acknowledge uncertainty.
-
-> **Claim 1:** Fluoroquinolone treatment failure is associated with *S. Typhi*-H58.  
-> **Claim 2:** Fluoroquinolones are still recommended, but policies should change.
-
-The claims reflect an acknowledged controversy rather than a contradiction.
-""")
-
-with st.expander("🧪 Combined Drug Effects", expanded=False):
-    st.markdown("""
-Drug–drug interactions may yield different outcomes.
-
-> **Claim 1:** Gemcitabine combined with HF10 and erlotinib was safe.  
-> **Claim 2:** Gemcitabine combined with dual EGFR therapy increased toxicity.
-
-Different combination regimens explain the apparent contradiction.
-""")
 
 if st.session_state.selected_label == "correct":
     st.markdown("---")
@@ -716,6 +611,108 @@ if st.session_state.selected_label == "correct":
             """,
             unsafe_allow_html=True
         )
+
+        # -----------------------
+    # Task 2: Contextual Resolution
+    # -----------------------
+    
+    # ======================
+    # Internal-to-the-patient
+    # ======================
+    with st.expander("🧬 Species", expanded=False):
+        st.markdown("""
+    Contradictions in drug–effect associations may result from cross-species differences  
+    (Ioannidis et al., 2005; van der Worp et al., 2010; Rosemblat et al., 2019).
+    
+    > *PMID 1595111:*  
+    > **Wistar rats** (experiment 1)…  
+    > **Claim 1:** Tirilazad reduces cortical infarction in transient but not permanent ischemia, an effect not related to improvement in regional cerebral blood flow. Tirilazad might prove to be useful as an adjuvant therapy after successful thrombolysis in acute stroke patients.
+    >
+    > *PMID 11687138:*  
+    > **Claim 2:** Tirilazad mesylate increased the combined end-point of “death or disability” by about one-fifth when given to **patients** with acute ischaemic stroke.
+    
+    These claims appear contradictory at first glance. However, Claim 1 is based on preclinical experiments in rats, whereas Claim 2 reports results from human clinical trials. Differences in disease manifestation and pharmacokinetics across species limit direct comparability. Therefore, the claims reflect **species-specific effects rather than a true contradiction**.
+    """)
+    
+    with st.expander("👥 Population", expanded=False):
+        st.markdown("""
+    Claims may target different demographic or genetic subpopulations (e.g., age, sex, or location).
+    
+    > *PMID 1595111:*  
+    > **Claim 1:** A full course of 8-aminoquinolines should be added to mass drug administration to eliminate malaria in **four villages of the Lao PDR**.
+    >
+    > **Claim 2:** G6PD deficiency is common in **African patients**, making 8-aminoquinoline use problematic.
+    
+    The apparent contradiction arises from population differences. The prevalence of G6PD deficiency differs across regions, allowing these claims to coexist when population context is considered.
+    """)
+    
+    with st.expander("⚡ Transient Physiological Context", expanded=False):
+        st.markdown("""
+    Different results may arise when the same intervention is evaluated under different transient physiological conditions.
+    
+    > *PMID 3942723:*  
+    > **Claim 1:** Caffeine reduced reaction time and delayed fatigue during **successive taekwondo combats**.
+    >
+    > *PMID 5306327:*  
+    > **Claim 2:** Caffeine improved endurance during **high-intensity cycling under hypoxia** without reducing fatigue.
+    
+    Differences in exercise modality and physiological environment explain these findings. We therefore extend prior taxonomies to explicitly include **transient physiological context**.
+    """)
+    
+    
+    
+    with st.expander("💊 Dosage and Exposure Duration", expanded=False):
+        st.markdown("""
+    Different doses or exposure durations may produce different biological effects.
+    
+    > *PMID 27795670:*  
+    > **Claim 1:** 10 mg intravenous dexamethasone showed no impact on postoperative pain.
+    >
+    > *PMID 34749994:*  
+    > **Claim 2:** Dexamethasone 1 mg/kg reduced pain and improved recovery.
+    
+    Differences in dosage and administration timing explain the divergent outcomes.
+    """)
+    
+    with st.expander("💉 Route of Administration", expanded=False):
+        st.markdown("""
+    Different delivery routes may change tissue targeting or absorption.
+    
+    > **Intravaginal misoprostol** was reported as safe and effective.  
+    > **Sublingual misoprostol** showed higher rates of tachysystole.
+    
+    Route of administration explains the differing safety profiles.
+    """)
+    
+    with st.expander("📈 Evolving Scientific Evidence", expanded=False):
+        st.markdown("""
+    Early hypotheses may be revised by later trials.
+    
+    > **Claim 1:** Adjunctive rifampicin was hypothesized to improve outcomes.  
+    > **Claim 2:** Later trials showed no overall benefit.
+    
+    These findings represent different stages of scientific understanding.
+    """)
+    
+    with st.expander("⚠️ Known Controversy", expanded=False):
+        st.markdown("""
+    Some claims explicitly acknowledge uncertainty.
+    
+    > **Claim 1:** Fluoroquinolone treatment failure is associated with *S. Typhi*-H58.  
+    > **Claim 2:** Fluoroquinolones are still recommended, but policies should change.
+    
+    The claims reflect an acknowledged controversy rather than a contradiction.
+    """)
+    
+    with st.expander("🧪 Combined Drug Effects", expanded=False):
+        st.markdown("""
+    Drug–drug interactions may yield different outcomes.
+    
+    > **Claim 1:** Gemcitabine combined with HF10 and erlotinib was safe.  
+    > **Claim 2:** Gemcitabine combined with dual EGFR therapy increased toxicity.
+    
+    Different combination regimens explain the apparent contradiction.
+    """)
 
     st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Do you agree with the LLM’s contextual judgment?</p>", unsafe_allow_html=True)
     st.radio("", options=["Agree", "Disagree"], key="contextual_agreement", horizontal=True)
@@ -824,6 +821,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
