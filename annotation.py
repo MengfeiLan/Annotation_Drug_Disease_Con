@@ -593,7 +593,9 @@ if st.session_state.selected_label == "correct":
     st.markdown("---")
     st.subheader("🧩 Task 2: Contextual Resolution")
     st.markdown("### 🤖 LLM Contextual Judgment")
+    
     st.write(f"**Predicted factor:** {row.get('contextual_factor', 'N/A')}")
+    
     if row.get("contextual_factor_explanation"):
         st.markdown(
             f"""
@@ -603,6 +605,7 @@ if st.session_state.selected_label == "correct":
                 padding: 10px;
                 border-radius: 6px;
                 border: 1px solid #ddd;
+                font-size: 13px;
                 background-color: transparent;
                 white-space: pre-wrap;
             ">
@@ -620,6 +623,8 @@ if st.session_state.selected_label == "correct":
     # Internal-to-the-patient
     # ======================
     
+    st.markdown("### 📚 Contextual Factors Reference")
+
     with st.expander("🧬 Species", expanded=False):
         st.markdown("""
     Contradictions in drug–effect associations may result from cross-species differences  
@@ -827,6 +832,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
