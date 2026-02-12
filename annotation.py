@@ -591,10 +591,12 @@ st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
 # Task 2: Contextual Resolution
 # -----------------------
 
-st.markdown("""
-### Contextual Factors Leading to Apparent Contradictions
+# ======================
+# Internal-to-the-patient
+# ======================
 
-#### **Species**
+with st.expander("🧬 Species", expanded=False):
+    st.markdown("""
 Contradictions in drug–effect associations may result from cross-species differences  
 (Ioannidis et al., 2005; van der Worp et al., 2010; Rosemblat et al., 2019).
 
@@ -606,10 +608,10 @@ Contradictions in drug–effect associations may result from cross-species diffe
 > **Claim 2:** Tirilazad mesylate increased the combined end-point of “death or disability” by about one-fifth when given to **patients** with acute ischaemic stroke.
 
 These claims appear contradictory at first glance. However, Claim 1 is based on preclinical experiments in rats, whereas Claim 2 reports results from human clinical trials. Differences in disease manifestation and pharmacokinetics across species limit direct comparability. Therefore, the claims reflect **species-specific effects rather than a true contradiction**.
+""")
 
----
-
-#### **Population**
+with st.expander("👥 Population", expanded=False):
+    st.markdown("""
 Claims may target different demographic or genetic subpopulations (e.g., age, sex, or location).
 
 > *PMID 1595111:*  
@@ -618,10 +620,10 @@ Claims may target different demographic or genetic subpopulations (e.g., age, se
 > **Claim 2:** G6PD deficiency is common in **African patients**, making 8-aminoquinoline use problematic.
 
 The apparent contradiction arises from population differences. The prevalence of G6PD deficiency differs across regions, allowing these claims to coexist when population context is considered.
+""")
 
----
-
-#### **Transient Physiological Context**
+with st.expander("⚡ Transient Physiological Context", expanded=False):
+    st.markdown("""
 Different results may arise when the same intervention is evaluated under different transient physiological conditions.
 
 > *PMID 3942723:*  
@@ -631,12 +633,16 @@ Different results may arise when the same intervention is evaluated under differ
 > **Claim 2:** Caffeine improved endurance during **high-intensity cycling under hypoxia** without reducing fatigue.
 
 Differences in exercise modality and physiological environment explain these findings. We therefore extend prior taxonomies to explicitly include **transient physiological context**.
+""")
 
----
+# ======================
+# External-to-the-patient
+# ======================
 
-### External-to-the-Patient Factors
+st.markdown("### External-to-the-Patient Factors")
 
-#### **Dosage and Exposure Duration**
+with st.expander("💊 Dosage and Exposure Duration", expanded=False):
+    st.markdown("""
 Different doses or exposure durations may produce different biological effects.
 
 > *PMID 27795670:*  
@@ -646,44 +652,44 @@ Different doses or exposure durations may produce different biological effects.
 > **Claim 2:** Dexamethasone 1 mg/kg reduced pain and improved recovery.
 
 Differences in dosage and administration timing explain the divergent outcomes.
+""")
 
----
-
-#### **Route of Administration**
+with st.expander("💉 Route of Administration", expanded=False):
+    st.markdown("""
 Different delivery routes may change tissue targeting or absorption.
 
 > **Intravaginal misoprostol** was reported as safe and effective.  
 > **Sublingual misoprostol** showed higher rates of tachysystole.
 
 Route of administration explains the differing safety profiles.
+""")
 
----
-
-#### **Evolving Scientific Evidence**
+with st.expander("📈 Evolving Scientific Evidence", expanded=False):
+    st.markdown("""
 Early hypotheses may be revised by later trials.
 
-> *Claim 1:* Adjunctive rifampicin was hypothesized to improve outcomes.  
-> *Claim 2:* Later trials showed no overall benefit.
+> **Claim 1:** Adjunctive rifampicin was hypothesized to improve outcomes.  
+> **Claim 2:** Later trials showed no overall benefit.
 
 These findings represent different stages of scientific understanding.
+""")
 
----
-
-#### **Known Controversy**
+with st.expander("⚠️ Known Controversy", expanded=False):
+    st.markdown("""
 Some claims explicitly acknowledge uncertainty.
 
-> *Claim 1:* Fluoroquinolone treatment failure is associated with S. Typhi-H58.  
-> *Claim 2:* Fluoroquinolones are still recommended, but policies should change.
+> **Claim 1:** Fluoroquinolone treatment failure is associated with *S. Typhi*-H58.  
+> **Claim 2:** Fluoroquinolones are still recommended, but policies should change.
 
 The claims reflect an acknowledged controversy rather than a contradiction.
+""")
 
----
-
-#### **Combined Drug Effects**
+with st.expander("🧪 Combined Drug Effects", expanded=False):
+    st.markdown("""
 Drug–drug interactions may yield different outcomes.
 
-> *Claim 1:* Gemcitabine combined with HF10 and erlotinib was safe.  
-> *Claim 2:* Gemcitabine combined with dual EGFR therapy increased toxicity.
+> **Claim 1:** Gemcitabine combined with HF10 and erlotinib was safe.  
+> **Claim 2:** Gemcitabine combined with dual EGFR therapy increased toxicity.
 
 Different combination regimens explain the apparent contradiction.
 """)
@@ -818,6 +824,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
