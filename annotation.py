@@ -481,6 +481,14 @@ if st.session_state.loaded_id != row["id"]:
     load_existing_annotation(row["id"])
     st.session_state.loaded_id = row["id"]
 
+
+# -----------------------
+# Task 1: Contradiction Detection
+# -----------------------
+st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>", unsafe_allow_html=True)
+st.radio("", options=list(LABELS.keys()), key="label_radio")
+st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
+
 # # -----------------------
 # # Display claims
 # # -----------------------
@@ -552,12 +560,7 @@ if st.session_state.loaded_id != row["id"]:
 #         st.write(f"**{row.get('prediction', 'N/A')}**")
 
 
-# -----------------------
-# Task 1: Contradiction Detection
-# -----------------------
-st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>", unsafe_allow_html=True)
-st.radio("", options=list(LABELS.keys()), key="label_radio")
-st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
+
 
 # -----------------------
 # Task 2: Contextual Resolution
@@ -776,6 +779,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
