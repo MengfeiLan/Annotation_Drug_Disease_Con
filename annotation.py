@@ -294,7 +294,8 @@ st.title("📝 Annotation for Drug–Disease Contradiction and Resolution")
 
 st.write(f"Example {st.session_state.current_idx + 1} / {len(df)}")
 
-st.markdown(
+with st.expander:
+    st.markdown(
     """
 Randomized controlled trials (RCTs) are the gold standard of biomedical evidence, 
 while their findings can sometimes be contradictory. Drug–disease associations are 
@@ -643,6 +644,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
