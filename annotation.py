@@ -605,7 +605,7 @@ if st.session_state.selected_label == "correct":
                 padding: 10px;
                 border-radius: 6px;
                 border: 1px solid #ddd;
-                font-size: 20px;
+                font-size: 30px;
                 background-color: transparent;
                 white-space: pre-wrap;
             ">
@@ -626,7 +626,7 @@ if st.session_state.selected_label == "correct":
     st.markdown(
         """
         <div style="
-            margin-top: 24px;
+            margin-top: 30px;
             margin-bottom: 8px;
             font-size: 16px;
             font-weight: 600;
@@ -846,6 +846,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
