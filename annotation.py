@@ -596,7 +596,22 @@ if st.session_state.selected_label == "correct":
     st.markdown("### 🤖 LLM Contextual Judgment")
     st.write(f"**{row.get('contextual_factor', 'N/A')}**")
     if row.get("contextual_factor_explanation"):
-        st.text_area("", value=row["contextual_factor_explanation"], height=180, disabled=True)
+        st.markdown(
+            f"""
+            <div style="
+                max-height: 180px;
+                overflow-y: auto;
+                padding: 10px;
+                border-radius: 6px;
+                border: 1px solid #ddd;
+                background-color: transparent;
+                white-space: pre-wrap;
+            ">
+                {row["contextual_factor_explanation"]}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Do you agree with the LLM’s contextual judgment?</p>", unsafe_allow_html=True)
     st.radio("", options=["Agree", "Disagree"], key="contextual_agreement", horizontal=True)
@@ -705,6 +720,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
