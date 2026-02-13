@@ -55,7 +55,8 @@ USERS = {
     "halil": "password123",
     "mengfei": "password456",
     "shiwei": "password789",
-    "joe": "password101112"
+    "joe": "password101112",
+    "visitor": "passwordvisitor"
 
 }
 
@@ -845,6 +846,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
