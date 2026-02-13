@@ -16,16 +16,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-st.set_page_config(
-    page_title="Drug–Disease Annotation",
-    layout="wide",
-    initial_sidebar_state="expanded",
-    menu_items={
-        'Get Help': None,
-        'Report a bug': None,
-        'About': None
-    }
-)
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -410,14 +400,6 @@ AMBIGUOUS_REFERENT_OPTIONS = [
 def scroll_to_top():
     st.markdown("<script>window.scrollTo(0, 0);</script>", unsafe_allow_html=True)
 
-# -----------------------
-# Load data
-# -----------------------
-@st.cache_data
-def load_data():
-    return pd.read_csv(DATA_PATH)
-
-df = load_data()
 
 # -----------------------
 # Load / initialize annotations
@@ -472,29 +454,78 @@ if "contextual_explanation" not in st.session_state:
 # Helper: Load existing annotation
 # -----------------------
 def load_existing_annotation(example_id):
-    match = annotations[(annotations["id"] == example_id) &
-                        (annotations["annotator"] == st.session_state.username)]
+    global annotations
+
+    # Filter by example and annotator
+    match = annotations[
+        (annotations["id"] == example_id) &
+        (annotations["annotator"] == st.session_state.username)
+    ]
+
     if not match.empty:
         r = match.iloc[0]
-        st.session_state.label_radio = next((k for k, v in LABELS.items() if v == r["label"]), None)
-        st.session_state.selected_label = r["label"]
-        st.session_state.contextual_agreement = r["contextual_agreement"] or None
-        st.session_state.contextual_factors = r["contextual_factors"].split("; ") if pd.notna(r["contextual_factors"]) and r["contextual_factors"] not in ["", "Agree"] else []
-        st.session_state.contextual_explanation = r["contextual_explanation"] or ""
+
+        # -----------------------
+        # Task 1
+        # -----------------------
+        saved_label = r.get("label", "")
+        st.session_state.selected_label = saved_label
+
+        st.session_state.label_radio = next(
+            (k for k, v in LABELS.items() if v == saved_label),
+            None
+        )
+
+        # -----------------------
+        # Task 2 - Contextual agreement
+        # -----------------------
+        saved_agreement = r.get("contextual_agreement", "")
+        st.session_state.contextual_agreement = (
+            saved_agreement if saved_agreement in ["Agree", "Disagree"] else None
+        )
+
+        # -----------------------
+        # Contextual factors
+        # -----------------------
+        saved_factors = r.get("contextual_factors", "")
+
+        if saved_factors == "Agree":
+            # If previously agreed, no factors selected
+            st.session_state.contextual_factors = []
+        elif isinstance(saved_factors, str) and saved_factors.strip():
+            st.session_state.contextual_factors = saved_factors.split("; ")
+        else:
+            st.session_state.contextual_factors = []
+
+        # -----------------------
+        # Ambiguous referent subtype
+        # -----------------------
+        st.session_state.ambiguous_referent_type = r.get(
+            "ambiguous_referent_type", None
+        ) or None
+
+        # -----------------------
+        # Other explanation
+        # -----------------------
+        explanation = r.get("contextual_explanation", "")
+        st.session_state.contextual_explanation = (
+            explanation if isinstance(explanation, str) else ""
+        )
+
     else:
+        # Reset all states if no annotation exists
         st.session_state.label_radio = None
         st.session_state.selected_label = None
         st.session_state.contextual_agreement = None
         st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
+        st.session_state.ambiguous_referent_type = None
+
 
 # Clamp index
 st.session_state.current_idx = max(0, min(st.session_state.current_idx, len(df) - 1))
 row = df.iloc[st.session_state.current_idx]
 
-if st.session_state.loaded_id != row["id"]:
-    load_existing_annotation(row["id"])
-    st.session_state.loaded_id = row["id"]
 
 # -----------------------
 # 🤖 Task 1: Annotation for Contradiction Detection
@@ -913,6 +944,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
