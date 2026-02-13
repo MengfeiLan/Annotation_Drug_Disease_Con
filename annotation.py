@@ -74,7 +74,7 @@ CONTEXTUAL_FACTORS = [
     "f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
     "g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
     "h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
-    "i. Ambiguous expression: One or both claims contain grammatical errors or unclear referents.",
+    "i. Ambiguous referent: One or both claims contain grammatical errors or unclear referents.",
     "j. Other: None of the listed factors explain the contradiction.",
 ]
 
@@ -149,7 +149,9 @@ for col in [
     if col not in annotations.columns:
         annotations[col] = ""
 
-
+if "ambiguous_referent_type" not in annotations.columns:
+    annotations["ambiguous_referent_type"] = ""
+    
 @st.cache_data
 def load_data():
     return pd.read_csv(DATA_PATH)[:50]
@@ -388,9 +390,17 @@ CONTEXTUAL_FACTORS = [
     "f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
     "g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
     "h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
-    "i. Ambiguous expression: One or both claims contain grammatical errors or unclear referents.",
+    "i. Ambiguous referent: One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.",
     "j. Other: None of the listed factors explain the contradiction.",
 ]
+
+AMBIGUOUS_REFERENT_OPTIONS = [
+    "One or both abstracts lack species information",
+    "One or both abstracts lack population information",
+    "One or both abstracts lack dosage information",
+    "One or both abstracts lack route of administration information"
+]
+
 
 # -----------------------
 # Helpers
@@ -419,6 +429,8 @@ else:
 if "annotator" not in annotations.columns:
     annotations["annotator"] = ""
 
+if "ambiguous_referent_type" not in st.session_state:
+    st.session_state.ambiguous_referent_type = None
 
 # -----------------------
 # Backward compatibility (IMPORTANT)
@@ -747,8 +759,31 @@ if st.session_state.selected_label == "correct":
     st.radio("", options=["Agree", "Disagree"], key="contextual_agreement", horizontal=True)
 
     if st.session_state.contextual_agreement == "Disagree":
-        st.multiselect("Which contextual factors explain the contradiction?", options=CONTEXTUAL_FACTORS, key="contextual_factors")
-        st.text_area("If choosing 'Other', explain:", key="contextual_explanation", height=120)
+    
+        st.multiselect(
+            "Which contextual factors explain the contradiction?",
+            options=CONTEXTUAL_FACTORS,
+            key="contextual_factors"
+        )
+    
+        # ✅ Show dropdown ONLY if Ambiguous Referent selected
+        if any("i. Ambiguous referent" in f for f in st.session_state.contextual_factors):
+    
+            st.selectbox(
+                "Specify what is ambiguous:",
+                options=AMBIGUOUS_REFERENT_OPTIONS,
+                key="ambiguous_referent_type"
+            )
+    
+        # Other explanation
+        if any("j. Other" in f for f in st.session_state.contextual_factors):
+    
+            st.text_area(
+                "If choosing 'Other', explain:",
+                key="contextual_explanation",
+                height=120
+            )
+
     elif st.session_state.contextual_agreement == "Agree":
         st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
@@ -781,12 +816,24 @@ def save_annotation():
         "contextual_agreement": st.session_state.contextual_agreement or "",
         "contextual_factors": "Agree" if st.session_state.contextual_agreement == "Agree" else "; ".join(st.session_state.contextual_factors),
         "contextual_explanation": "" if st.session_state.contextual_agreement == "Agree" else st.session_state.contextual_explanation.strip(),
+        "ambiguous_referent_type": (
+            st.session_state.ambiguous_referent_type
+            if any("i. Ambiguous referent" in f for f in st.session_state.contextual_factors)
+            else ""
+        ),
         "annotator": st.session_state.username,
     }
+
 
     # Remove old annotation for this example
     annotations = annotations[~((annotations["id"] == row["id"]) & (annotations["annotator"] == st.session_state.username))]
     annotations = pd.concat([annotations, pd.DataFrame([new_row])], ignore_index=True)
+
+    "ambiguous_referent_type": (
+        st.session_state.ambiguous_referent_type
+        if any("i. Ambiguous referent" in f for f in st.session_state.contextual_factors)
+        else ""
+    ),
 
     # Save locally
     USER_CSV.parent.mkdir(exist_ok=True)
@@ -824,6 +871,15 @@ def validate_and_save():
         if st.session_state.contextual_agreement == "Disagree" and not st.session_state.contextual_factors:
             st.warning("Please select at least one contextual factor.")
             return False
+            if st.session_state.contextual_agreement == "Disagree":
+    if not st.session_state.contextual_factors:
+        st.warning("Please select at least one contextual factor.")
+        return False
+
+    if any("i. Ambiguous referent" in f for f in st.session_state.contextual_factors):
+        if not st.session_state.ambiguous_referent_type:
+            st.warning("Please specify the type of ambiguous referent.")
+            return False
 
     # If validation passes, save
     save_annotation()
@@ -851,6 +907,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
