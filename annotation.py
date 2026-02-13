@@ -748,8 +748,7 @@ if st.session_state.selected_label == "correct":
 
     with st.expander("🧩 Ambiguous Referent", expanded=False):
         st.markdown("""
-    One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.")
-    "")
+    One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.""")
             
     with st.expander("❓ Other", expanded=False):
         st.markdown("""None of the listed factors explain the contradiction. If choosing 'Other', explain the other potiential contextual factors that may apply to the scenario.""")
@@ -902,6 +901,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
