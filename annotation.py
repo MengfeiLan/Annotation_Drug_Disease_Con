@@ -74,7 +74,7 @@ CONTEXTUAL_FACTORS = [
     "f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
     "g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
     "h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
-    "i. Ambiguous referent: One or both claims contain grammatical errors or unclear referents.",
+    "i. Ambiguous referent: One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.",
     "j. Other: None of the listed factors explain the contradiction.",
 ]
 
@@ -357,7 +357,9 @@ ongoing debate rather than a definitive conclusion.
 h. Combined drug effect: Contradictions can arise when the effects of a drug depend on the co-administered 
 agents. Drug–drug interactions may produce different outcomes across different combination regimens.
 
-i. Other: Some contradictions may not fit into the above categories, indicating the need for additional contextual factors.
+i. Ambiguous referent: One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.
+
+j. Other: Some contradictions may not fit into the above categories, indicating the need for additional contextual factors.
 
 To support scalable and interpretable contradiction resolution, we use LLMs to identify whether 
 contradictions can be explained by contextual differences defined in our taxonomy. The LLM is prompted 
@@ -911,6 +913,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
