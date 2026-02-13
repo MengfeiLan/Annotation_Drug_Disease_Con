@@ -752,8 +752,7 @@ if st.session_state.selected_label == "correct":
     "")
             
     with st.expander("❓ Other", expanded=False):
-        st.markdown("""None of the listed factors explain the contradiction. If choosing 'Other', explain the other potiential contextual factors that may apply to the scenario. 
-    """)
+        st.markdown("""None of the listed factors explain the contradiction. If choosing 'Other', explain the other potiential contextual factors that may apply to the scenario.""")
 
     st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Do you agree with the LLM’s contextual judgment?</p>", unsafe_allow_html=True)
     st.radio("", options=["Agree", "Disagree"], key="contextual_agreement", horizontal=True)
@@ -903,6 +902,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
