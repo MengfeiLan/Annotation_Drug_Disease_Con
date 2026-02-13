@@ -764,24 +764,36 @@ if st.session_state.selected_label == "correct":
             key="contextual_factors"
         )
     
-        # ✅ Show dropdown ONLY if Ambiguous Referent selected
-        if any("i. Ambiguous referent" in f for f in st.session_state.contextual_factors):
+        # -----------------------
+        # Ambiguous Referent Dropdown
+        # -----------------------
+        if any(f.startswith("i. Ambiguous referent") 
+               for f in st.session_state.contextual_factors):
     
             st.selectbox(
-                "Specify what is ambiguous:",
+                "Specify the type of ambiguous referent:",
                 options=AMBIGUOUS_REFERENT_OPTIONS,
                 key="ambiguous_referent_type"
             )
+        else:
+            # Clear stale value if unselected
+            st.session_state.ambiguous_referent_type = None
     
-        # Other explanation
-        if any("j. Other" in f for f in st.session_state.contextual_factors):
+        # -----------------------
+        # Other Explanation Box
+        # -----------------------
+        if any(f.startswith("j. Other") 
+               for f in st.session_state.contextual_factors):
     
             st.text_area(
-                "If choosing 'Other', explain:",
+                "Please explain the other contextual factor:",
                 key="contextual_explanation",
                 height=120
             )
-
+        else:
+            # Clear stale value if unselected
+            st.session_state.contextual_explanation = ""
+        
     elif st.session_state.contextual_agreement == "Agree":
         st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
@@ -899,6 +911,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
