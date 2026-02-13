@@ -827,12 +827,6 @@ def save_annotation():
     annotations = annotations[~((annotations["id"] == row["id"]) & (annotations["annotator"] == st.session_state.username))]
     annotations = pd.concat([annotations, pd.DataFrame([new_row])], ignore_index=True)
 
-    "ambiguous_referent_type": (
-        st.session_state.ambiguous_referent_type
-        if any("i. Ambiguous referent" in f for f in st.session_state.contextual_factors)
-        else ""
-    ),
-
     # Save locally
     USER_CSV.parent.mkdir(exist_ok=True)
     annotations.to_csv(USER_CSV, index=False)
@@ -901,6 +895,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
