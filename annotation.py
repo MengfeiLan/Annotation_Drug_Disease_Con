@@ -853,21 +853,25 @@ def validate_and_save():
 
     # Task 2 validation
     if st.session_state.selected_label == "correct":
+    
+        # Must choose Agree/Disagree
         if st.session_state.contextual_agreement is None:
             st.warning("Please indicate agreement with the LLM’s contextual judgment.")
             return False
-        if st.session_state.contextual_agreement == "Disagree" and not st.session_state.contextual_factors:
-            st.warning("Please select at least one contextual factor.")
-            return False
-            if st.session_state.contextual_agreement == "Disagree":
-    if not st.session_state.contextual_factors:
-        st.warning("Please select at least one contextual factor.")
-        return False
+    
+        # If Disagree → must select contextual factors
+        if st.session_state.contextual_agreement == "Disagree":
+    
+            if not st.session_state.contextual_factors:
+                st.warning("Please select at least one contextual factor.")
+                return False
+    
+            # 🚨 If Ambiguous Referent selected → must choose subtype
+            if any("i. Ambiguous referent" in f for f in st.session_state.contextual_factors):
+                if not st.session_state.ambiguous_referent_type:
+                    st.warning("Please specify the type of ambiguous referent.")
+                    return False
 
-    if any("i. Ambiguous referent" in f for f in st.session_state.contextual_factors):
-        if not st.session_state.ambiguous_referent_type:
-            st.warning("Please specify the type of ambiguous referent.")
-            return False
 
     # If validation passes, save
     save_annotation()
@@ -895,6 +899,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
