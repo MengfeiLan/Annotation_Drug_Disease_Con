@@ -853,11 +853,7 @@ col_prev, col_save, col_next = st.columns([1, 2, 1])
 # Helper: Validate before navigating
 # -----------------------
 def validate_and_save():
-    """
-    Validate required fields before moving to another example.
-    Automatically saves annotation if validation passes.
-    Returns True if navigation can proceed.
-    """
+
     # Task 1 validation
     if st.session_state.selected_label is None:
         st.warning("Please select whether the LLM is correct.")
@@ -907,6 +903,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
