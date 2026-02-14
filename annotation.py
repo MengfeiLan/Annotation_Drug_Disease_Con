@@ -936,7 +936,6 @@ def save_annotation():
                 # Save selected predefined types (excluding "Other")
                 selected_types = [
                     t for t in st.session_state.ambiguous_referent_type
-                    if t != "Other"
                 ]
             
                 new_row["ambiguous_referent_type"] = "; ".join(selected_types)
@@ -1070,5 +1069,6 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
