@@ -94,7 +94,20 @@ if not st.session_state.logged_in:
 ANNOTATION_DIR = Path("annotations")
 ANNOTATION_DIR.mkdir(exist_ok=True)
 
-OUTPUT_PATH = ANNOTATION_DIR / f"{st.session_state.username}.csv"
+USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}.csv"
+
+if USER_CSV.exists():
+    annotations = pd.read_csv(USER_CSV)
+else:
+    annotations = pd.DataFrame(columns=[
+        "id",
+        "label",
+        "contextual_agreement",
+        "contextual_factors",
+        "contextual_explanation",
+        "ambiguous_referent_type",
+        "annotator"
+    ])
 
 def push_annotations_to_github(local_file_path, commit_msg="Update annotations"):
     g = Github(GITHUB_TOKEN)
@@ -122,11 +135,6 @@ def scroll_to_top():
 # Load data
 # -----------------------
 
-
-if Path(OUTPUT_PATH).exists():
-    annotations = pd.read_csv(OUTPUT_PATH)
-else:
-    annotations = pd.DataFrame()
 
 # Backward compatibility
 for col in [
@@ -250,30 +258,50 @@ if "contextual_explanation" not in st.session_state:
 # Load annotation for current example
 # -----------------------
 def load_existing_annotation(example_id):
-    # No need to filter by annotator
-    match = annotations[annotations["id"] == example_id]
+
+    match = annotations[
+        (annotations["id"] == example_id) &
+        (annotations["annotator"] == st.session_state.username)
+    ]
 
     if not match.empty:
         r = match.iloc[0]
-        st.session_state.label_radio = next(
-            (k for k, v in LABELS.items() if v == r["label"]), None
-        )
+
         st.session_state.selected_label = r["label"]
-        st.session_state.contextual_factors = (
-            r["contextual_factors"].split("; ")
-            if pd.notna(r["contextual_factors"]) and r["contextual_factors"]
-            else []
+
+        st.session_state.label_radio = next(
+            (k for k, v in LABELS.items() if v == r["label"]),
+            None
         )
+
+        st.session_state.contextual_agreement = (
+            r["contextual_agreement"]
+            if r["contextual_agreement"] in ["Agree", "Disagree"]
+            else None
+        )
+
+        if r["contextual_factors"] == "Agree":
+            st.session_state.contextual_factors = []
+        elif pd.notna(r["contextual_factors"]) and r["contextual_factors"]:
+            st.session_state.contextual_factors = r["contextual_factors"].split("; ")
+        else:
+            st.session_state.contextual_factors = []
+
+        st.session_state.ambiguous_referent_type = (
+            r.get("ambiguous_referent_type") or None
+        )
+
         st.session_state.contextual_explanation = (
-            r["contextual_explanation"]
-            if pd.notna(r["contextual_explanation"])
-            else ""
+            r.get("contextual_explanation") or ""
         )
+
     else:
         st.session_state.label_radio = None
         st.session_state.selected_label = None
+        st.session_state.contextual_agreement = None
         st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
+        st.session_state.ambiguous_referent_type = None
 
 # Clamp index
 st.session_state.current_idx = max(
@@ -412,11 +440,6 @@ def scroll_to_top():
 # -----------------------
 # Load / initialize annotations
 # -----------------------
-if Path(OUTPUT_PATH).exists():
-    annotations = pd.read_csv(OUTPUT_PATH)
-else:
-    annotations = pd.DataFrame()
-
 
 if "annotator" not in annotations.columns:
     annotations["annotator"] = ""
@@ -997,6 +1020,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
