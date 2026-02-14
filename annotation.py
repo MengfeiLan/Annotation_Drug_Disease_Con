@@ -163,50 +163,58 @@ else:
 # -----------------------
 # Sidebar: Progress & Traceback
 # -----------------------
+# -----------------------
+# Sidebar: Progress & Traceback
+# -----------------------
 with st.sidebar:
     st.header("📌 Annotation Trace-back")
-    user_annotations = annotations
+
+    # Filter only current user's annotations
+    user_annotations = annotations[
+        annotations["annotator"] == st.session_state.username
+    ]
 
     total = len(df)
     done = user_annotations["id"].nunique()
     st.metric("Progress", f"{done} / {total}")
 
     st.markdown("---")
-    annotated_ids = user_annotations["id"].tolist()
+
+    annotated_ids = sorted(user_annotations["id"].unique().tolist())
+
     if annotated_ids:
-        # selected_id = st.selectbox("Jump to annotated example", options=annotated_ids)
-        # if st.button("🔎 Go to selected example"):
-        #     idx = df.index[df["id"] == selected_id][0]
-        #     st.session_state.current_idx = idx
-        #     st.stop()
 
-        # store selected annotated example
-        if "selected_example_id" not in st.session_state:
-            st.session_state.selected_example_id = None
-        
         selected_id = st.selectbox(
-            "Jump to annotated example", options=annotated_ids,
-            index=annotated_ids.index(st.session_state.selected_example_id) if st.session_state.selected_example_id in annotated_ids else 0
+            "Jump to annotated example",
+            options=annotated_ids,
+            key="sidebar_selected_id"
         )
-        
-        st.session_state.selected_example_id = selected_id
-        
+
         if st.button("🔎 Go to selected example"):
-            # find index of the selected example in the main dataframe
-            idx = df.index[df["id"] == st.session_state.selected_example_id][0]
-            st.session_state.current_idx = idx
-            st.rerun()  # rerun so UI updates to the selected example
+            matches = df.index[df["id"] == selected_id].tolist()
+            if matches:
+                st.session_state.current_idx = matches[0]
+                st.session_state.loaded_id = None
+                st.rerun()
 
+        # Preview (only essential fields)
         r = user_annotations[user_annotations["id"] == selected_id].iloc[0]
-        st.markdown("### 🧾 Saved Annotation Preview")
-        st.write(f"**Label:** {r['label']}")
-        st.write(f"**Contextual agreement:** {r['contextual_agreement']}")
-        st.write(f"**Contextual factors:** {r['contextual_factors']}")
-        if r["contextual_explanation"]:
-            st.write(f"**Explanation for \"Other\":** {r['contextual_explanation']}")
-    else:
-        st.info("No annotations yet for your account.")
 
+        st.markdown("### 🧾 Saved Annotation Preview")
+        st.write(f"**Label:** {r.get('label','')}")
+        st.write(f"**Contextual agreement:** {r.get('contextual_agreement','')}")
+
+        if r.get("contextual_agreement") == "Disagree":
+            st.write(f"**Contextual factors:** {r.get('contextual_factors','')}")
+
+            if r.get("ambiguous_referent_type"):
+                st.write(f"**Ambiguous subtype:** {r.get('ambiguous_referent_type')}")
+
+            if r.get("contextual_explanation"):
+                st.write(f"**Other explanation:** {r.get('contextual_explanation')}")
+
+    else:
+        st.info("No annotations yet.")
 
 
 
@@ -989,6 +997,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
