@@ -229,8 +229,8 @@ with st.sidebar:
 # -----------------------
 # Load / initialize annotations
 # -----------------------
-if Path(OUTPUT_PATH).exists():
-    annotations = pd.read_csv(OUTPUT_PATH)
+if Path(OUTPUT_CSV).exists():
+    annotations = pd.read_csv(OUTPUT_CSV)
 else:
     annotations = pd.DataFrame(
         columns=["id", "label", "contextual_factors", "contextual_explanation"]
@@ -1020,6 +1020,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
