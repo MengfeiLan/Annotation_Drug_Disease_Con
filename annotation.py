@@ -387,7 +387,6 @@ CONTEXTUAL_FACTORS = [
     "f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
     "g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
     "h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
-    "i. Ambiguous expression: One or both claims contain grammatical errors or unclear referents.",
     "j. Other: None of the listed factors explain the contradiction.",
 ]
 
@@ -845,6 +844,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
