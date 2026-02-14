@@ -429,8 +429,10 @@ AMBIGUOUS_REFERENT_OPTIONS = [
     "One or both abstracts lack species information",
     "One or both abstracts lack population information",
     "One or both abstracts lack dosage information",
-    "One or both abstracts lack route of administration information"
+    "One or both abstracts lack route of administration information",
+    "Other"
 ]
+
 
 
 # -----------------------
@@ -832,6 +834,8 @@ if st.session_state.selected_label == "correct":
         )
     
         # -----------------------
+
+        # -----------------------
         # Ambiguous Referent Dropdown
         # -----------------------
         if any(f.startswith("i. Ambiguous referent") 
@@ -842,8 +846,20 @@ if st.session_state.selected_label == "correct":
                 options=AMBIGUOUS_REFERENT_OPTIONS,
                 key="ambiguous_referent_type"
             )
+        
+            # Show textbox ONLY if "Other" is selected
+            if "Other" in st.session_state.ambiguous_referent_type:
+                st.text_area(
+                    "Please specify the other ambiguous referent:",
+                    key="ambiguous_referent_other_text",
+                    height=100
+                )
+            else:
+                st.session_state.ambiguous_referent_other_text = ""
+        
         else:
             st.session_state.ambiguous_referent_type = []
+            st.session_state.ambiguous_referent_other_text = ""
 
     
         # -----------------------
@@ -909,6 +925,16 @@ def save_annotation():
 
             if any(f.startswith("i. Ambiguous referent")
                    for f in st.session_state.contextual_factors):
+
+                types = st.session_state.ambiguous_referent_type.copy()
+            
+                if "Other" in types:
+                    other_text = st.session_state.get("ambiguous_referent_other_text", "").strip()
+                    types = [t for t in types if t != "Other"]
+                    types.append(f"Other: {other_text}")
+            
+                new_row["ambiguous_referent_type"] = "; ".join(types)
+
 
                 new_row["ambiguous_referent_type"] = "; ".join(
                     st.session_state.ambiguous_referent_type
@@ -989,6 +1015,13 @@ def validate_and_save():
                 if not st.session_state.ambiguous_referent_type:
                     st.warning("Please specify the type of ambiguous referent.")
                     return False
+                
+                # If "Other" selected → explanation required
+                if "Other" in st.session_state.ambiguous_referent_type:
+                    if not st.session_state.get("ambiguous_referent_other_text", "").strip():
+                        st.warning("Please explain the 'Other' ambiguous referent.")
+                        return False
+
 
             # 🚨 Other requires explanation
             if any(f.startswith("j. Other")
@@ -1024,3 +1057,4 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
