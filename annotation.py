@@ -486,6 +486,12 @@ if "contextual_factors" not in st.session_state:
 if "contextual_explanation" not in st.session_state:
     st.session_state.contextual_explanation = ""
 
+if "ambiguous_referent_type" not in annotations.columns:
+    annotations["ambiguous_referent_type"] = ""
+
+if "ambiguous_referent_other_text" not in annotations.columns:
+    annotations["ambiguous_referent_other_text"] = ""
+
 # -----------------------
 # Helper: Load existing annotation
 # -----------------------
@@ -925,20 +931,26 @@ def save_annotation():
 
             if any(f.startswith("i. Ambiguous referent")
                    for f in st.session_state.contextual_factors):
-
-                types = st.session_state.ambiguous_referent_type.copy()
             
-                if "Other" in types:
-                    other_text = st.session_state.get("ambiguous_referent_other_text", "").strip()
-                    types = [t for t in types if t != "Other"]
-                    types.append(f"Other: {other_text}")
+                # Save selected predefined types (excluding "Other")
+                selected_types = [
+                    t for t in st.session_state.ambiguous_referent_type
+                    if t != "Other"
+                ]
             
-                new_row["ambiguous_referent_type"] = "; ".join(types)
-
-
-                new_row["ambiguous_referent_type"] = "; ".join(
-                    st.session_state.ambiguous_referent_type
-                )
+                new_row["ambiguous_referent_type"] = "; ".join(selected_types)
+            
+                # Save "Other" explanation in its own column
+                if "Other" in st.session_state.ambiguous_referent_type:
+                    new_row["ambiguous_referent_other_text"] = (
+                        st.session_state.get("ambiguous_referent_other_text", "").strip()
+                    )
+                else:
+                    new_row["ambiguous_referent_other_text"] = ""
+            
+            else:
+                new_row["ambiguous_referent_type"] = ""
+                new_row["ambiguous_referent_other_text"] = ""
 
 
             if any(f.startswith("j. Other")
@@ -1057,4 +1069,5 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
