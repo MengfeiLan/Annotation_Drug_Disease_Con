@@ -841,31 +841,24 @@ if st.session_state.selected_label == "correct":
     
         # -----------------------
 
-        # -----------------------
-        # Ambiguous Referent Dropdown
-        # -----------------------
-        if any(f.startswith("i. Ambiguous referent") 
+        if any(f.startswith("i. Ambiguous referent")
                for f in st.session_state.contextual_factors):
         
-            st.multiselect(
-                "Specify the type of ambiguous referent:",
-                options=AMBIGUOUS_REFERENT_OPTIONS,
-                key="ambiguous_referent_type"
+            # Keep all selected types, including "Other"
+            new_row["ambiguous_referent_type"] = "; ".join(
+                st.session_state.ambiguous_referent_type
             )
         
-            # Show textbox ONLY if "Other" is selected
+            # Save "Other" explanation in its own column if present
             if "Other" in st.session_state.ambiguous_referent_type:
-                st.text_area(
-                    "Please specify the other ambiguous referent:",
-                    key="ambiguous_referent_other_text",
-                    height=100
+                new_row["ambiguous_referent_other_text"] = (
+                    st.session_state.get("ambiguous_referent_other_text", "").strip()
                 )
             else:
-                st.session_state.ambiguous_referent_other_text = ""
-        
+                new_row["ambiguous_referent_other_text"] = ""
         else:
-            st.session_state.ambiguous_referent_type = []
-            st.session_state.ambiguous_referent_other_text = ""
+            new_row["ambiguous_referent_type"] = ""
+            new_row["ambiguous_referent_other_text"] = ""
 
     
         # -----------------------
@@ -1069,5 +1062,6 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
