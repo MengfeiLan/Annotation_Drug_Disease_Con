@@ -853,30 +853,62 @@ if st.session_state.selected_label == "correct":
 
 def save_annotation():
     global annotations
+
     new_row = {
         "id": row["id"],
         "label": st.session_state.selected_label,
-        "contextual_agreement": st.session_state.contextual_agreement or "",
-        "contextual_factors": "Agree" if st.session_state.contextual_agreement == "Agree" else "; ".join(st.session_state.contextual_factors),
-        "contextual_explanation": "" if st.session_state.contextual_agreement == "Agree" else st.session_state.contextual_explanation.strip(),
-        "ambiguous_referent_type": (
-            st.session_state.ambiguous_referent_type
-            if any("i. Ambiguous referent" in f for f in st.session_state.contextual_factors)
-            else ""
-        ),
         "annotator": st.session_state.username,
     }
 
+    # -----------------------
+    # Task 2 fields (only if correct)
+    # -----------------------
+    if st.session_state.selected_label == "correct":
 
-    # Remove old annotation for this example
-    annotations = annotations[~((annotations["id"] == row["id"]) & (annotations["annotator"] == st.session_state.username))]
-    annotations = pd.concat([annotations, pd.DataFrame([new_row])], ignore_index=True)
+        new_row["contextual_agreement"] = st.session_state.contextual_agreement
 
-    # Save locally
+        if st.session_state.contextual_agreement == "Disagree":
+
+            new_row["contextual_factors"] = "; ".join(
+                st.session_state.contextual_factors
+            )
+
+            if any(f.startswith("i. Ambiguous referent")
+                   for f in st.session_state.contextual_factors):
+
+                new_row["ambiguous_referent_type"] = (
+                    st.session_state.ambiguous_referent_type
+                )
+
+            if any(f.startswith("j. Other")
+                   for f in st.session_state.contextual_factors):
+
+                new_row["contextual_explanation"] = (
+                    st.session_state.contextual_explanation.strip()
+                )
+
+        else:
+            # If Agree
+            new_row["contextual_factors"] = "Agree"
+
+    # -----------------------
+    # Remove previous annotation
+    # -----------------------
+    annotations = annotations[
+        ~(
+            (annotations["id"] == row["id"]) &
+            (annotations["annotator"] == st.session_state.username)
+        )
+    ]
+
+    annotations = pd.concat(
+        [annotations, pd.DataFrame([new_row])],
+        ignore_index=True
+    )
+
     USER_CSV.parent.mkdir(exist_ok=True)
     annotations.to_csv(USER_CSV, index=False)
 
-    # Push to GitHub
     push_annotations_to_github(USER_CSV)
 
 
@@ -891,34 +923,47 @@ col_prev, col_save, col_next = st.columns([1, 2, 1])
 # -----------------------
 def validate_and_save():
 
+    # -----------------------
     # Task 1 validation
-    if st.session_state.selected_label is None:
+    # -----------------------
+    if not st.session_state.selected_label:
         st.warning("Please select whether the LLM is correct.")
         return False
 
-    # Task 2 validation
+    # -----------------------
+    # Task 2 validation (only if LLM correct)
+    # -----------------------
     if st.session_state.selected_label == "correct":
-    
-        # Must choose Agree/Disagree
-        if st.session_state.contextual_agreement is None:
+
+        # Must choose Agree / Disagree
+        if not st.session_state.contextual_agreement:
             st.warning("Please indicate agreement with the LLM’s contextual judgment.")
             return False
-    
+
         # If Disagree → must select contextual factors
         if st.session_state.contextual_agreement == "Disagree":
-    
+
             if not st.session_state.contextual_factors:
                 st.warning("Please select at least one contextual factor.")
                 return False
-    
-            # 🚨 If Ambiguous Referent selected → must choose subtype
-            if any("i. Ambiguous referent" in f for f in st.session_state.contextual_factors):
+
+            # 🚨 Ambiguous referent requires subtype
+            if any(f.startswith("i. Ambiguous referent")
+                   for f in st.session_state.contextual_factors):
+
                 if not st.session_state.ambiguous_referent_type:
                     st.warning("Please specify the type of ambiguous referent.")
                     return False
 
+            # 🚨 Other requires explanation
+            if any(f.startswith("j. Other")
+                   for f in st.session_state.contextual_factors):
 
-    # If validation passes, save
+                if not st.session_state.contextual_explanation.strip():
+                    st.warning("Please explain the 'Other' contextual factor.")
+                    return False
+
+    # If everything is valid → save
     save_annotation()
     return True
 
@@ -944,6 +989,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
