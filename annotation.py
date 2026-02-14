@@ -226,15 +226,15 @@ with st.sidebar:
 
 
 
-# -----------------------
-# Load / initialize annotations
-# -----------------------
-if Path(OUTPUT_CSV).exists():
-    annotations = pd.read_csv(OUTPUT_CSV)
-else:
-    annotations = pd.DataFrame(
-        columns=["id", "label", "contextual_factors", "contextual_explanation"]
-    )
+# # -----------------------
+# # Load / initialize annotations
+# # -----------------------
+# if Path(USER_CSV).exists():
+#     annotations = pd.read_csv(USER_CSV)
+# else:
+#     annotations = pd.DataFrame(
+#         columns=["id", "label", "contextual_factors", "contextual_explanation"]
+#     )
 
 # -----------------------
 # Session state
@@ -1020,6 +1020,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
