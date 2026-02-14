@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 from pathlib import Path
@@ -841,24 +842,31 @@ if st.session_state.selected_label == "correct":
     
         # -----------------------
 
-        if any(f.startswith("i. Ambiguous referent")
+        # -----------------------
+        # Ambiguous Referent Dropdown
+        # -----------------------
+        if any(f.startswith("i. Ambiguous referent") 
                for f in st.session_state.contextual_factors):
         
-            # Keep all selected types, including "Other"
-            new_row["ambiguous_referent_type"] = "; ".join(
-                st.session_state.ambiguous_referent_type
+            st.multiselect(
+                "Specify the type of ambiguous referent:",
+                options=AMBIGUOUS_REFERENT_OPTIONS,
+                key="ambiguous_referent_type"
             )
         
-            # Save "Other" explanation in its own column if present
+            # Show textbox ONLY if "Other" is selected
             if "Other" in st.session_state.ambiguous_referent_type:
-                new_row["ambiguous_referent_other_text"] = (
-                    st.session_state.get("ambiguous_referent_other_text", "").strip()
+                st.text_area(
+                    "Please specify the other ambiguous referent:",
+                    key="ambiguous_referent_other_text",
+                    height=100
                 )
             else:
-                new_row["ambiguous_referent_other_text"] = ""
+                st.session_state.ambiguous_referent_other_text = ""
+        
         else:
-            new_row["ambiguous_referent_type"] = ""
-            new_row["ambiguous_referent_other_text"] = ""
+            st.session_state.ambiguous_referent_type = []
+            st.session_state.ambiguous_referent_other_text = ""
 
     
         # -----------------------
@@ -1062,6 +1070,5 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
-
 
 
