@@ -287,9 +287,12 @@ def load_existing_annotation(example_id):
         else:
             st.session_state.contextual_factors = []
 
-        st.session_state.ambiguous_referent_type = (
-            r.get("ambiguous_referent_type") or None
-        )
+        saved_types = r.get("ambiguous_referent_type", "")
+        
+        if isinstance(saved_types, str) and saved_types.strip():
+            st.session_state.ambiguous_referent_type = saved_types.split("; ")
+        else:
+            st.session_state.ambiguous_referent_type = []
 
         st.session_state.contextual_explanation = (
             r.get("contextual_explanation") or ""
@@ -301,7 +304,7 @@ def load_existing_annotation(example_id):
         st.session_state.contextual_agreement = None
         st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
-        st.session_state.ambiguous_referent_type = None
+        st.session_state.ambiguous_referent_type = []
 
 # Clamp index
 st.session_state.current_idx = max(
@@ -445,7 +448,7 @@ if "annotator" not in annotations.columns:
     annotations["annotator"] = ""
 
 if "ambiguous_referent_type" not in st.session_state:
-    st.session_state.ambiguous_referent_type = None
+    st.session_state.ambiguous_referent_type = []
 
 # -----------------------
 # Backward compatibility (IMPORTANT)
@@ -833,15 +836,15 @@ if st.session_state.selected_label == "correct":
         # -----------------------
         if any(f.startswith("i. Ambiguous referent") 
                for f in st.session_state.contextual_factors):
-    
-            st.selectbox(
+        
+            st.multiselect(
                 "Specify the type of ambiguous referent:",
                 options=AMBIGUOUS_REFERENT_OPTIONS,
                 key="ambiguous_referent_type"
             )
         else:
-            # Clear stale value if unselected
-            st.session_state.ambiguous_referent_type = None
+            st.session_state.ambiguous_referent_type = []
+
     
         # -----------------------
         # Other Explanation Box
@@ -907,9 +910,10 @@ def save_annotation():
             if any(f.startswith("i. Ambiguous referent")
                    for f in st.session_state.contextual_factors):
 
-                new_row["ambiguous_referent_type"] = (
+                new_row["ambiguous_referent_type"] = "; ".join(
                     st.session_state.ambiguous_referent_type
                 )
+
 
             if any(f.startswith("j. Other")
                    for f in st.session_state.contextual_factors):
@@ -1020,6 +1024,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
