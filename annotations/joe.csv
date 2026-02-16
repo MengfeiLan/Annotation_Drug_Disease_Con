@@ -20,3 +20,4 @@ joe,18,correct,Disagree,"b. Population: The claims target different human subpop
 joe,19,incorrect,,,,,
 joe,20,correct,Disagree,"d. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.; i. Ambiguous referent: One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.; j. Other: None of the listed factors explain the contradiction.",Study design differences - standard RCT vs. cross-over trial,Other,Physiological context is unclear in claim 1 if the patients are studied under exercise as well.
 joe,21,incorrect,,,,,
+joe,22,correct,Disagree,g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.,,,
