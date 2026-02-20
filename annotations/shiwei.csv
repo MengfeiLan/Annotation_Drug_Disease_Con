@@ -5,3 +5,4 @@ id,label,contextual_agreement,contextual_factors,contextual_explanation,annotato
 4,correct,Disagree,"c. Physiological context: The intervention is evaluated under different transient physiological or environmental conditions (e.g., exertion state, hypoxia, fasting status, or acute stress), even within the same species and population.; j. Other: None of the listed factors explain the contradiction.","Different surgeries:
 Claim 1:  open gynecological surgery
 Claim 2:  elective caesarean section",shiwei,,
+5,incorrect,,,,shiwei,,
