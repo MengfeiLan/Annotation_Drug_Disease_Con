@@ -1,2 +1,2 @@
-annotator,id,label,contextual_agreement,contextual_factors,contextual_explanation
-halil,1,incorrect,,,
+annotator,id,label,contextual_agreement,contextual_factors,contextual_explanation,ambiguous_referent_type,ambiguous_referent_other_text
+halil,1,correct,Agree,Agree,,,
