@@ -1,9 +1,9 @@
 id,label,contextual_agreement,contextual_factors,contextual_explanation,annotator,ambiguous_referent_type,ambiguous_referent_other_text
-4,correct,Disagree,"c. Physiological context: The intervention is evaluated under different transient physiological or environmental conditions (e.g., exertion state, hypoxia, fasting status, or acute stress), even within the same species and population.; j. Other: None of the listed factors explain the contradiction.","Different surgeries:
-Claim 1:  open gynecological surgery
-Claim 2:  elective caesarean section",shiwei,,
 5,incorrect,,,,shiwei,,
 6,correct,Disagree,"d. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.",,shiwei,,
 1,incorrect,,,,shiwei,,
 2,correct,Disagree,"b. Population: The claims target different human subpopulations, such as differences in age, sex, genetic background, comorbidities, ethnicity, or risk profiles.; c. Physiological context: The intervention is evaluated under different transient physiological or environmental conditions (e.g., exertion state, hypoxia, fasting status, or acute stress), even within the same species and population.; d. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.",,shiwei,,
 3,correct,Disagree,"b. Population: The claims target different human subpopulations, such as differences in age, sex, genetic background, comorbidities, ethnicity, or risk profiles.; f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",,shiwei,,
+4,correct,Disagree,"c. Physiological context: The intervention is evaluated under different transient physiological or environmental conditions (e.g., exertion state, hypoxia, fasting status, or acute stress), even within the same species and population.; j. Other: None of the listed factors explain the contradiction.","Different surgeries:
+Claim 1:  open gynecological surgery
+Claim 2:  elective caesarean section",shiwei,,
