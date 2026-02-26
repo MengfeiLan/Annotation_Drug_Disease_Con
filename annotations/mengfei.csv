@@ -10,3 +10,4 @@ mengfei,8,correct,Disagree,"d. Dosage or exposure duration: The same interventio
 mengfei,9,correct,Agree,Agree,,,
 mengfei,10,correct,Disagree,"i. Ambiguous referent: One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.; b. Population: The claims target different human subpopulations, such as differences in age, sex, genetic background, comorbidities, ethnicity, or risk profiles.",,One or both abstracts lack dosage information,
 mengfei,11,incorrect,,,,,
+mengfei,12,correct,Disagree,"c. Physiological context: The intervention is evaluated under different transient physiological or environmental conditions (e.g., exertion state, hypoxia, fasting status, or acute stress), even within the same species and population.; d. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.",,,
