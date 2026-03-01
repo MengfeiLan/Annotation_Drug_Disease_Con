@@ -154,7 +154,7 @@ if "ambiguous_referent_type" not in annotations.columns:
     
 @st.cache_data
 def load_data():
-    return pd.read_csv(DATA_PATH)[:50]
+    return pd.read_csv(DATA_PATH)[50:100]
 
 df = load_data()
 
@@ -1097,6 +1097,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
