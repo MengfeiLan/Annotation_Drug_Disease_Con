@@ -145,6 +145,7 @@ for col in [
     "contextual_agreement",
     "contextual_factors",
     "contextual_explanation",
+    "entity_reflection", 
 ]:
     if col not in annotations.columns:
         annotations[col] = ""
@@ -943,8 +944,11 @@ def save_annotation():
         "id": row["id"],
         "label": st.session_state.selected_label,
         "annotator": st.session_state.username,
+        "entity_reflection": st.session_state.entity_reflection,
     }
 
+
+    
     # -----------------------
     # Task 2 fields (only if correct)
     # -----------------------
@@ -1027,9 +1031,15 @@ def validate_and_save():
     # -----------------------
     # Task 1 validation
     # -----------------------
-    if not st.session_state.selected_label:
-        st.warning("Please select whether the LLM is correct.")
+
+    if not st.session_state.entity_reflection:
+        st.warning("Please indicate whether the claims reflect the structured entities.")
         return False
+
+    if st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
+        if not st.session_state.selected_label:
+            st.warning("Please select whether the LLM is correct.")
+            return False
 
     # -----------------------
     # Task 2 validation (only if LLM correct)
@@ -1041,35 +1051,35 @@ def validate_and_save():
             st.warning("Please indicate agreement with the LLM’s contextual judgment.")
             return False
 
-        # If Disagree → must select contextual factors
-        if st.session_state.contextual_agreement == "Disagree":
-
-            if not st.session_state.contextual_factors:
-                st.warning("Please select at least one contextual factor.")
-                return False
-
-            # 🚨 Ambiguous referent requires subtype
-            if any(f.startswith("i. Ambiguous referent")
-                   for f in st.session_state.contextual_factors):
-
-                if not st.session_state.ambiguous_referent_type:
-                    st.warning("Please specify the type of ambiguous referent.")
+            # If Disagree → must select contextual factors
+            if st.session_state.contextual_agreement == "Disagree":
+    
+                if not st.session_state.contextual_factors:
+                    st.warning("Please select at least one contextual factor.")
                     return False
-                
-                # If "Other" selected → explanation required
-                if "Other" in st.session_state.ambiguous_referent_type:
-                    if not st.session_state.get("ambiguous_referent_other_text", "").strip():
-                        st.warning("Please explain the 'Other' ambiguous referent.")
+    
+                # 🚨 Ambiguous referent requires subtype
+                if any(f.startswith("i. Ambiguous referent")
+                       for f in st.session_state.contextual_factors):
+    
+                    if not st.session_state.ambiguous_referent_type:
+                        st.warning("Please specify the type of ambiguous referent.")
                         return False
-
-
-            # 🚨 Other requires explanation
-            if any(f.startswith("j. Other")
-                   for f in st.session_state.contextual_factors):
-
-                if not st.session_state.contextual_explanation.strip():
-                    st.warning("Please explain the 'Other' contextual factor.")
-                    return False
+                    
+                    # If "Other" selected → explanation required
+                    if "Other" in st.session_state.ambiguous_referent_type:
+                        if not st.session_state.get("ambiguous_referent_other_text", "").strip():
+                            st.warning("Please explain the 'Other' ambiguous referent.")
+                            return False
+    
+    
+                # 🚨 Other requires explanation
+                if any(f.startswith("j. Other")
+                       for f in st.session_state.contextual_factors):
+    
+                    if not st.session_state.contextual_explanation.strip():
+                        st.warning("Please explain the 'Other' contextual factor.")
+                        return False
 
     # If everything is valid → save
     save_annotation()
@@ -1097,6 +1107,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
