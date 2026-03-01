@@ -8,6 +8,7 @@ GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
 REPO_NAME = st.secrets["REPO_NAME"]
 from github import Github
 import base64
+import ast
 
 GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]  # replace with a secret in Streamlit secrets
 REPO_NAME = "MengfeiLan/Annotation_Drug_Disease_Con"
@@ -567,6 +568,8 @@ def load_existing_annotation(example_id):
 
 # Clamp index
 st.session_state.current_idx = max(0, min(st.session_state.current_idx, len(df) - 1))
+
+df["shared_entities"] = df["shared_entities"].apply(ast.literal)
 row = df.iloc[st.session_state.current_idx]
 
 
@@ -585,8 +588,10 @@ with st.container(border=True):
     col_se_l, col_se_r = st.columns(2)
 
     with col_se_l:
-        st.write(f"**Drug:** {row.get('drug', 'N/A')}")
-        st.write(f"**Disease:** {row.get('disease', 'N/A')}")
+        entities = row.get("shared_entities", {}) or {}
+    
+        st.write(f"**Drug:** {entities.get('Chemical', 'N/A')}")
+        st.write(f"**Disease:** {entities.get('Disease', 'N/A')}")
 
     with col_se_r:
         st.markdown("**Claim 1 Relation:**")
@@ -1069,6 +1074,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
