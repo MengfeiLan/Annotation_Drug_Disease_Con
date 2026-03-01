@@ -569,7 +569,7 @@ def load_existing_annotation(example_id):
 # Clamp index
 st.session_state.current_idx = max(0, min(st.session_state.current_idx, len(df) - 1))
 
-df["shared_entities"] = df["shared_entities"].apply(ast.literal)
+df["shared_entities"] = df["shared_entities"].apply(ast.literal_eval)
 row = df.iloc[st.session_state.current_idx]
 
 
@@ -1074,6 +1074,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
