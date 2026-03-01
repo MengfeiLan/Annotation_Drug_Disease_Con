@@ -654,42 +654,9 @@ with st.container(border=True):
         ],
         key="entity_reflection"
     )
-# =====================================================
-# 4. LLM Explanation (Only if entities are reflected)
-# =====================================================
-
-if st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
-
-    st.markdown("### Model Reasoning")
-    
-    raw_explanation = str(row.get("reasoning", "")).strip()
-    
-    cleaned_explanation = (
-        raw_explanation
-        .replace("Task(1):", "")
-        .replace("Task(2):", "")
-        .strip()
-    )
-    
-    with st.container(border=True):
-        st.markdown(
-            f"""
-            <div style="
-                background-color: #f9f9f9;
-                padding: 14px;
-                border-radius: 6px;
-                line-height: 1.6;
-                white-space: pre-wrap;
-                max-height: 150px;
-                overflow-y: auto;
-            ">
-            {cleaned_explanation}
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    st.markdown("---")
+    # =====================================================
+    # 3. LLM Explanation
+    # =====================================================
 
     st.markdown("### Model Reasoning")
     
@@ -1129,8 +1096,6 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
-
-
 
 
 
