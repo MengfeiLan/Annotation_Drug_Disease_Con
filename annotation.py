@@ -241,6 +241,9 @@ with st.sidebar:
 # -----------------------
 # Session state
 # -----------------------
+if "entity_reflection" not in st.session_state:
+    st.session_state.entity_reflection = None
+    
 if "current_idx" not in st.session_state:
     st.session_state.current_idx = 0
 
@@ -632,6 +635,25 @@ with st.container(border=True):
 
     st.markdown("---")
 
+    # =====================================================
+    # 3. Entity–Claim Consistency Check
+    # =====================================================
+    
+    st.markdown(
+        "<p style='color:red; font-size:20px; font-weight:600;'>"
+        "Do the extracted claims reflect the drug and disease entities in the structured claim summary?"
+        "</p>",
+        unsafe_allow_html=True
+    )
+    
+    st.radio(
+        "",
+        options=[
+            "Yes, the claims reflect the entities.",
+            "No, the claims do not reflect the entities."
+        ],
+        key="entity_reflection"
+    )
     # =====================================================
     # 3. LLM Explanation
     # =====================================================
@@ -1074,6 +1096,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
