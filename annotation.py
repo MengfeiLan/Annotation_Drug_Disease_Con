@@ -467,6 +467,7 @@ for col in [
     "contextual_agreement",
     "contextual_factors",
     "contextual_explanation",
+    "entity_reflection",
 ]:
     if col not in annotations.columns:
         annotations[col] = ""
@@ -940,62 +941,117 @@ with st.container(border=True):
 def save_annotation():
     global annotations
 
+    # -----------------------
+    # Base fields (always saved)
+    # -----------------------
     new_row = {
         "id": row["id"],
-        "label": st.session_state.selected_label,
         "annotator": st.session_state.username,
-        "entity_reflection": st.session_state.entity_reflection,
+        "entity_reflection": st.session_state.entity_reflection or "",
+        "label": st.session_state.selected_label or "",
+        "contextual_agreement": "",
+        "contextual_factors": "",
+        "contextual_explanation": "",
+        "ambiguous_referent_type": "",
+        "ambiguous_referent_other_text": ""
     }
 
+    # -------------------------------------------------------
+    # If entity reflection is NO → skip all downstream fields
+    # -------------------------------------------------------
+    if st.session_state.entity_reflection == \
+        "No, the claims do not reflect the entities.":
 
-    
-    # -----------------------
-    # Task 2 fields (only if correct)
-    # -----------------------
-    if st.session_state.selected_label == "correct":
+        # We intentionally keep only base fields
+        pass
 
-        new_row["contextual_agreement"] = st.session_state.contextual_agreement
+    # -------------------------------------------------------
+    # If entity reflection is YES → continue normal logic
+    # -------------------------------------------------------
+    else:
 
-        if st.session_state.contextual_agreement == "Disagree":
+        # -----------------------
+        # Task 1 result
+        # -----------------------
+        if st.session_state.selected_label == "correct":
 
-            new_row["contextual_factors"] = "; ".join(
-                st.session_state.contextual_factors
+            new_row["contextual_agreement"] = (
+                st.session_state.contextual_agreement or ""
             )
 
-            if any(f.startswith("i. Ambiguous referent")
-                   for f in st.session_state.contextual_factors):
-            
-                # Save selected predefined types (excluding "Other")
-                selected_types = [
-                    t for t in st.session_state.ambiguous_referent_type
-                ]
-            
-                new_row["ambiguous_referent_type"] = "; ".join(selected_types)
-            
-                # Save "Other" explanation in its own column
-                if "Other" in st.session_state.ambiguous_referent_type:
-                    new_row["ambiguous_referent_other_text"] = (
-                        st.session_state.get("ambiguous_referent_other_text", "").strip()
-                    )
-                else:
-                    new_row["ambiguous_referent_other_text"] = ""
-            
-            else:
-                new_row["ambiguous_referent_type"] = ""
-                new_row["ambiguous_referent_other_text"] = ""
+            # -----------------------
+            # Task 2 (only if Disagree)
+            # -----------------------
+            if st.session_state.contextual_agreement == "Disagree":
 
-
-            if any(f.startswith("j. Other")
-                   for f in st.session_state.contextual_factors):
-
-                new_row["contextual_explanation"] = (
-                    st.session_state.contextual_explanation.strip()
+                new_row["contextual_factors"] = "; ".join(
+                    st.session_state.contextual_factors
                 )
 
-        else:
-            # If Agree
-            new_row["contextual_factors"] = "Agree"
+                # -----------------------
+                # Ambiguous Referent subtype
+                # -----------------------
+                if any(
+                    f.startswith("i. Ambiguous referent")
+                    for f in st.session_state.contextual_factors
+                ):
 
+                    new_row["ambiguous_referent_type"] = "; ".join(
+                        st.session_state.ambiguous_referent_type
+                    )
+
+                    if "Other" in st.session_state.ambiguous_referent_type:
+                        new_row["ambiguous_referent_other_text"] = (
+                            st.session_state.get(
+                                "ambiguous_referent_other_text", ""
+                            ).strip()
+                        )
+
+                # -----------------------
+                # Other contextual explanation
+                # -----------------------
+                if any(
+                    f.startswith("j. Other")
+                    for f in st.session_state.contextual_factors
+                ):
+                    new_row["contextual_explanation"] = (
+                        st.session_state.contextual_explanation.strip()
+                    )
+
+            # If Agree → just mark Agree
+            elif st.session_state.contextual_agreement == "Agree":
+                new_row["contextual_factors"] = "Agree"
+
+        # If LLM incorrect → no Task 2 fields saved
+
+    # -----------------------
+    # Remove previous annotation for this example + user
+    # -----------------------
+    annotations = annotations[
+        ~(
+            (annotations["id"] == row["id"]) &
+            (annotations["annotator"] == st.session_state.username)
+        )
+    ]
+
+    # -----------------------
+    # Append new annotation
+    # -----------------------
+    annotations = pd.concat(
+        [annotations, pd.DataFrame([new_row])],
+        ignore_index=True
+    )
+
+    # -----------------------
+    # Save locally
+    # -----------------------
+    USER_CSV.parent.mkdir(exist_ok=True)
+    annotations.to_csv(USER_CSV, index=False)
+
+    # -----------------------
+    # Push to GitHub
+    # -----------------------
+    push_annotations_to_github(USER_CSV)
     # -----------------------
     # Remove previous annotation
     # -----------------------
@@ -1107,6 +1163,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
