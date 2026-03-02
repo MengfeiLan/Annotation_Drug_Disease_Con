@@ -199,6 +199,7 @@ with st.sidebar:
         r = user_annotations[user_annotations["id"] == selected_id].iloc[0]
 
         st.markdown("### 🧾 Saved Annotation Preview")
+        st.write(f"**Entity–Claim Consistency:** {r.get('entity_reflection','')}")
         st.write(f"**Label:** {r.get('label','')}")
         st.write(f"**Contextual agreement:** {r.get('contextual_agreement','')}")
 
@@ -259,6 +260,9 @@ def load_existing_annotation(example_id):
 
     if not match.empty:
         r = match.iloc[0]
+        
+        st.session_state.entity_reflection = r.get("entity_reflection", None) or None
+        saved_label = r.get("label", "")
 
         st.session_state.selected_label = r["label"]
 
@@ -1149,6 +1153,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
