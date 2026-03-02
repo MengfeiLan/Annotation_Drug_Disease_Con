@@ -941,12 +941,13 @@ def save_annotation():
         "id": row["id"],
         "label": st.session_state.selected_label,
         "annotator": st.session_state.username,
+        "entity_reflection": st.session_state.get("entity_reflection", "")
     }
 
     # -----------------------
-    # Task 2 fields (only if correct)
+    # Task 2 fields (only if LLM correct)
     # -----------------------
-    if st.session_state.selected_label == "correct":
+    if st.session_state.selected_label == "correct" and st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
 
         new_row["contextual_agreement"] = st.session_state.contextual_agreement
 
@@ -1009,8 +1010,6 @@ def save_annotation():
     annotations.to_csv(USER_CSV, index=False)
 
     push_annotations_to_github(USER_CSV)
-
-
 # -----------------------
 # Navigation + Save buttons
 # -----------------------
