@@ -568,6 +568,7 @@ def load_existing_annotation(example_id):
 
 # Clamp index
 st.session_state.current_idx = max(0, min(st.session_state.current_idx, len(df) - 1))
+df["shared_entities"] = df["shared_entities"].apply(ast.literal_eval)
 row = df.iloc[st.session_state.current_idx]
 
 
@@ -585,9 +586,10 @@ with st.container(border=True):
 
     col_se_l, col_se_r = st.columns(2)
 
-    with col_se_l:
-        st.write(f"**Drug:** {row.get('drug', 'N/A')}")
-        st.write(f"**Disease:** {row.get('disease', 'N/A')}")
+    with col_se_l
+        entities = row.get("shared_entities", {}) or {}
+        st.write(f"**Drug:** {entities.get('Chemical', 'N/A')}")
+        st.write(f"**Disease:** {entities.get('Disease', 'N/A')}")
 
     with col_se_r:
         st.markdown("**Claim 1 Relation:**")
