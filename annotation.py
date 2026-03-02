@@ -578,7 +578,8 @@ def load_existing_annotation(example_id):
         st.session_state.contextual_agreement = None
         st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
-        st.session_state.ambiguous_referent_type = None
+        st.session_state.ambiguous_referent_type = []
+        st.session_state.entity_reflection = None
 
 
 # Clamp index
