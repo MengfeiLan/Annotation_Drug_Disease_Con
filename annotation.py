@@ -9,7 +9,6 @@ REPO_NAME = st.secrets["REPO_NAME"]
 from github import Github
 import base64
 import ast
-from io import StringIO
 
 GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]  # replace with a secret in Streamlit secrets
 REPO_NAME = "MengfeiLan/Annotation_Drug_Disease_Con"
@@ -34,18 +33,11 @@ def load_annotations_from_github():
     try:
         file = repo.get_contents(GITHUB_FILE_PATH)
         content = file.decoded_content.decode()
-        return pd.read_csv(StringIO(content))
+        return pd.read_csv(pd.compat.StringIO(content))
     except:
         return pd.DataFrame()
 
-def safe_literal_eval(x):
-    if isinstance(x, str):
-        try:
-            return ast.literal_eval(x)
-        except:
-            return {}
-    return x if isinstance(x, dict) else {}
-    
+
 # -----------------------
 # Configuration
 # -----------------------
@@ -83,10 +75,10 @@ if not st.session_state.logged_in:
             st.session_state.username = username
             st.success(f"Logged in as {username}")
             # Instead of st.experimental_rerun(), just stop now
-            st.rerun()
+            st.stop()
         else:
             st.error("Invalid username or password")
-    st.rerun()  # Stop execution until login is successful
+    st.stop()  # Stop execution until login is successful
 
 ANNOTATION_DIR = Path("annotations")
 ANNOTATION_DIR.mkdir(exist_ok=True)
@@ -207,7 +199,6 @@ with st.sidebar:
         r = user_annotations[user_annotations["id"] == selected_id].iloc[0]
 
         st.markdown("### 🧾 Saved Annotation Preview")
-        st.write(f"**Entity–Claim Consistency:** {r.get('entity_reflection','')}")
         st.write(f"**Label:** {r.get('label','')}")
         st.write(f"**Contextual agreement:** {r.get('contextual_agreement','')}")
 
@@ -224,87 +215,7 @@ with st.sidebar:
         st.info("No annotations yet.")
 
 
-def load_existing_annotation(example_id):
-    global annotations
 
-    match = annotations[
-        (annotations["id"] == example_id) &
-        (annotations["annotator"] == st.session_state.username)
-    ]
-
-    if not match.empty:
-        r = match.iloc[0]
-
-        # -----------------------
-        # Task 1
-        # -----------------------
-        saved_label = r.get("label", "")
-        st.session_state.selected_label = saved_label
-
-        st.session_state.label_radio = next(
-            (k for k, v in LABELS.items() if v == saved_label),
-            None
-        )
-
-        # -----------------------
-        # Entity reflection
-        # -----------------------
-        saved_entity = r.get("entity_reflection", "")
-        st.session_state.entity_reflection = (
-            saved_entity if saved_entity in [
-                "Yes, the claims reflect the entities.",
-                "No, the claims do not reflect the entities."
-            ] else None
-        )
-
-        # -----------------------
-        # Contextual agreement
-        # -----------------------
-        saved_agreement = r.get("contextual_agreement", "")
-        st.session_state.contextual_agreement = (
-            saved_agreement if saved_agreement in ["Agree", "Disagree"] else None
-        )
-
-        # -----------------------
-        # Contextual factors
-        # -----------------------
-        saved_factors = r.get("contextual_factors", "")
-
-        if st.session_state.contextual_agreement == "Disagree":
-            if isinstance(saved_factors, str) and saved_factors.strip():
-                st.session_state.contextual_factors = saved_factors.split("; ")
-            else:
-                st.session_state.contextual_factors = []
-        else:
-            st.session_state.contextual_factors = []
-
-        # -----------------------
-        # Ambiguous referent subtype
-        # -----------------------
-        saved_types = r.get("ambiguous_referent_type", "")
-
-        if isinstance(saved_types, str) and saved_types.strip():
-            st.session_state.ambiguous_referent_type = saved_types.split("; ")
-        else:
-            st.session_state.ambiguous_referent_type = []
-
-        # -----------------------
-        # Explanation
-        # -----------------------
-        explanation = r.get("contextual_explanation", "")
-        st.session_state.contextual_explanation = (
-            explanation if isinstance(explanation, str) else ""
-        )
-
-    else:
-        # Reset
-        st.session_state.label_radio = None
-        st.session_state.selected_label = None
-        st.session_state.entity_reflection = None
-        st.session_state.contextual_agreement = None
-        st.session_state.contextual_factors = []
-        st.session_state.contextual_explanation = ""
-        st.session_state.ambiguous_referent_type = []
 # # -----------------------
 # # Load / initialize annotations
 # # -----------------------
@@ -339,6 +250,55 @@ if "contextual_explanation" not in st.session_state:
 # -----------------------
 # Load annotation for current example
 # -----------------------
+def load_existing_annotation(example_id):
+
+    match = annotations[
+        (annotations["id"] == example_id) &
+        (annotations["annotator"] == st.session_state.username)
+    ]
+
+    if not match.empty:
+        r = match.iloc[0]
+
+        st.session_state.selected_label = r["label"]
+
+        st.session_state.label_radio = next(
+            (k for k, v in LABELS.items() if v == r["label"]),
+            None
+        )
+
+        st.session_state.contextual_agreement = (
+            r["contextual_agreement"]
+            if r["contextual_agreement"] in ["Agree", "Disagree"]
+            else None
+        )
+
+        if r["contextual_factors"] == "Agree":
+            st.session_state.contextual_factors = []
+        elif pd.notna(r["contextual_factors"]) and r["contextual_factors"]:
+            st.session_state.contextual_factors = r["contextual_factors"].split("; ")
+        else:
+            st.session_state.contextual_factors = []
+
+        saved_types = r.get("ambiguous_referent_type", "")
+        
+        if isinstance(saved_types, str) and saved_types.strip():
+            st.session_state.ambiguous_referent_type = saved_types.split("; ")
+        else:
+            st.session_state.ambiguous_referent_type = []
+
+        st.session_state.contextual_explanation = (
+            r.get("contextual_explanation") or ""
+        )
+
+    else:
+        st.session_state.label_radio = None
+        st.session_state.selected_label = None
+        st.session_state.contextual_agreement = None
+        st.session_state.contextual_factors = []
+        st.session_state.contextual_explanation = ""
+        st.session_state.ambiguous_referent_type = []
+
 # Clamp index
 st.session_state.current_idx = max(
     0, min(st.session_state.current_idx, len(df) - 1)
@@ -353,6 +313,7 @@ if st.session_state.get("loaded_id") != row["id"]:
 # -----------------------
 # UI
 # -----------------------
+st.set_page_config(layout="wide")
 st.title("📝 Annotation for Drug–Disease Contradiction and Resolution")
 
 
@@ -434,6 +395,12 @@ disagree, the annotators are asked to select the taxonomy factors that could exp
 # -----------------------
 # Configuration
 # -----------------------
+DATA_PATH = "annotation_file.csv"
+
+LABELS = {
+    "LLM is correct: there's a contradiction in the drug-disease association across the claims": "correct",
+    "LLM is incorrect: there's no contradiction in the drug-disease association across the claims": "incorrect",
+}
 
 CONTEXTUAL_FACTORS = [
     "a. Species: The claims are based on different species that one claim is based on animal while another is based on another kind of animal or human.",
@@ -521,11 +488,79 @@ if "ambiguous_referent_other_text" not in annotations.columns:
 # -----------------------
 # Helper: Load existing annotation
 # -----------------------
+def load_existing_annotation(example_id):
+    global annotations
+
+    # Filter by example and annotator
+    match = annotations[
+        (annotations["id"] == example_id) &
+        (annotations["annotator"] == st.session_state.username)
+    ]
+
+    if not match.empty:
+        r = match.iloc[0]
+
+        # -----------------------
+        # Task 1
+        # -----------------------
+        saved_label = r.get("label", "")
+        st.session_state.selected_label = saved_label
+
+        st.session_state.label_radio = next(
+            (k for k, v in LABELS.items() if v == saved_label),
+            None
+        )
+
+        # -----------------------
+        # Task 2 - Contextual agreement
+        # -----------------------
+        saved_agreement = r.get("contextual_agreement", "")
+        st.session_state.contextual_agreement = (
+            saved_agreement if saved_agreement in ["Agree", "Disagree"] else None
+        )
+
+        # -----------------------
+        # Contextual factors
+        # -----------------------
+        saved_factors = r.get("contextual_factors", "")
+
+        if saved_factors == "Agree":
+            # If previously agreed, no factors selected
+            st.session_state.contextual_factors = []
+        elif isinstance(saved_factors, str) and saved_factors.strip():
+            st.session_state.contextual_factors = saved_factors.split("; ")
+        else:
+            st.session_state.contextual_factors = []
+
+        # -----------------------
+        # Ambiguous referent subtype
+        # -----------------------
+        st.session_state.ambiguous_referent_type = r.get(
+            "ambiguous_referent_type", None
+        ) or None
+
+        # -----------------------
+        # Other explanation
+        # -----------------------
+        explanation = r.get("contextual_explanation", "")
+        st.session_state.contextual_explanation = (
+            explanation if isinstance(explanation, str) else ""
+        )
+
+    else:
+        # Reset all states if no annotation exists
+        st.session_state.label_radio = None
+        st.session_state.selected_label = None
+        st.session_state.contextual_agreement = None
+        st.session_state.contextual_factors = []
+        st.session_state.contextual_explanation = ""
+        st.session_state.ambiguous_referent_type = None
+
 
 # Clamp index
 st.session_state.current_idx = max(0, min(st.session_state.current_idx, len(df) - 1))
 
-df["shared_entities"] = df["shared_entities"].apply(safe_literal_eval)
+df["shared_entities"] = df["shared_entities"].apply(ast.literal_eval)
 row = df.iloc[st.session_state.current_idx]
 
 
@@ -659,11 +694,7 @@ with st.container(border=True):
     
 
 
-    if (
-    st.session_state.entity_reflection
-    == "Yes, the claims reflect the entities."
-    and st.session_state.selected_label == "correct"
-):
+    if st.session_state.selected_label == "correct":
         st.markdown("---")
         st.subheader("🧩 Task 2: Contextual Resolution")
         st.markdown("### 🤖 LLM Contextual Judgment")
@@ -857,7 +888,7 @@ with st.container(border=True):
             # -----------------------
             # Other Explanation Box
             # -----------------------
-            if any(f.startswith("l. Other") 
+            if any(f.startswith("j. Other") 
                    for f in st.session_state.contextual_factors):
         
                 st.text_area(
@@ -873,6 +904,25 @@ with st.container(border=True):
             st.session_state.contextual_factors = []
             st.session_state.contextual_explanation = ""
 
+        
+# -----------------------
+# Save annotation
+# -----------------------
+# def save_annotation():
+#     global annotations
+#     new_row = {
+#         "id": row["id"],
+#         "label": st.session_state.selected_label,
+#         "contextual_agreement": st.session_state.contextual_agreement or "",
+#         "contextual_factors": "Agree" if st.session_state.contextual_agreement == "Agree" else "; ".join(st.session_state.contextual_factors),
+#         "contextual_explanation": "" if st.session_state.contextual_agreement == "Agree" else st.session_state.contextual_explanation.strip(),
+#         "annotator": st.session_state.username,
+#     }
+#
+#     # Remove old annotation for this example
+#     annotations = annotations[~((annotations["id"] == row["id"]) & (annotations["annotator"] == st.session_state.username))]
+#     annotations = pd.concat([annotations, pd.DataFrame([new_row])], ignore_index=True)
+#     annotations.to_csv(USER_CSV, index=False)
 
 def save_annotation():
     global annotations
@@ -947,7 +997,7 @@ def save_annotation():
                 # Other contextual explanation
                 # -----------------------
                 if any(
-                    f.startswith("l. Other")
+                    f.startswith("j. Other")
                     for f in st.session_state.contextual_factors
                 ):
                     new_row["contextual_explanation"] = (
@@ -988,6 +1038,25 @@ def save_annotation():
     # Push to GitHub
     # -----------------------
     push_annotations_to_github(USER_CSV)
+    # -----------------------
+    # Remove previous annotation
+    # -----------------------
+    annotations = annotations[
+        ~(
+            (annotations["id"] == row["id"]) &
+            (annotations["annotator"] == st.session_state.username)
+        )
+    ]
+
+    annotations = pd.concat(
+        [annotations, pd.DataFrame([new_row])],
+        ignore_index=True
+    )
+
+    USER_CSV.parent.mkdir(exist_ok=True)
+    annotations.to_csv(USER_CSV, index=False)
+
+    push_annotations_to_github(USER_CSV)
 
 
 # -----------------------
@@ -1002,55 +1071,59 @@ col_prev, col_save, col_next = st.columns([1, 2, 1])
 def validate_and_save():
 
     # -----------------------
-    # Task 1 must be selected
+    # Task 1 validation
     # -----------------------
-    if not st.session_state.label_radio:
-        st.warning("Please select a label for Task 1.")
-        return False
 
-    # -----------------------
-    # Entity reflection required
-    # -----------------------
     if not st.session_state.entity_reflection:
-        st.warning("Please answer the entity reflection question.")
+        st.warning("Please indicate whether the claims reflect the structured entities.")
         return False
 
-    # -----------------------
-    # If entity reflection is NO → skip Task 2 entirely
-    # -----------------------
-    if st.session_state.entity_reflection == \
-        "No, the claims do not reflect the entities.":
-
-        save_annotation()
-        return True
-
-    # -----------------------
-    # If entity reflection is YES → require contextual agreement
-    # -----------------------
-    if not st.session_state.contextual_agreement:
-        st.warning("Please indicate agreement with the LLM’s contextual judgment.")
-        return False
-
-    # -----------------------
-    # If Disagree → require contextual factors
-    # -----------------------
-    if st.session_state.contextual_agreement == "Disagree":
-
-        if not st.session_state.contextual_factors:
-            st.warning("Please select at least one contextual factor.")
+    if st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
+        if not st.session_state.selected_label:
+            st.warning("Please select whether the LLM is correct.")
             return False
 
-        # If Other selected → require explanation
-        if any(f.startswith("l. Other") 
-               for f in st.session_state.contextual_factors):
-
-            if not st.session_state.contextual_explanation.strip():
-                st.warning("Please provide an explanation for 'Other'.")
-                return False
-
     # -----------------------
-    # All checks passed
+    # Task 2 validation (only if LLM correct)
     # -----------------------
+    if st.session_state.selected_label == "correct":
+
+        # Must choose Agree / Disagree
+        if not st.session_state.contextual_agreement:
+            st.warning("Please indicate agreement with the LLM’s contextual judgment.")
+            return False
+
+            # If Disagree → must select contextual factors
+            if st.session_state.contextual_agreement == "Disagree":
+    
+                if not st.session_state.contextual_factors:
+                    st.warning("Please select at least one contextual factor.")
+                    return False
+    
+                # 🚨 Ambiguous referent requires subtype
+                if any(f.startswith("k. Ambiguous referent")
+                       for f in st.session_state.contextual_factors):
+    
+                    if not st.session_state.ambiguous_referent_type:
+                        st.warning("Please specify the type of ambiguous referent.")
+                        return False
+                    
+                    # If "Other" selected → explanation required
+                    if "Other" in st.session_state.ambiguous_referent_type:
+                        if not st.session_state.get("ambiguous_referent_other_text", "").strip():
+                            st.warning("Please explain the 'Other' ambiguous referent.")
+                            return False
+    
+    
+                # 🚨 Other requires explanation
+                if any(f.startswith("j. Other")
+                       for f in st.session_state.contextual_factors):
+    
+                    if not st.session_state.contextual_explanation.strip():
+                        st.warning("Please explain the 'Other' contextual factor.")
+                        return False
+
+    # If everything is valid → save
     save_annotation()
     return True
 
@@ -1076,14 +1149,6 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
-
-
-
-
-
-
-
-
 
 
 
