@@ -199,8 +199,24 @@ with st.sidebar:
         r = user_annotations[user_annotations["id"] == selected_id].iloc[0]
 
         st.markdown("### 🧾 Saved Annotation Preview")
-        st.write(f"**Label:** {r.get('label','')}")
-        st.write(f"**Contextual agreement:** {r.get('contextual_agreement','')}")
+        
+        entity_val = r.get("entity_reflection", "")
+        st.write(f"**Entity–Claim Consistency:** {entity_val}")
+        
+        if entity_val == "Yes, the claims reflect the entities.":
+        
+            st.write(f"**Label:** {r.get('label','')}")
+            st.write(f"**Contextual agreement:** {r.get('contextual_agreement','')}")
+        
+            if r.get("contextual_agreement") == "Disagree":
+        
+                st.write(f"**Contextual factors:** {r.get('contextual_factors','')}")
+        
+                if r.get("ambiguous_referent_type"):
+                    st.write(f"**Ambiguous subtype:** {r.get('ambiguous_referent_type')}")
+        
+                if r.get("contextual_explanation"):
+                    st.write(f"**Other explanation:** {r.get('contextual_explanation')}")
 
         if r.get("contextual_agreement") == "Disagree":
             st.write(f"**Contextual factors:** {r.get('contextual_factors','')}")
@@ -1149,6 +1165,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
