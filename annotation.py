@@ -1002,62 +1002,55 @@ col_prev, col_save, col_next = st.columns([1, 2, 1])
 def validate_and_save():
 
     # -----------------------
-    # Task 1 validation
+    # Task 1 must be selected
     # -----------------------
-
-    if not st.session_state.entity_reflection:
-        st.warning("Please indicate whether the claims reflect the structured entities.")
+    if not st.session_state.label_radio:
+        st.warning("Please select a label for Task 1.")
         return False
 
-    if st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
-        if not st.session_state.selected_label:
-            st.warning("Please select whether the LLM is correct.")
-            return False
+    # -----------------------
+    # Entity reflection required
+    # -----------------------
+    if not st.session_state.entity_reflection:
+        st.warning("Please answer the entity reflection question.")
+        return False
 
     # -----------------------
-    # Task 2 validation (only if LLM correct)
+    # If entity reflection is NO → skip Task 2 entirely
     # -----------------------
-    if (
-        st.session_state.entity_reflection
-        == "Yes, the claims reflect the entities."
-        and st.session_state.selected_label == "correct"
-    ):
-        # Must choose Agree / Disagree
-        if not st.session_state.contextual_agreement:
-            st.warning("Please indicate agreement with the LLM’s contextual judgment.")
+    if st.session_state.entity_reflection == \
+        "No, the claims do not reflect the entities.":
+
+        save_annotation()
+        return True
+
+    # -----------------------
+    # If entity reflection is YES → require contextual agreement
+    # -----------------------
+    if not st.session_state.contextual_agreement:
+        st.warning("Please indicate agreement with the LLM’s contextual judgment.")
+        return False
+
+    # -----------------------
+    # If Disagree → require contextual factors
+    # -----------------------
+    if st.session_state.contextual_agreement == "Disagree":
+
+        if not st.session_state.contextual_factors:
+            st.warning("Please select at least one contextual factor.")
             return False
 
-        # If Disagree → must select contextual factors
-        if st.session_state.contextual_agreement == "Disagree":
+        # If Other selected → require explanation
+        if any(f.startswith("l. Other") 
+               for f in st.session_state.contextual_factors):
 
-            if not st.session_state.contextual_factors:
-                st.warning("Please select at least one contextual factor.")
+            if not st.session_state.contextual_explanation.strip():
+                st.warning("Please provide an explanation for 'Other'.")
                 return False
 
-            # 🚨 Ambiguous referent requires subtype
-            if any(f.startswith("k. Ambiguous referent")
-                   for f in st.session_state.contextual_factors):
-
-                if not st.session_state.ambiguous_referent_type:
-                    st.warning("Please specify the type of ambiguous referent.")
-                    return False
-                
-                # If "Other" selected → explanation required
-                if "Other" in st.session_state.ambiguous_referent_type:
-                    if not st.session_state.get("ambiguous_referent_other_text", "").strip():
-                        st.warning("Please explain the 'Other' ambiguous referent.")
-                        return False
-
-    
-                # 🚨 Other requires explanation
-                if any(f.startswith("l. Other")
-                       for f in st.session_state.contextual_factors):
-    
-                    if not st.session_state.contextual_explanation.strip():
-                        st.warning("Please explain the 'Other' contextual factor.")
-                        return False
-
-    # If everything is valid → save
+    # -----------------------
+    # All checks passed
+    # -----------------------
     save_annotation()
     return True
 
@@ -1083,6 +1076,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
