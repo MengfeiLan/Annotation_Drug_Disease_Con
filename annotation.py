@@ -364,32 +364,29 @@ replication infeasible to resolve contradictions at scale. Therefore, we leverag
 interpretation to resolve biomedical contradictions by identifying differences in the contextual 
 factors. We develop a taxonomy of contextual factors:
 
-a. Species: Contradictions in drug–effect associations may result from cross-species differences.
+a. Species: The claims are based on different species that one claim is based on animal while another is based on another kind of animal or human.
 
-b. Population: Claims may target different demographic or genetic subpopulations (e.g., age, sex, or location), leading to variant results.
+b. Population: The claims target different human subpopulations, such as differences in age, sex, genetic background, comorbidities, ethnicity, or risk profiles.
 
-c. Physiological context: Different results may arise when the same intervention is 
-evaluated under different transient physiological conditions, even within the same species and 
-population. Such contexts include exertion level, environmental conditions, current disease, or 
-short-term physiological states.
+c. Physiological context: The intervention is evaluated under different transient physiological or environmental conditions (e.g., exertion state, hypoxia, fasting status, or acute stress), even within the same species and population.
 
-d. Dosage and exposure duration: Different doses or exposure durations may produce different 
-biological effects.
+d. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.
 
-e. Route or mode of administration: Different delivery routes may change tissue targeting or absorption.
+e. Route or mode of administration: The intervention is delivered via different routes (e.g., oral, intravenous, topical, sublingual, localized).
 
-f. Evolving scientific evidence: Contradictions may reflect different stages of scientific 
-understanding, where early hypotheses are later revised by new work.
+f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.
 
-g. Known controversy: Some claims explicitly acknowledge uncertainty or limitations, indicating an 
-ongoing debate rather than a definitive conclusion.
+g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.
 
-h. Combined drug effect: Contradictions can arise when the effects of a drug depend on the co-administered 
-agents. Drug–drug interactions may produce different outcomes across different combination regimens.
+h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.
 
-i. Ambiguous referent: One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.
+i. Study design: contradictions may arise from differences in study methodology, such as retrospective vs. prospective design, randomized vs. non-randomized control study, presence vs. absence of a control group.
 
-j. Other: Some contradictions may not fit into the above categories, indicating the need for additional contextual factors.
+j. Outcome measures: contradictions may arise because the studies measure different outcomes.
+
+k. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.
+
+l. Other: None of the listed factors explain the contradiction.
 
 To support scalable and interpretable contradiction resolution, we use LLMs to identify whether 
 contradictions can be explained by contextual differences defined in our taxonomy. The LLM is prompted 
