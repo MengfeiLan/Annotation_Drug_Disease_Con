@@ -317,7 +317,7 @@ st.set_page_config(layout="wide")
 st.title("📝 Annotation for Drug–Disease Contradiction and Resolution")
 
 
-st.write(f"Example {st.session_state.current_idx + 1} / {len(df)}")
+st.write(f"Example {st.session_state.current_idx + 1} / {50 + len(df)}")
 
 with st.expander("Annotation Guideline"):
     st.markdown(
@@ -888,7 +888,7 @@ with st.container(border=True):
             # -----------------------
             # Other Explanation Box
             # -----------------------
-            if any(f.startswith("j. Other") 
+            if any(f.startswith("l. Other") 
                    for f in st.session_state.contextual_factors):
         
                 st.text_area(
@@ -997,7 +997,7 @@ def save_annotation():
                 # Other contextual explanation
                 # -----------------------
                 if any(
-                    f.startswith("j. Other")
+                    f.startswith("l. Other")
                     for f in st.session_state.contextual_factors
                 ):
                     new_row["contextual_explanation"] = (
@@ -1116,7 +1116,7 @@ def validate_and_save():
     
     
                 # 🚨 Other requires explanation
-                if any(f.startswith("j. Other")
+                if any(f.startswith("l. Other")
                        for f in st.session_state.contextual_factors):
     
                     if not st.session_state.contextual_explanation.strip():
@@ -1149,6 +1149,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
