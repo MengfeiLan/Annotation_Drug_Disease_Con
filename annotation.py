@@ -694,6 +694,7 @@ with st.container(border=True):
         st.markdown("### LLM Decision")
         st.write(f"**{row.get('prediction', 'N/A')}**")
 
+    
         # -----------------------
         # Task 1: Contradiction Detection
         # -----------------------
@@ -703,7 +704,7 @@ with st.container(border=True):
 
 
 
-if st.session_state.selected_label == "correct":
+if st.session_state.selected_label == "correct" and st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
     st.markdown("---")
     st.subheader("🧩 Task 2: Contextual Resolution")
     st.markdown("### 🤖 LLM Contextual Judgment")
