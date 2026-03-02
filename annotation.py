@@ -1057,7 +1057,7 @@ def validate_and_save():
     if not st.session_state.entity_reflection:
         st.warning("Please select whether the extracted claims reflect the entities.")
         return False
-    if st.session_state.entity_reflection and not st.session_state.selected_label:
+    if st.session_state.entity_reflection == "Yes, the claims reflect the entities." and not st.session_state.selected_label:
         st.warning("Please select whether the LLM is correct.")
         return False
 
