@@ -40,7 +40,7 @@ def load_annotations_from_github():
 # -----------------------
 # Configuration
 # -----------------------
-DATA_PATH = "/previous_annotations/annotation_file.csv"
+DATA_PATH = "previous_annotations/annotation_file.csv"
 
 USERS = {
     "halil": "password123",
@@ -1069,6 +1069,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
