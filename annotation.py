@@ -698,7 +698,11 @@ with st.container(border=True):
     
 
 
-    if st.session_state.selected_label == "correct":
+    if (
+    st.session_state.entity_reflection
+    != "Yes, the claims reflect the entities."
+    and st.session_state.selected_label == "correct"
+):
         st.markdown("---")
         st.subheader("🧩 Task 2: Contextual Resolution")
         st.markdown("### 🤖 LLM Contextual Judgment")
@@ -1090,8 +1094,11 @@ def validate_and_save():
     # -----------------------
     # Task 2 validation (only if LLM correct)
     # -----------------------
-    if st.session_state.selected_label == "correct":
-
+    if (
+        st.session_state.entity_reflection
+        != "Yes, the claims reflect the entities."
+        and st.session_state.selected_label == "correct"
+    ):
         # Must choose Agree / Disagree
         if not st.session_state.contextual_agreement:
             st.warning("Please indicate agreement with the LLM’s contextual judgment.")
@@ -1153,6 +1160,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
