@@ -586,7 +586,7 @@ with st.container(border=True):
 
     col_se_l, col_se_r = st.columns(2)
 
-    with col_se_l
+    with col_se_l:
         entities = row.get("shared_entities", {}) or {}
         st.write(f"**Drug:** {entities.get('Chemical', 'N/A')}")
         st.write(f"**Disease:** {entities.get('Disease', 'N/A')}")
