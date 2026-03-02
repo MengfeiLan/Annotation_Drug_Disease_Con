@@ -65,8 +65,10 @@ CONTEXTUAL_FACTORS = [
     "f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
     "g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
     "h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
-    "i. Ambiguous referent: One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.",
-    "j. Other: None of the listed factors explain the contradiction.",
+    "i. Study design: contradictions may arise from differences in study methodology, such as retrospective vs. prospective design, randomized vs. non-randomized control study, presence vs. absence of a control group.",
+    "j. Outcome measures: contradictions may arise because the studies measure different outcomes.", 
+    "k. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.",
+    "l. Other: None of the listed factors explain the contradiction.",
 ]
 
 # -----------------------
@@ -419,14 +421,16 @@ CONTEXTUAL_FACTORS = [
     "f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
     "g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
     "h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
-    "i. Ambiguous referent: One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.",
-    "j. Other: None of the listed factors explain the contradiction.",
+    "i. Study design: contradictions may arise from differences in study methodology, such as retrospective vs. prospective design, randomized vs. non-randomized control study, presence vs. absence of a control group.",
+    "j. Outcome measures: contradictions may arise because the studies measure different outcomes.", 
+    "k. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.",
+    "l. Other: None of the listed factors explain the contradiction.",
 ]
 
 AMBIGUOUS_REFERENT_OPTIONS = [
     "One or both abstracts lack species information",
     "One or both abstracts lack population information",
-    "One or both abstracts lack dosage information",
+    "One or both abstracts lack dosage and exposure duration information",
     "One or both abstracts lack route of administration information",
     "Other"
 ]
