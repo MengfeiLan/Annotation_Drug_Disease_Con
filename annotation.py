@@ -374,7 +374,7 @@ h. Known controversy or self-qualified claims: One or both claims explicitly ack
 
 i. Study design: contradictions may arise from differences in study methodology, such as retrospective vs. prospective design, randomized vs. non-randomized control study, presence vs. absence of a control group.
 
-j. Outcome measures: contradictions may arise because the studies measure different outcomes."
+j. Outcome measures: contradictions may arise because the studies measure different outcomes.
 
 k. Ambiguous referent: One or both claims lack clear specification of species, population, dosage/exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.
 
@@ -1149,6 +1149,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
