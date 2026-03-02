@@ -158,7 +158,7 @@ if USER_CSV.exists():
 else:
     annotations = pd.DataFrame(columns=[
         "id", "label", "contextual_agreement", "contextual_factors",
-        "contextual_explanation", "annotator"
+        "contextual_explanation", "annotator", "entity_reflection"
     ])
 
 # -----------------------
@@ -472,6 +472,7 @@ for col in [
     "contextual_factors",
     "contextual_explanation",
     "entity_reflection",
+    
 ]:
     if col not in annotations.columns:
         annotations[col] = ""
@@ -482,6 +483,9 @@ for col in [
 if "current_idx" not in st.session_state:
     st.session_state.current_idx = 0
 
+if "entity_reflection" not in st.session_state:
+    st.session_state.entity_reflection = ""
+    
 if "label_radio" not in st.session_state:
     st.session_state.label_radio = None
 
@@ -1167,6 +1171,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
