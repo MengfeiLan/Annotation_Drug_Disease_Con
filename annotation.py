@@ -147,7 +147,6 @@ for col in [
     "contextual_agreement",
     "contextual_factors",
     "contextual_explanation",
-    "entity_reflection"
 ]:
     if col not in annotations.columns:
         annotations[col] = ""
@@ -469,7 +468,6 @@ for col in [
     "contextual_agreement",
     "contextual_factors",
     "contextual_explanation",
-    "entity_reflection"
 ]:
     if col not in annotations.columns:
         annotations[col] = ""
