@@ -654,51 +654,52 @@ with st.container(border=True):
     # =====================================================
     # 3. LLM Explanation
     # =====================================================
+    if st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
 
-    st.markdown("### Model Reasoning")
-    
-    raw_explanation = str(row.get("reasoning", "")).strip()
-    
-    cleaned_explanation = (
-        raw_explanation
-        .replace("Task(1):", "")
-        .replace("Task(2):", "")
-        .strip()
-    )
-    
-    with st.container(border=True):
-        st.markdown(
-            f"""
-            <div style="
-                background-color: #f9f9f9;
-                padding: 14px;
-                border-radius: 6px;
-                line-height: 1.6;
-                white-space: pre-wrap;
-                max-height: 150px;
-                overflow-y: auto;
-            ">
-            {cleaned_explanation}
-            </div>
-            """,
-            unsafe_allow_html=True,
+        st.markdown("### Model Reasoning")
+        
+        raw_explanation = str(row.get("reasoning", "")).strip()
+        
+        cleaned_explanation = (
+            raw_explanation
+            .replace("Task(1):", "")
+            .replace("Task(2):", "")
+            .strip()
         )
+        
+        with st.container(border=True):
+            st.markdown(
+                f"""
+                <div style="
+                    background-color: #f9f9f9;
+                    padding: 14px;
+                    border-radius: 6px;
+                    line-height: 1.6;
+                    white-space: pre-wrap;
+                    max-height: 150px;
+                    overflow-y: auto;
+                ">
+                {cleaned_explanation}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        
+        st.markdown("---")
     
-    st.markdown("---")
+    
+        # =====================================================
+        # 4. LLM Decision
+        # =====================================================
+        st.markdown("### LLM Decision")
+        st.write(f"**{row.get('prediction', 'N/A')}**")
 
-
-    # =====================================================
-    # 4. LLM Decision
-    # =====================================================
-    st.markdown("### LLM Decision")
-    st.write(f"**{row.get('prediction', 'N/A')}**")
-
-# -----------------------
-# Task 1: Contradiction Detection
-# -----------------------
-st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>", unsafe_allow_html=True)
-st.radio("", options=list(LABELS.keys()), key="label_radio")
-st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
+        # -----------------------
+        # Task 1: Contradiction Detection
+        # -----------------------
+        st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>", unsafe_allow_html=True)
+        st.radio("", options=list(LABELS.keys()), key="label_radio")
+        st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
 
 
 
