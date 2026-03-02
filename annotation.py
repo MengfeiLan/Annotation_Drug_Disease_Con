@@ -244,9 +244,8 @@ with st.sidebar:
 # Session state
 # -----------------------
 
-# if "entity_reflection" not in st.session_state:
-#     st.session_state.entity_reflection = None
-
+if "entity_reflection" not in st.session_state:
+    st.session_state.entity_reflection = None
 
 if "current_idx" not in st.session_state:
     st.session_state.current_idx = 0
@@ -275,7 +274,7 @@ def load_existing_annotation(example_id):
 
     if not match.empty:
         r = match.iloc[0]
-
+        
         st.session_state.selected_label = r["label"]
 
         st.session_state.label_radio = next(
@@ -306,6 +305,9 @@ def load_existing_annotation(example_id):
         st.session_state.contextual_explanation = (
             r.get("contextual_explanation") or ""
         )
+        st.session_state.entity_reflection = (
+            r.get("entity_reflection") or ""
+        )
 
     else:
         st.session_state.label_radio = None
@@ -314,6 +316,7 @@ def load_existing_annotation(example_id):
         st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
         st.session_state.ambiguous_referent_type = []
+        st.session_state.entity_reflection = None
 
 # Clamp index
 st.session_state.current_idx = max(
