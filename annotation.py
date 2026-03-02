@@ -147,7 +147,7 @@ def load_data(start=0, end=None):
         return data[start:end]
     return data
 
-df = load_data(50:100)
+df = load_data(50, 100)
 
 # -----------------------
 # Load per-user annotations
@@ -1167,6 +1167,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
