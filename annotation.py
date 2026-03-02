@@ -376,7 +376,7 @@ i. Study design: contradictions may arise from differences in study methodology,
 
 j. Outcome measures: contradictions may arise because the studies measure different outcomes.
 
-k. Ambiguous referent: One or both claims lack clear specification of species, population, dosage/exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.
+k. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.
 
 l. Other: None of the listed factors explain the contradiction.
 
@@ -413,14 +413,14 @@ CONTEXTUAL_FACTORS = [
     "h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
     "i. Study design: contradictions may arise from differences in study methodology, such as retrospective vs. prospective design, randomized vs. non-randomized control study, presence vs. absence of a control group.",
     "j. Outcome measures: contradictions may arise because the studies measure different outcomes.", 
-    "k. Ambiguous referent: One or both claims lack clear specification of species, population, dosage/exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.",
+    "k. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.",
     "l. Other: None of the listed factors explain the contradiction.",
 ]
 
 AMBIGUOUS_REFERENT_OPTIONS = [
     "One or both abstracts lack species information",
     "One or both abstracts lack population information",
-    "One or both abstracts lack dosage information",
+    "One or both abstracts lack dosage and exposure duration information",
     "One or both abstracts lack route of administration information",
     "Other"
 ]
@@ -840,7 +840,7 @@ with st.container(border=True):
     
         with st.expander("🧩 Ambiguous Referent", expanded=False):
             st.markdown("""
-        One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.""")
+        One or both claims lack clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.""")
                 
         with st.expander("❓ Other", expanded=False):
             st.markdown("""None of the listed factors explain the contradiction. If choosing 'Other', explain the other potiential contextual factors that may apply to the scenario.""")
@@ -1149,6 +1149,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
