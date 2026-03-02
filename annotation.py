@@ -305,6 +305,10 @@ def load_existing_annotation(example_id):
         st.session_state.contextual_explanation = (
             r.get("contextual_explanation") or ""
         )
+
+        st.session_state.ambiguous_referent_other_text = (
+            r.get("ambiguous_referent_other_text") or ""
+        )
         st.session_state.entity_reflection = (
             r.get("entity_reflection") or ""
         )
