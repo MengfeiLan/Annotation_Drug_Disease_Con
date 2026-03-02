@@ -224,6 +224,73 @@ with st.sidebar:
         st.info("No annotations yet.")
 
 
+def load_existing_annotation(example_id):
+    global annotations
+
+    # Filter by example and annotator
+    match = annotations[
+        (annotations["id"] == example_id) &
+        (annotations["annotator"] == st.session_state.username)
+    ]
+
+    if not match.empty:
+        r = match.iloc[0]
+
+        # -----------------------
+        # Task 1
+        # -----------------------
+        saved_label = r.get("label", "")
+        st.session_state.selected_label = saved_label
+
+        st.session_state.label_radio = next(
+            (k for k, v in LABELS.items() if v == saved_label),
+            None
+        )
+
+        # -----------------------
+        # Task 2 - Contextual agreement
+        # -----------------------
+        saved_agreement = r.get("contextual_agreement", "")
+        st.session_state.contextual_agreement = (
+            saved_agreement if saved_agreement in ["Agree", "Disagree"] else None
+        )
+
+        # -----------------------
+        # Contextual factors
+        # -----------------------
+        saved_factors = r.get("contextual_factors", "")
+
+        if saved_factors == "Agree":
+            # If previously agreed, no factors selected
+            st.session_state.contextual_factors = []
+        elif isinstance(saved_factors, str) and saved_factors.strip():
+            st.session_state.contextual_factors = saved_factors.split("; ")
+        else:
+            st.session_state.contextual_factors = []
+
+        # -----------------------
+        # Ambiguous referent subtype
+        # -----------------------
+        st.session_state.ambiguous_referent_type = r.get(
+            "ambiguous_referent_type", None
+        ) or None
+
+        # -----------------------
+        # Other explanation
+        # -----------------------
+        explanation = r.get("contextual_explanation", "")
+        st.session_state.contextual_explanation = (
+            explanation if isinstance(explanation, str) else ""
+        )
+
+    else:
+        # Reset all states if no annotation exists
+        st.session_state.label_radio = None
+        st.session_state.selected_label = None
+        st.session_state.contextual_agreement = None
+        st.session_state.contextual_factors = []
+        st.session_state.contextual_explanation = ""
+        st.session_state.ambiguous_referent_type = None
 
 # # -----------------------
 # # Load / initialize annotations
@@ -441,74 +508,6 @@ if "ambiguous_referent_other_text" not in annotations.columns:
 # -----------------------
 # Helper: Load existing annotation
 # -----------------------
-def load_existing_annotation(example_id):
-    global annotations
-
-    # Filter by example and annotator
-    match = annotations[
-        (annotations["id"] == example_id) &
-        (annotations["annotator"] == st.session_state.username)
-    ]
-
-    if not match.empty:
-        r = match.iloc[0]
-
-        # -----------------------
-        # Task 1
-        # -----------------------
-        saved_label = r.get("label", "")
-        st.session_state.selected_label = saved_label
-
-        st.session_state.label_radio = next(
-            (k for k, v in LABELS.items() if v == saved_label),
-            None
-        )
-
-        # -----------------------
-        # Task 2 - Contextual agreement
-        # -----------------------
-        saved_agreement = r.get("contextual_agreement", "")
-        st.session_state.contextual_agreement = (
-            saved_agreement if saved_agreement in ["Agree", "Disagree"] else None
-        )
-
-        # -----------------------
-        # Contextual factors
-        # -----------------------
-        saved_factors = r.get("contextual_factors", "")
-
-        if saved_factors == "Agree":
-            # If previously agreed, no factors selected
-            st.session_state.contextual_factors = []
-        elif isinstance(saved_factors, str) and saved_factors.strip():
-            st.session_state.contextual_factors = saved_factors.split("; ")
-        else:
-            st.session_state.contextual_factors = []
-
-        # -----------------------
-        # Ambiguous referent subtype
-        # -----------------------
-        st.session_state.ambiguous_referent_type = r.get(
-            "ambiguous_referent_type", None
-        ) or None
-
-        # -----------------------
-        # Other explanation
-        # -----------------------
-        explanation = r.get("contextual_explanation", "")
-        st.session_state.contextual_explanation = (
-            explanation if isinstance(explanation, str) else ""
-        )
-
-    else:
-        # Reset all states if no annotation exists
-        st.session_state.label_radio = None
-        st.session_state.selected_label = None
-        st.session_state.contextual_agreement = None
-        st.session_state.contextual_factors = []
-        st.session_state.contextual_explanation = ""
-        st.session_state.ambiguous_referent_type = None
-
 
 # Clamp index
 st.session_state.current_idx = max(0, min(st.session_state.current_idx, len(df) - 1))
@@ -1071,6 +1070,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
