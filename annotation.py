@@ -141,10 +141,13 @@ if "ambiguous_referent_type" not in annotations.columns:
     annotations["ambiguous_referent_type"] = ""
     
 @st.cache_data
-def load_data():
-    return pd.read_csv(DATA_PATH)[50:100]
+def load_data(start=0, end=None):
+    data = pd.read_csv(DATA_PATH)
+    if end:
+        return data[start:end]
+    return data
 
-df = load_data()
+df = load_data(50:100)
 
 # -----------------------
 # Load per-user annotations
@@ -1165,6 +1168,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
