@@ -66,8 +66,10 @@ CONTEXTUAL_FACTORS = [
     "f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
     "g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
     "h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
-    "i. Ambiguous referent: One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.",
-    "j. Other: None of the listed factors explain the contradiction.",
+    "i. Study design: contradictions may arise from differences in study methodology, such as retrospective vs. prospective design, randomized vs. non-randomized control study, presence vs. absence of a control group.",
+    "j. Outcome measures: contradictions may arise because the studies measure different outcomes.", 
+    "k. Ambiguous referent: One or both claims lack clear specification of species, population, dosage/exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.",
+    "l. Other: None of the listed factors explain the contradiction.",
 ]
 
 # -----------------------
@@ -1163,6 +1165,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
