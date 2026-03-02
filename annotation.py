@@ -700,7 +700,7 @@ with st.container(border=True):
 
     if (
     st.session_state.entity_reflection
-    != "Yes, the claims reflect the entities."
+    == "Yes, the claims reflect the entities."
     and st.session_state.selected_label == "correct"
 ):
         st.markdown("---")
@@ -1096,7 +1096,7 @@ def validate_and_save():
     # -----------------------
     if (
         st.session_state.entity_reflection
-        != "Yes, the claims reflect the entities."
+        == "Yes, the claims reflect the entities."
         and st.session_state.selected_label == "correct"
     ):
         # Must choose Agree / Disagree
@@ -1160,6 +1160,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
