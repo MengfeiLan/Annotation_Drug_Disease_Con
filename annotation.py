@@ -659,18 +659,28 @@ with st.container(border=True):
         unsafe_allow_html=True
     )
 
-    st.radio(
-        "",
-        options=[
-            "Yes, the claims reflect the entities.",
-            "No, the claims do not reflect the entities."
-        ],
-        key="entity_reflection",
-        index=-1 if st.session_state.entity_reflection is None else
-              ["Yes, the claims reflect the entities.", "No, the claims do not reflect the entities."].index(st.session_state.entity_reflection)
-    )
-
+    entity_reflection_options = [
+        "Yes, the claims reflect the entities.",
+        "No, the claims do not reflect the entities."
+    ]
     
+    # Only pass index if there is a previous selection
+    if st.session_state.get("entity_reflection") in entity_reflection_options:
+        selected_index = entity_reflection_options.index(st.session_state.entity_reflection)
+        st.radio(
+            "",
+            options=entity_reflection_options,
+            key="entity_reflection",
+            index=selected_index
+        )
+    else:
+        # No default selection
+        st.radio(
+            "",
+            options=entity_reflection_options,
+            key="entity_reflection"
+        )
+        
     # =====================================================
     # 3. LLM Explanation
     # =====================================================
