@@ -882,6 +882,29 @@ if st.session_state.selected_label == "correct" and st.session_state.entity_refl
     Different combination regimens explain the apparent contradiction.
     """)
 
+
+    with st.expander("🔬 Study design", expanded=False):
+        st.markdown("""
+    Contradictions may arise from differences in study methodology, which can influence the strength and interpretation of findings. These differences may include retrospective vs. prospective design, randomized vs. non-randomized allocation, or observational vs. interventional approaches. 
+    
+    > **Claim 1:** We retrospectively reviewed data from patients who underwent ERCP between 2008 and 2014... Although indomethacin represents an easy, inexpensive treatment, prophylactic PSP is still the better prevention strategy for PEP.
+    >
+    > **Claim 2:** In this randomized clinical trial, patients were allocated into groups using a random number table... Indomethacin + nitroglycerin is superior to PSP in preventing and relieving the severity of post-ERCP pancreatitis in patients with difficult intubation.
+    
+    Differences in study design (retrospective observational vs. prospective randomized trial) may explain the divergent conclusions.
+    """)
+
+    with st.expander("📊 Outcome Measures", expanded=False):
+        st.markdown("""
+    Contradictions may arise because the studies evaluate different primary or secondary outcomes. A treatment may have no effect on one clinical endpoint but still influence another biological or intermediate marker.
+    
+    > **Claim 1:** This study shows no significant influence of vitamin D supplementation on weight, fat mass, or waist circumference in type 2 diabetic obese vitamin D–deficient participants after one year.
+    >
+    > **Claim 2:** Daily vitamin D supplementation effectively reduced circulatory YKL-40 and MCP-1 levels in patients with type 2 diabetes and vitamin D deficiency.
+    
+    The apparent contradiction is explained by differences in outcome measures (clinical anthropometric outcomes vs. inflammatory biomarkers), rather than opposing findings on the same endpoint.
+    """)
+
     with st.expander("🧩 Ambiguous Referent", expanded=False):
         st.markdown("""
     One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.""")
