@@ -244,8 +244,8 @@ with st.sidebar:
 # Session state
 # -----------------------
 
-if "entity_reflection" not in st.session_state:
-    st.session_state.entity_reflection = None
+# if "entity_reflection" not in st.session_state:
+#     st.session_state.entity_reflection = None
 
 
 if "current_idx" not in st.session_state:
