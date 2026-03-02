@@ -147,6 +147,7 @@ for col in [
     "contextual_agreement",
     "contextual_factors",
     "contextual_explanation",
+    "entity_reflection"
 ]:
     if col not in annotations.columns:
         annotations[col] = ""
@@ -468,6 +469,7 @@ for col in [
     "contextual_agreement",
     "contextual_factors",
     "contextual_explanation",
+    "entity_reflection"
 ]:
     if col not in annotations.columns:
         annotations[col] = ""
@@ -513,6 +515,14 @@ def load_existing_annotation(example_id):
 
     if not match.empty:
         r = match.iloc[0]
+        # -----------------------
+        # Load entity reflection
+        # -----------------------
+        saved_entity_reflection = r.get("entity_reflection", "")
+        if saved_entity_reflection:
+            st.session_state.entity_reflection = saved_entity_reflection
+        else:
+            st.session_state.entity_reflection = None
 
         # -----------------------
         # Task 1
