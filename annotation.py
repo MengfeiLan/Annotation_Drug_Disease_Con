@@ -246,7 +246,8 @@ with st.sidebar:
 
 if "entity_reflection" not in st.session_state:
     st.session_state.entity_reflection = None
-    
+
+
 if "current_idx" not in st.session_state:
     st.session_state.current_idx = 0
 
@@ -654,15 +655,18 @@ with st.container(border=True):
         "</p>",
         unsafe_allow_html=True
     )
-    
+
     st.radio(
         "",
         options=[
             "Yes, the claims reflect the entities.",
             "No, the claims do not reflect the entities."
         ],
-        key="entity_reflection"
+        key="entity_reflection",
+        index=-1 if st.session_state.entity_reflection is None else
+              ["Yes, the claims reflect the entities.", "No, the claims do not reflect the entities."].index(st.session_state.entity_reflection)
     )
+
     
     # =====================================================
     # 3. LLM Explanation
