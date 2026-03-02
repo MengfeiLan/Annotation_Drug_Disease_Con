@@ -656,7 +656,7 @@ with st.container(border=True):
     # =====================================================
     if st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
 
-        st.markdown("### Model Reasoning")
+        st.markdown("### Model Contradiction Reasoning")
         
         raw_explanation = str(row.get("reasoning", "")).strip()
         
