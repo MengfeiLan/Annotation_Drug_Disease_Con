@@ -8,6 +8,7 @@ GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
 REPO_NAME = st.secrets["REPO_NAME"]
 from github import Github
 import base64
+import ast
 
 GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]  # replace with a secret in Streamlit secrets
 REPO_NAME = "MengfeiLan/Annotation_Drug_Disease_Con"
