@@ -317,7 +317,7 @@ st.set_page_config(layout="wide")
 st.title("📝 Annotation for Drug–Disease Contradiction and Resolution")
 
 
-st.write(f"Example {st.session_state.current_idx + 1} / {50 + len(df)}")
+st.write(f"Example {st.session_state.current_idx + 1 - 50} / {len(df)}")
 
 with st.expander("Annotation Guideline"):
     st.markdown(
@@ -1149,6 +1149,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
