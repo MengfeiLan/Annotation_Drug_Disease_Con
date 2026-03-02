@@ -1037,6 +1037,9 @@ def validate_and_save():
     # -----------------------
     # Task 1 validation
     # -----------------------
+    if not st.session_state.entity_reflection:
+        st.warning("Please select whether the extracted claims reflect the entities.")
+        return False
     if not st.session_state.selected_label:
         st.warning("Please select whether the LLM is correct.")
         return False
@@ -1044,7 +1047,7 @@ def validate_and_save():
     # -----------------------
     # Task 2 validation (only if LLM correct)
     # -----------------------
-    if st.session_state.selected_label == "correct":
+    if st.session_state.selected_label == "correct" and st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
 
         # Must choose Agree / Disagree
         if not st.session_state.contextual_agreement:
