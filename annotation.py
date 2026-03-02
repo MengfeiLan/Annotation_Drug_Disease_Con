@@ -861,7 +861,7 @@ with st.container(border=True):
             # -----------------------
             # Ambiguous Referent Dropdown
             # -----------------------
-            if any(f.startswith("i. Ambiguous referent") 
+            if any(f.startswith("k. Ambiguous referent") 
                    for f in st.session_state.contextual_factors):
             
                 st.multiselect(
@@ -978,7 +978,7 @@ def save_annotation():
                 # Ambiguous Referent subtype
                 # -----------------------
                 if any(
-                    f.startswith("i. Ambiguous referent")
+                    f.startswith("k. Ambiguous referent")
                     for f in st.session_state.contextual_factors
                 ):
 
@@ -1101,7 +1101,7 @@ def validate_and_save():
                     return False
     
                 # 🚨 Ambiguous referent requires subtype
-                if any(f.startswith("i. Ambiguous referent")
+                if any(f.startswith("k. Ambiguous referent")
                        for f in st.session_state.contextual_factors):
     
                     if not st.session_state.ambiguous_referent_type:
@@ -1149,6 +1149,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
