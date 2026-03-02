@@ -40,7 +40,7 @@ def load_annotations_from_github():
 # -----------------------
 # Configuration
 # -----------------------
-DATA_PATH = "annotation_file.csv"
+DATA_PATH = "/previous_annotations/annotation_file.csv"
 
 USERS = {
     "halil": "password123",
@@ -92,7 +92,7 @@ if not st.session_state.logged_in:
             st.error("Invalid username or password")
     st.stop()  # Stop execution until login is successful
 
-ANNOTATION_DIR = Path("annotations")
+ANNOTATION_DIR = Path("previous_annotations/annotations")
 ANNOTATION_DIR.mkdir(exist_ok=True)
 
 USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}.csv"
@@ -1069,6 +1069,7 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
+
 
 
 
