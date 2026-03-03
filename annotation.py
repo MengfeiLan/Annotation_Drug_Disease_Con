@@ -66,7 +66,7 @@ CONTEXTUAL_FACTORS = [
     "f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
     "g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
     "h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
-    "i. Study design: contradictions may arise from differences in study methodology, such as retrospective vs. prospective design, randomized vs. non-randomized control study, presence vs. absence of a control group.",
+    "i. Study design: contradictions may arise from differences in trial methodology, such as parallel vs. crossover design, superiority vs. non-inferiority frameworks, blinding status, comparator type (placebo vs. active control), or randomization procedures.",
     "j. Outcome measures: contradictions may arise because the studies measure different outcomes.", 
     "k. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.",
     "l. Other: None of the listed factors explain the contradiction.",
@@ -395,7 +395,7 @@ g. Evolving scientific evidence: The claims reflect different stages of scientif
 
 h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.
 
-i. Study design: contradictions may arise from differences in study methodology, such as retrospective vs. prospective design, randomized vs. non-randomized control study, presence vs. absence of a control group.
+i. Study design: contradictions may arise from differences in trial methodology, such as parallel vs. crossover design, superiority vs. non-inferiority frameworks, blinding status, comparator type (placebo vs. active control), or randomization procedures.
 
 j. Outcome measures: contradictions may arise because the studies measure different outcomes.
 
@@ -434,7 +434,7 @@ CONTEXTUAL_FACTORS = [
     "f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
     "g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
     "h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
-    "i. Study design: contradictions may arise from differences in study methodology, such as retrospective vs. prospective design, randomized vs. non-randomized control study, presence vs. absence of a control group.",
+    "i. Study design: contradictions may arise from differences in trial methodology, such as parallel vs. crossover design, superiority vs. non-inferiority frameworks, blinding status, comparator type (placebo vs. active control), or randomization procedures.",
     "j. Outcome measures: contradictions may arise because the studies measure different outcomes.", 
     "k. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.",
     "l. Other: None of the listed factors explain the contradiction.",
@@ -886,12 +886,6 @@ if st.session_state.selected_label == "correct" and st.session_state.entity_refl
     with st.expander("🔬 Study design", expanded=False):
         st.markdown("""
     Contradictions may arise from differences in study methodology, which can influence the strength and interpretation of findings. These differences may include retrospective vs. prospective design, randomized vs. non-randomized allocation, or observational vs. interventional approaches. 
-    
-    > **Claim 1:** We retrospectively reviewed data from patients who underwent ERCP between 2008 and 2014... Although indomethacin represents an easy, inexpensive treatment, prophylactic PSP is still the better prevention strategy for PEP.
-    >
-    > **Claim 2:** In this randomized clinical trial, patients were allocated into groups using a random number table... Indomethacin + nitroglycerin is superior to PSP in preventing and relieving the severity of post-ERCP pancreatitis in patients with difficult intubation.
-    
-    Differences in study design (retrospective observational vs. prospective randomized trial) may explain the divergent conclusions.
     """)
 
     with st.expander("📊 Outcome Measures", expanded=False):
