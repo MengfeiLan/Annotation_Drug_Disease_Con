@@ -591,7 +591,7 @@ def load_existing_annotation(example_id):
 # Clamp index
 st.session_state.current_idx = max(0, min(st.session_state.current_idx, len(df) - 1))
 df["shared_entities"] = df["shared_entities"].apply(ast.literal_eval)
-df["shared_text"] = df["shared_text"].apply(ast.literal_eval)
+# df["shared_text"] = df["shared_text"].apply(ast.literal_eval)
 
 row = df.iloc[st.session_state.current_idx]
 
@@ -635,6 +635,8 @@ with st.container(border=True):
             st.markdown("#### 📄 Original Text Entities")
     
             text_entities = row.get("shared_text", {}) or {}
+            st.markdown(f"**💊 Drug:** {text_entities}")
+
             if isinstance(text_entities, str):
                 try:
                     text_entities = ast.literal_eval(text_entities)
