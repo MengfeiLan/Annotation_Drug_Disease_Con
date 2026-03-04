@@ -41,7 +41,7 @@ def load_annotations_from_github():
 # -----------------------
 # Configuration
 # -----------------------
-DATA_PATH = "annotation_file.csv"
+DATA_PATH = "annotation_file_new.csv"
 
 USERS = {
     "halil": "password123",
