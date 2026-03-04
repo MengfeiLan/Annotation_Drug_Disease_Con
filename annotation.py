@@ -601,28 +601,86 @@ st.subheader("🤖 Task 1: Annotation for Contradiction Detection")
 
 with st.container(border=True):
 
-    # =====================================================
-    # 1. Structured Extraction
-    # =====================================================
-    st.markdown("### Structured Claim Summary")
-
-    col_se_l, col_se_r = st.columns(2)
-
+    st.markdown("### 🧾 Structured Claim Summary")
+    st.divider()
+    
+    col_se_l, col_se_r = st.columns([1.2, 1])
+    
+    # ---------- LEFT COLUMN ----------
     with col_se_l:
-        st.markdown("#### PubTator Standardized Entities")
-        entities = row.get("shared_entities", {}) or {}
-        st.write(f"**Drug:** {entities.get('Chemical', 'N/A')}")
-        st.write(f"**Disease:** {entities.get('Disease', 'N/A')}")
-
-        st.markdown("#### Original Text Entities")
-        entities = row.get("shared_text", {}) or {}
-        st.write(f"**Drug:** {entities.get('Chemical', 'N/A')}")
-        st.write(f"**Disease:** {entities.get('Disease', 'N/A')}")
+    
+        # ---------- PubTator ----------
+        with st.container(border=True):
+            st.markdown("#### 🧬 PubTator Standardized Entities")
+    
+            pub_entities = row.get("shared_entities", {}) or {}
+            if isinstance(pub_entities, str):
+                try:
+                    pub_entities = ast.literal_eval(pub_entities)
+                except:
+                    pub_entities = {}
+    
+            drug_pub = ", ".join(pub_entities.get("Chemical", [])) or "N/A"
+            disease_pub = ", ".join(pub_entities.get("Disease", [])) or "N/A"
+    
+            st.markdown(f"**💊 Drug:** {drug_pub}")
+            st.markdown(f"**🦠 Disease:** {disease_pub}")
+    
+        st.markdown("")  # spacing
+    
+        # ---------- Original Text ----------
+        with st.container(border=True):
+            st.markdown("#### 📄 Original Text Entities")
+    
+            text_entities = row.get("shared_text", {}) or {}
+            if isinstance(text_entities, str):
+                try:
+                    text_entities = ast.literal_eval(text_entities)
+                except:
+                    text_entities = {}
+    
+            drug_text = ", ".join(text_entities.get("Chemical", [])) or "N/A"
+            disease_text = ", ".join(text_entities.get("Disease", [])) or "N/A"
+    
+            st.markdown(f"**💊 Drug:** {drug_text}")
+            st.markdown(f"**🦠 Disease:** {disease_text}")
+    
+    
+    # ---------- RIGHT COLUMN ----------
     with col_se_r:
-        st.markdown("**Claim 1 Relation:**")
-        st.code(str(row.get("claim_1_dd_relation", "")))
-        st.markdown("**Claim 2 Relation:**")
-        st.code(str(row.get("claim_2_dd_relation", "")))
+    
+        with st.container(border=True):
+            st.markdown("#### 🔗 Claim Relations")
+    
+            st.markdown("**Claim 1 Relation**")
+            st.code(str(row.get("claim_1_dd_relation", "N/A")), language="text")
+    
+            st.markdown("**Claim 2 Relation**")
+            st.code(str(row.get("claim_2_dd_relation", "N/A")), language="text")
+    
+        
+    # # =====================================================
+    # # 1. Structured Extraction
+    # # =====================================================
+    # st.markdown("### Structured Claim Summary")
+
+    # col_se_l, col_se_r = st.columns(2)
+
+    # with col_se_l:
+    #     st.markdown("#### PubTator Standardized Entities")
+    #     entities = row.get("shared_entities", {}) or {}
+    #     st.write(f"**Drug:** {entities.get('Chemical', 'N/A')}")
+    #     st.write(f"**Disease:** {entities.get('Disease', 'N/A')}")
+
+    #     st.markdown("#### Original Text Entities")
+    #     entities = row.get("shared_text", {}) or {}
+    #     st.write(f"**Drug:** {entities.get('Chemical', 'N/A')}")
+    #     st.write(f"**Disease:** {entities.get('Disease', 'N/A')}")
+    # with col_se_r:
+    #     st.markdown("**Claim 1 Relation:**")
+    #     st.code(str(row.get("claim_1_dd_relation", "")))
+    #     st.markdown("**Claim 2 Relation:**")
+    #     st.code(str(row.get("claim_2_dd_relation", "")))
 
     st.markdown("---")
 
