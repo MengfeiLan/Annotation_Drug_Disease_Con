@@ -418,7 +418,7 @@ disagree, the annotators are asked to select the taxonomy factors that could exp
 # -----------------------
 # Configuration
 # -----------------------
-DATA_PATH = "annotation_file.csv"
+DATA_PATH = "annotation_file_new.csv"
 
 LABELS = {
     "LLM is correct: there's a contradiction in the drug-disease association across the claims": "correct",
