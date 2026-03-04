@@ -633,7 +633,8 @@ with st.container(border=True):
         # ---------- Original Text ----------
         with st.container(border=True):
             st.markdown("#### 📄 Original Text Entities")
-    
+            st.markdown(f"**💊 Drug:** {row}")
+
             text_entities = row.get("shared_text", {}) or {}
             st.markdown(f"**💊 Drug:** {text_entities}")
 
