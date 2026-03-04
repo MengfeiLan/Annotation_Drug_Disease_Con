@@ -627,7 +627,7 @@ with st.container(border=True):
     
         # ---------- Original Text ----------
         with st.container(border=True):
-            st.markdown("#### 📄 Original Text Entities")
+            st.markdown("#### Original Text Entities")
 
             text_entities = row.get("shared_text", {}) or {}
             if isinstance(text_entities, str):
