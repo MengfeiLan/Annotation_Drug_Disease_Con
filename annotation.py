@@ -603,7 +603,7 @@ st.subheader("🤖 Task 1: Annotation for Contradiction Detection")
 
 with st.container(border=True):
 
-    st.markdown("### 🧾 Structured Claim Summary")
+    st.markdown("### Structured Claim Summary")
     st.divider()
     
     col_se_l, col_se_r = st.columns([1.2, 1])
