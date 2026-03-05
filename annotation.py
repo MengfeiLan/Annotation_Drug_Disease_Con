@@ -41,7 +41,7 @@ def load_annotations_from_github():
 # -----------------------
 # Configuration
 # -----------------------
-DATA_PATH = "annotation_file_new.csv"
+DATA_PATH = "annotation_file_with_new_categories.csv"
 
 USERS = {
     "halil": "password123",
@@ -418,7 +418,7 @@ disagree, the annotators are asked to select the taxonomy factors that could exp
 # -----------------------
 # Configuration
 # -----------------------
-DATA_PATH = "annotation_file_new.csv"
+DATA_PATH = "annotation_file_with_new_categories.csv"
 
 LABELS = {
     "LLM is correct: there's a contradiction in the drug-disease association across the claims": "correct",
