@@ -217,7 +217,7 @@ with st.sidebar:
         st.write(f"**Contextual agreement:** {r.get('contextual_agreement','')}")
 
         if r.get("contextual_agreement") == "Disagree":
-            st.write(f"**Contextual factors:** {r.get('contextual_factors','')}")
+            st.write(f"**Contextual factors:** {r.get('contextual_factor','')}")
 
             if r.get("ambiguous_referent_type"):
                 st.write(f"**Ambiguous subtype:** {r.get('ambiguous_referent_type')}")
