@@ -214,10 +214,10 @@ with st.sidebar:
 
         st.markdown("### 🧾 Saved Annotation Preview")
         st.write(f"**Label:** {r.get('label','')}")
-        st.write(f"**Contextual agreement:** {r.get('contextual_agreement')}")
+        st.write(f"**Contextual agreement:** {r.get('contextual_agreement', "")}")
 
         if r.get("contextual_agreement") == "Disagree":
-            st.write(f"**Contextual factors:** {r.get('contextual_factor')}")
+            st.write(f"**Contextual factors:** {r.get('contextual_factors', "")}")
 
             if r.get("ambiguous_referent_type"):
                 st.write(f"**Ambiguous subtype:** {r.get('ambiguous_referent_type')}")
