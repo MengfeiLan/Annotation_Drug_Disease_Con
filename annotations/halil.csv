@@ -26,3 +26,4 @@ id,label,contextual_agreement,contextual_factors,contextual_explanation,annotato
 75,correct,Agree,Agree,,halil,,,"Yes, the claims reflect the entities."
 76,correct,Disagree,l. Other: None of the listed factors explain the contradiction.,It seems the differences may not have reached statistical significance in one case.,halil,,,"Yes, the claims reflect the entities."
 77,,,,,halil,,,"No, the claims do not reflect the entities."
+78,correct,Agree,Agree,,halil,,,"Yes, the claims reflect the entities."
