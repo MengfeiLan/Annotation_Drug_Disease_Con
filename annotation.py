@@ -748,57 +748,56 @@ with st.container(border=True):
     # =====================================================
     # 3. LLM Explanation
     # =====================================================
-    if st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
 
-        st.markdown("### Model Contradiction Reasoning")
-        
-        raw_explanation = str(row.get("reasoning", "")).strip()
-        
-        cleaned_explanation = (
-            raw_explanation
-            .replace("Task(1):", "")
-            .replace("Task(2):", "")
-            .strip()
+    st.markdown("### Model Contradiction Reasoning")
+    
+    raw_explanation = str(row.get("reasoning", "")).strip()
+    
+    cleaned_explanation = (
+        raw_explanation
+        .replace("Task(1):", "")
+        .replace("Task(2):", "")
+        .strip()
+    )
+    
+    with st.container(border=True):
+        st.markdown(
+            f"""
+            <div style="
+                background-color: #f9f9f9;
+                padding: 14px;
+                border-radius: 6px;
+                line-height: 1.6;
+                white-space: pre-wrap;
+                max-height: 150px;
+                overflow-y: auto;
+            ">
+            {cleaned_explanation}
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
-        
-        with st.container(border=True):
-            st.markdown(
-                f"""
-                <div style="
-                    background-color: #f9f9f9;
-                    padding: 14px;
-                    border-radius: 6px;
-                    line-height: 1.6;
-                    white-space: pre-wrap;
-                    max-height: 150px;
-                    overflow-y: auto;
-                ">
-                {cleaned_explanation}
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-        
-        st.markdown("---")
     
-    
-        # =====================================================
-        # 4. LLM Decision
-        # =====================================================
-        st.markdown("### LLM Decision")
-        st.write(f"**{row.get('prediction', 'N/A')}**")
-
-    
-        # -----------------------
-        # Task 1: Contradiction Detection
-        # -----------------------
-        st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>", unsafe_allow_html=True)
-        st.radio("", options=list(LABELS.keys()), key="label_radio")
-        st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
+    st.markdown("---")
 
 
+    # =====================================================
+    # 4. LLM Decision
+    # =====================================================
+    st.markdown("### LLM Decision")
+    st.write(f"**{row.get('prediction', 'N/A')}**")
 
-if st.session_state.selected_label == "correct" and st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
+
+    # -----------------------
+    # Task 1: Contradiction Detection
+    # -----------------------
+    st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>", unsafe_allow_html=True)
+    st.radio("", options=list(LABELS.keys()), key="label_radio")
+    st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
+
+
+
+if st.session_state.selected_label == "correct":
     st.markdown("---")
     st.subheader("🧩 Task 2: Contextual Resolution")
     st.markdown("### 🤖 LLM Contextual Judgment")
@@ -1058,7 +1057,7 @@ def save_annotation():
     # -----------------------
     # Task 2 fields (only if LLM correct)
     # -----------------------
-    if st.session_state.selected_label == "correct" and st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
+    if st.session_state.selected_label == "correct":
 
         new_row["contextual_agreement"] = st.session_state.contextual_agreement
 
@@ -1138,14 +1137,14 @@ def validate_and_save():
     if not st.session_state.entity_reflection:
         st.warning("Please select whether the extracted claims reflect the entities.")
         return False
-    if st.session_state.entity_reflection == "Yes, the claims reflect the entities." and not st.session_state.selected_label:
+    if not st.session_state.selected_label:
         st.warning("Please select whether the LLM is correct.")
         return False
 
     # -----------------------
     # Task 2 validation (only if LLM correct)
     # -----------------------
-    if st.session_state.selected_label == "correct" and st.session_state.entity_reflection == "Yes, the claims reflect the entities.":
+    if st.session_state.selected_label == "correct":
 
         # Must choose Agree / Disagree
         if not st.session_state.contextual_agreement:
