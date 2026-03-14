@@ -60,16 +60,15 @@ LABELS = {
 CONTEXTUAL_FACTORS = [
     "a. Species: The claims are based on different species that one claim is based on animal while another is based on another kind of animal or human.",
     "b. Population: The claims target different human subpopulations, such as differences in age, sex, genetic background, comorbidities, ethnicity, or risk profiles.",
-    "c. Physiological context: The intervention is evaluated under different transient physiological or environmental conditions (e.g., exertion state, hypoxia, fasting status, or acute stress), even within the same species and population.",
-    "d. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.",
-    "e. Route or mode of administration: The intervention is delivered via different routes (e.g., oral, intravenous, topical, sublingual, localized).",
-    "f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
-    "g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
-    "h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
-    "i. Study design: contradictions may arise from differences in trial methodology, such as parallel vs. crossover design, superiority vs. non-inferiority frameworks, blinding status, comparator type (placebo vs. active control), or randomization procedures.",
-    "j. Outcome measures: contradictions may arise because the studies measure different outcomes.", 
-    "k. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.",
-    "l. Other: None of the listed factors explain the contradiction.",
+    "c. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.",
+    "d. Route or mode of administration: The intervention is delivered via different routes (e.g., oral, intravenous, topical, sublingual, localized) or timing.",
+    "e. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
+    "f. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
+    "g. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
+    "h. Study design: contradictions may arise from differences in trial methodology, such as parallel vs. crossover design, superiority vs. non-inferiority frameworks, blinding status, comparator type (placebo vs. active control), or randomization procedures.",
+    "i. Outcome measures: contradictions may arise when studies assess different outcomes or evaluate the same outcome at different time points.", 
+    "j. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.",
+    "k. Other: None of the listed factors explain the contradiction.",
 ]
 
 # -----------------------
@@ -383,25 +382,23 @@ a. Species: The claims are based on different species that one claim is based on
 
 b. Population: The claims target different human subpopulations, such as differences in age, sex, genetic background, comorbidities, ethnicity, or risk profiles.
 
-c. Physiological context: The intervention is evaluated under different transient physiological or environmental conditions (e.g., exertion state, hypoxia, fasting status, or acute stress), even within the same species and population.
+c. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.
 
-d. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.
+d. Route or mode of administration: Different delivery routes or timing of administration may change tissue targeting or absorption.
 
-e. Route or mode of administration: The intervention is delivered via different routes (e.g., oral, intravenous, topical, sublingual, localized).
+e. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.
 
-f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.
+f. Evolving scientific evidence: The claims reflect different stages of scientific understanding.
 
-g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.
+g. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.
 
-h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.
+h. Study design: contradictions may arise from differences in trial methodology, such as parallel vs. crossover design, superiority vs. non-inferiority frameworks, blinding status, comparator type (placebo vs. active control), or randomization procedures.
 
-i. Study design: contradictions may arise from differences in trial methodology, such as parallel vs. crossover design, superiority vs. non-inferiority frameworks, blinding status, comparator type (placebo vs. active control), or randomization procedures.
+i. Outcome measures: contradictions may arise when studies assess different outcomes or evaluate the same outcome at different time points.
 
-j. Outcome measures: contradictions may arise because the studies measure different outcomes.
+j. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.
 
-k. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.
-
-l. Other: None of the listed factors explain the contradiction.
+k. Other: None of the listed factors explain the contradiction.
 
 To support scalable and interpretable contradiction resolution, we use LLMs to identify whether 
 contradictions can be explained by contextual differences defined in our taxonomy. The LLM is prompted 
@@ -428,16 +425,15 @@ LABELS = {
 CONTEXTUAL_FACTORS = [
     "a. Species: The claims are based on different species that one claim is based on animal while another is based on another kind of animal or human.",
     "b. Population: The claims target different human subpopulations, such as differences in age, sex, genetic background, comorbidities, ethnicity, or risk profiles.",
-    "c. Physiological context: The intervention is evaluated under different transient physiological or environmental conditions (e.g., exertion state, hypoxia, fasting status, or acute stress), even within the same species and population.",
-    "d. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.",
-    "e. Route or mode of administration: The intervention is delivered via different routes (e.g., oral, intravenous, topical, sublingual, localized).",
-    "f. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
-    "g. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
-    "h. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
-    "i. Study design: contradictions may arise from differences in trial methodology, such as parallel vs. crossover design, superiority vs. non-inferiority frameworks, blinding status, comparator type (placebo vs. active control), or randomization procedures.",
-    "j. Outcome measures: contradictions may arise because the studies measure different outcomes.", 
-    "k. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.",
-    "l. Other: None of the listed factors explain the contradiction.",
+    "c. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.",
+    "d. Route or mode of administration: The intervention is delivered via different routes (e.g., oral, intravenous, topical, sublingual, localized) or timing.",
+    "e. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.",
+    "f. Evolving scientific evidence: The claims reflect different stages of scientific understanding.",
+    "g. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",
+    "h. Study design: contradictions may arise from differences in trial methodology, such as parallel vs. crossover design, superiority vs. non-inferiority frameworks, blinding status, comparator type (placebo vs. active control), or randomization procedures.",
+    "i. Outcome measures: contradictions may arise when studies assess different outcomes or evaluate the same outcome at different time points.", 
+    "j. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.",
+    "k. Other: None of the listed factors explain the contradiction.",
 ]
 
 AMBIGUOUS_REFERENT_OPTIONS = [
@@ -873,19 +869,6 @@ if st.session_state.selected_label == "correct":
     The apparent contradiction arises from population differences. The prevalence of G6PD deficiency differs across regions, allowing these claims to coexist when population context is considered.
     """)
     
-    with st.expander("⚡ Physiological Context", expanded=False):
-        st.markdown("""
-    Different results may arise when the same intervention is evaluated under different transient physiological conditions.
-    
-    > *PMID 3942723:*  
-    > **Claim 1:** Caffeine reduced reaction time and delayed fatigue during **successive taekwondo combats**.
-    >
-    > *PMID 5306327:*  
-    > **Claim 2:** Caffeine improved endurance during **high-intensity cycling under hypoxia** without reducing fatigue.
-    
-    Differences in exercise modality and physiological environment explain these findings. We therefore extend prior taxonomies to explicitly include **transient physiological context**.
-    """)
-    
     
     
     with st.expander("💊 Dosage and Exposure Duration", expanded=False):
@@ -901,9 +884,9 @@ if st.session_state.selected_label == "correct":
     Differences in dosage and administration timing explain the divergent outcomes.
     """)
     
-    with st.expander("💉 Route of Administration", expanded=False):
+    with st.expander("💉 Route or mode of administration: ", expanded=False):
         st.markdown("""
-    Different delivery routes may change tissue targeting or absorption.
+    Different delivery routes or timing of administration may change tissue targeting or absorption. For example:
     
     > **Intravaginal misoprostol** was reported as safe and effective.  
     > **Sublingual misoprostol** showed higher rates of tachysystole.
@@ -949,7 +932,7 @@ if st.session_state.selected_label == "correct":
 
     with st.expander("📊 Outcome Measures", expanded=False):
         st.markdown("""
-    Contradictions may arise because the studies evaluate different primary or secondary outcomes. A treatment may have no effect on one clinical endpoint but still influence another biological or intermediate marker.
+    Contradictions can arise when the effects of a drug depend on the co-administered agents. Drug–drug interactions may produce different outcomes across different combination regimens. For example:
     
     > **Claim 1:** This study shows no significant influence of vitamin D supplementation on weight, fat mass, or waist circumference in type 2 diabetic obese vitamin D–deficient participants after one year.
     >
