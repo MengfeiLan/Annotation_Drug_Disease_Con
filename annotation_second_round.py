@@ -156,7 +156,7 @@ if "ambiguous_referent_type" not in annotations.columns:
     
 @st.cache_data
 def load_data():
-    return pd.read_csv(DATA_PATH)[50:100].reset_index(drop=False)
+    return pd.read_csv(DATA_PATH)[:50].reset_index(drop=False)
 
 df = load_data()
 
