@@ -964,7 +964,7 @@ if st.session_state.selected_label == "correct":
         # -----------------------
         # Ambiguous Referent Dropdown
         # -----------------------
-        if any(f.startswith("k. Ambiguous referent") 
+        if any(f.startswith("j. Ambiguous referent") 
                for f in st.session_state.contextual_factors):
         
             st.multiselect(
@@ -991,7 +991,7 @@ if st.session_state.selected_label == "correct":
         # -----------------------
         # Other Explanation Box
         # -----------------------
-        if any(f.startswith("l. Other") 
+        if any(f.startswith("k. Other") 
                for f in st.session_state.contextual_factors):
     
             st.text_area(
@@ -1050,7 +1050,7 @@ def save_annotation():
                 st.session_state.contextual_factors
             )
 
-            if any(f.startswith("k. Ambiguous referent")
+            if any(f.startswith("j. Ambiguous referent")
                    for f in st.session_state.contextual_factors):
             
                 # Save selected predefined types (excluding "Other")
@@ -1073,7 +1073,7 @@ def save_annotation():
                 new_row["ambiguous_referent_other_text"] = ""
 
 
-            if any(f.startswith("l. Other")
+            if any(f.startswith("k. Other")
                    for f in st.session_state.contextual_factors):
 
                 new_row["contextual_explanation"] = (
@@ -1142,7 +1142,7 @@ def validate_and_save():
                 return False
 
             # 🚨 Ambiguous referent requires subtype
-            if any(f.startswith("k. Ambiguous referent")
+            if any(f.startswith("j. Ambiguous referent")
                    for f in st.session_state.contextual_factors):
 
                 if not st.session_state.ambiguous_referent_type:
@@ -1157,7 +1157,7 @@ def validate_and_save():
 
 
             # 🚨 Other requires explanation
-            if any(f.startswith("l. Other")
+            if any(f.startswith("k. Other")
                    for f in st.session_state.contextual_factors):
 
                 if not st.session_state.contextual_explanation.strip():
