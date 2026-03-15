@@ -203,7 +203,7 @@ with st.sidebar:
         )
 
         if st.button("🔎 Go to selected example"):
-            matches = df.index[df["id"] == selected_id].tolist()
+            matches = df.index[df["id"].astype(str) == str(selected_id)].tolist()
             if matches:
                 st.session_state.current_idx = matches[0]
                 st.session_state.loaded_id = None
