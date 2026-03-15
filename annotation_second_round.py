@@ -98,7 +98,7 @@ if not st.session_state.logged_in:
 ANNOTATION_DIR = Path("annotations")
 ANNOTATION_DIR.mkdir(exist_ok=True)
 
-USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}_second_round_50.csv"
+USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}.csv"
 
 if USER_CSV.exists():
     annotations = pd.read_csv(USER_CSV)
@@ -156,14 +156,14 @@ if "ambiguous_referent_type" not in annotations.columns:
     
 @st.cache_data
 def load_data():
-    return pd.read_csv(DATA_PATH)[:50].reset_index(drop=False)
+    return pd.read_csv(DATA_PATH)[50:100].reset_index(drop=False)
 
 df = load_data()
 
 # -----------------------
 # Load per-user annotations
 # -----------------------
-USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}_second_round_50.csv"
+USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}.csv"
 if USER_CSV.exists():
     annotations = pd.read_csv(USER_CSV)
 else:
@@ -203,7 +203,7 @@ with st.sidebar:
         )
 
         if st.button("🔎 Go to selected example"):
-            matches = df.index[df["id"].astype(str) == str(selected_id)].tolist()
+            matches = df.index[df["id"] == selected_id].tolist()
             if matches:
                 st.session_state.current_idx = matches[0]
                 st.session_state.loaded_id = None
@@ -1208,4 +1208,3 @@ with col_next:
         if validate_and_save():
             st.session_state.current_idx += 1
             st.rerun()
-
