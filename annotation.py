@@ -157,7 +157,27 @@ if "ambiguous_referent_type" not in annotations.columns:
 def load_data():
     return pd.read_csv(DATA_PATH)[100:150].reset_index(drop=False)
 
-df = load_data()
+# df = load_data()
+
+
+@st.cache_data
+def load_data_each_annotator(username):
+    df = pd.read_csv(DATA_PATH)
+
+    # Assign annotation ranges
+    if username == "joe":
+        df = df.iloc[150:305]
+    elif username == "mengfei":
+        df = df.iloc[305:460]
+    elif username == "shiwei":
+        df = df.iloc[460:615]
+    else:
+        # fallback (e.g., halil or visitor)
+        df = df.iloc[0:50]
+
+    return df.reset_index(drop=False)
+
+df = load_data_each_annotator(st.session_state.username)
 
 # -----------------------
 # Load per-user annotations
