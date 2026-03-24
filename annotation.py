@@ -167,9 +167,9 @@ def load_data_each_annotator(username):
     # Assign annotation ranges
     if username == "joe":
         df = df.iloc[150:305]
-    elif username == "mengfei":
-        df = df.iloc[305:460]
     elif username == "shiwei":
+        df = df.iloc[305:460]
+    elif username == "mengfei":
         df = df.iloc[460:615]
     else:
         # fallback (e.g., halil or visitor)
