@@ -49,3 +49,4 @@ id,label,contextual_agreement,contextual_factors,contextual_explanation,annotato
 508,correct,Agree,Agree,,mengfei,,,"Yes, the claims reflect the entities."
 509,correct,Disagree,"e. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.; j. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.; i. Outcome measures: contradictions may arise when studies assess different outcomes or evaluate the same outcome at different time points.",,mengfei,One or both abstracts lack dosage and exposure duration information,,"Yes, the claims reflect the entities."
 510,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
+511,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
