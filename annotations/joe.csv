@@ -60,3 +60,4 @@ id,label,contextual_agreement,contextual_factors,contextual_explanation,annotato
 209,correct,Disagree,"c. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.; d. Route or mode of administration: The intervention is delivered via different routes (e.g., oral, intravenous, topical, sublingual, localized) or timing.; i. Outcome measures: contradictions may arise when studies assess different outcomes or evaluate the same outcome at different time points.",,joe,,,"Yes, the claims reflect the entities."
 210,correct,Agree,Agree,,joe,,,"Yes, the claims reflect the entities."
 211,incorrect,,,,joe,,,"Yes, the claims reflect the entities."
+212,incorrect,,,,joe,,,"No, the claims do not reflect the entities."
