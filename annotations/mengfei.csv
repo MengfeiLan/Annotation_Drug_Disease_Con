@@ -65,5 +65,5 @@ id,label,contextual_agreement,contextual_factors,contextual_explanation,annotato
 525,incorrect,,,,mengfei,,,"No, the claims do not reflect the entities."
 526,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
 527,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
-528,correct,Disagree,i. Outcome measures: contradictions may arise when studies assess different outcomes or evaluate the same outcome at different time points.,,mengfei,,,"Yes, the claims reflect the entities."
 461,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
+528,correct,Disagree,i. Outcome measures: contradictions may arise when studies assess different outcomes or evaluate the same outcome at different time points.,,mengfei,,,"Yes, the claims reflect the entities."
