@@ -19,3 +19,4 @@ id,label,contextual_agreement,contextual_factors,contextual_explanation,annotato
 323,incorrect,,,,shiwei,,,"Yes, the claims reflect the entities."
 324,correct,Disagree,"c. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.",,shiwei,,,"Yes, the claims reflect the entities."
 325,incorrect,,,,shiwei,,,"Yes, the claims reflect the entities."
+326,incorrect,,,,shiwei,,,"Yes, the claims reflect the entities."
