@@ -67,3 +67,4 @@ id,label,contextual_agreement,contextual_factors,contextual_explanation,annotato
 371,incorrect,,,,shiwei,,,"Yes, the claims reflect the entities."
 372,incorrect,,,,shiwei,,,"No, the claims do not reflect the entities."
 373,correct,Disagree,"c. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.; g. Known controversy or self-qualified claims: One or both claims explicitly acknowledge uncertainty.",,shiwei,,,"Yes, the claims reflect the entities."
+374,incorrect,,,,shiwei,,,"No, the claims do not reflect the entities."
