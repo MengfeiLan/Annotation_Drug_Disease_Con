@@ -94,7 +94,7 @@ if not st.session_state.logged_in:
 ANNOTATION_DIR = Path("annotations")
 ANNOTATION_DIR.mkdir(exist_ok=True)
 
-USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}.csv"
+USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}_reconcile_overlapping.csv"
 
 if USER_CSV.exists():
     annotations = pd.read_csv(USER_CSV)
