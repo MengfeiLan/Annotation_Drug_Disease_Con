@@ -44,10 +44,7 @@ def load_annotations_from_github():
 DATA_PATH = "annotation_file_with_new_categories_for_annotation_only.csv"
 
 USERS = {
-    "halil": "password123",
     "mengfei": "password456",
-    "shiwei": "password789",
-    "joe": "password101112",
     "visitor": "passwordvisitor"
 
 }
@@ -170,7 +167,7 @@ def load_data_each_annotator(username):
     elif username == "shiwei":
         df = df.iloc[305:460]
     elif username == "mengfei":
-        df = df.iloc[460:615]
+        df = df.iloc[:100]
     else:
         # fallback (e.g., halil or visitor)
         df = df.iloc[0:50]
@@ -182,7 +179,7 @@ df = load_data_each_annotator(st.session_state.username)
 # -----------------------
 # Load per-user annotations
 # -----------------------
-USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}.csv"
+USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}_reconcile_overlappings.csv"
 if USER_CSV.exists():
     annotations = pd.read_csv(USER_CSV)
 else:
