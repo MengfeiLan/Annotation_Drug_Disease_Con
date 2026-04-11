@@ -20,3 +20,4 @@ id,label,contextual_agreement,contextual_factors,contextual_explanation,annotato
 19,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
 20,correct,Disagree,"j. Ambiguous referent: One claim lacks a clear specification of species, population, dosage and exposure duration, or route of administration, resulting in uncertainty about the basis of comparison.",,mengfei,One or both abstracts lack dosage and exposure duration information,,"Yes, the claims reflect the entities."
 21,incorrect,,,,mengfei,,,"No, the claims do not reflect the entities."
+22,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
