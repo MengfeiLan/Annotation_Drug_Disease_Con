@@ -84,3 +84,4 @@ id,label,contextual_agreement,contextual_factors,contextual_explanation,annotato
 83,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
 84,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
 85,correct,Disagree,"e. Combined drug effects: The reported effect of a drug depends on its use in combination with other drugs or therapies.; c. Dosage or exposure duration: The same intervention is administered at different doses, frequencies, or durations.",,mengfei,,,"Yes, the claims reflect the entities."
+86,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
