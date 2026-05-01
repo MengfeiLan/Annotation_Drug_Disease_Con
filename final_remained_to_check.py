@@ -608,8 +608,8 @@ try:
     df["shared_entities"] = df["shared_entities"].apply(ast.literal_eval)
     df["shared_text"] = df["shared_text"].apply(ast.literal_eval)
 except:
-    df["shared_entities"] = [] * len(df)
-    df["shared_text"] = [] * len(df)
+    df["shared_entities"] = [None] * len(df)
+    df["shared_text"] = [None] * len(df)
 row = df.iloc[st.session_state.current_idx]
 
 
