@@ -49,6 +49,10 @@ USERS = {
 
 }
 
+LABELS = {
+    "LLM is correct: there's a contradiction in the drug-disease association across the claims": "correct",
+    "LLM is incorrect: there's no contradiction in the drug-disease association across the claims": "incorrect",
+}
 
 CONTEXTUAL_FACTORS = [
     "a. Species: The claims are based on different species that one claim is based on animal while another is based on another kind of animal or human.",
@@ -90,7 +94,7 @@ if not st.session_state.logged_in:
 ANNOTATION_DIR = Path("annotations")
 ANNOTATION_DIR.mkdir(exist_ok=True)
 
-USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}_remain_to_check.csv"
+USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}_remain.csv"
 
 if USER_CSV.exists():
     annotations = pd.read_csv(USER_CSV)
@@ -175,7 +179,7 @@ df = load_data_each_annotator(st.session_state.username)
 # -----------------------
 # Load per-user annotations
 # -----------------------
-USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}_remain_to_check.csv"
+USER_CSV = ANNOTATION_DIR / f"{st.session_state.username}_remain.csv"
 if USER_CSV.exists():
     annotations = pd.read_csv(USER_CSV)
 else:
@@ -341,9 +345,9 @@ st.session_state.current_idx = max(
 
 row = df.iloc[st.session_state.current_idx]
 
-# if st.session_state.get("loaded_id") != row["id"]:
-#     load_existing_annotation(row["id"])
-#     st.session_state.loaded_id = row["id"]
+if st.session_state.get("loaded_id") != row["id"]:
+    load_existing_annotation(row["id"])
+    st.session_state.loaded_id = row["id"]
 
 # -----------------------
 # UI
@@ -430,6 +434,10 @@ disagree, the annotators are asked to select the taxonomy factors that could exp
 # -----------------------
 DATA_PATH = "annotation_file_remained_to_check.csv"
 
+LABELS = {
+    "LLM is correct: there's a contradiction in the drug-disease association across the claims": "correct",
+    "LLM is incorrect: there's no contradiction in the drug-disease association across the claims": "incorrect",
+}
 
 CONTEXTUAL_FACTORS = [
     "a. Species: The claims are based on different species that one claim is based on animal while another is based on another kind of animal or human.",
@@ -595,8 +603,8 @@ def load_existing_annotation(example_id):
 
 # Clamp index
 st.session_state.current_idx = max(0, min(st.session_state.current_idx, len(df) - 1))
-# df["shared_entities"] = df["shared_entities"].apply(ast.literal_eval)
-# df["shared_text"] = df["shared_text"].apply(ast.literal_eval)
+df["shared_entities"] = df["shared_entities"].apply(ast.literal_eval)
+df["shared_text"] = df["shared_text"].apply(ast.literal_eval)
 
 row = df.iloc[st.session_state.current_idx]
 
@@ -613,39 +621,39 @@ with st.container(border=True):
     
     col_se_l, col_se_r = st.columns([1.2, 1])
     
-    # # ---------- LEFT COLUMN ----------
-    # with col_se_l:
+    # ---------- LEFT COLUMN ----------
+    with col_se_l:
     
-    #     # ---------- PubTator ----------
-    #     with st.container(border=True):
-    #         st.markdown("#### PubTator Standardized Entities")
+        # ---------- PubTator ----------
+        with st.container(border=True):
+            st.markdown("#### PubTator Standardized Entities")
     
-    #         pub_entities = row.get("shared_entities", {}) or {}
+            pub_entities = row.get("shared_entities", {}) or {}
     
-            # drug_pub = ", ".join(pub_entities.get("Chemical", [])) or "N/A"
-            # disease_pub = ", ".join(pub_entities.get("Disease", [])) or "N/A"
+            drug_pub = ", ".join(pub_entities.get("Chemical", [])) or "N/A"
+            disease_pub = ", ".join(pub_entities.get("Disease", [])) or "N/A"
     
-            # st.markdown(f"**💊 Drug:** {drug_pub}")
-            # st.markdown(f"**🦠 Disease:** {disease_pub}")
+            st.markdown(f"**💊 Drug:** {drug_pub}")
+            st.markdown(f"**🦠 Disease:** {disease_pub}")
     
-        # st.markdown("")  # spacing
+        st.markdown("")  # spacing
     
         # ---------- Original Text ----------
-        # with st.container(border=True):
-        #     st.markdown("#### Original Text Entities")
+        with st.container(border=True):
+            st.markdown("#### Original Text Entities")
 
-        #     # text_entities = row.get("shared_text", {}) or {}
-        #     # if isinstance(text_entities, str):
-        #     #     try:
-        #     #         text_entities = ast.literal_eval(text_entities)
-        #     #     except:
-        #     #         text_entities = {}
+            text_entities = row.get("shared_text", {}) or {}
+            if isinstance(text_entities, str):
+                try:
+                    text_entities = ast.literal_eval(text_entities)
+                except:
+                    text_entities = {}
     
-        #     drug_text = ", ".join(text_entities.get("Chemical", [])) or "N/A"
-        #     disease_text = ", ".join(text_entities.get("Disease", [])) or "N/A"
+            drug_text = ", ".join(text_entities.get("Chemical", [])) or "N/A"
+            disease_text = ", ".join(text_entities.get("Disease", [])) or "N/A"
     
-        #     st.markdown(f"**💊 Drug:** {drug_text}")
-        #     st.markdown(f"**🦠 Disease:** {disease_text}")
+            st.markdown(f"**💊 Drug:** {drug_text}")
+            st.markdown(f"**🦠 Disease:** {disease_text}")
     
     
     # ---------- RIGHT COLUMN ----------
@@ -700,7 +708,7 @@ with st.container(border=True):
                 re.sub(r"\.(?=[A-Z])", ". ", row["claim_1"])
             )
         with st.expander("Claim 1 – Full Abstract"):
-            st.write(f"**PMID:** {row['pmid_a']}")
+            st.write(f"**PMID:** {row['pmid_1']}")
             st.write(row["claims_abs_1"])
 
     with col2:
@@ -710,7 +718,7 @@ with st.container(border=True):
                 re.sub(r"\.(?=[A-Z])", ". ", row["claim_2"])
             )
         with st.expander("Claim 2 – Full Abstract"):
-            st.write(f"**PMID:** {row['pmid_b']}")
+            st.write(f"**PMID:** {row['pmid_2']}")
             st.write(
                 re.sub(r"\.(?=[A-Z])", ". ", row["claims_abs_2"])
             )
@@ -802,219 +810,221 @@ with st.container(border=True):
 
 
 
-st.subheader("🧩 Task 2: Contextual Resolution")
-st.markdown("### 🤖 LLM Contextual Judgment")
+if st.session_state.selected_label == "correct":
+    st.markdown("---")
+    st.subheader("🧩 Task 2: Contextual Resolution")
+    st.markdown("### 🤖 LLM Contextual Judgment")
+    
+    st.write(f"**The LLM identifies the following contextual conditions that may explain the apparent contradiction:** {row.get('contextual_factor', 'N/A')}")
+    
+    if row.get("contextual_factor_explanation"):
+        st.markdown(
+            f"""
+            <div style="
+                max-height: 180px;
+                overflow-y: auto;
+                padding: 10px;
+                border-radius: 6px;
+                border: 1px solid #ddd;
+                font-size: 15px;
+                background-color: transparent;
+                white-space: pre-wrap;
+            ">
+                {row["contextual_factor_explanation"]}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-st.write(f"**The LLM identifies the following contextual conditions that may explain the apparent contradiction:** {row.get('contextual_factor', 'N/A')}")
+        # -----------------------
+    # Task 2: Contextual Resolution
+    # -----------------------
+    
+    # ======================
+    # Internal-to-the-patient
+    # ======================
 
-if row.get("contextual_factor_explanation"):
     st.markdown(
-        f"""
+        """
         <div style="
-            max-height: 180px;
-            overflow-y: auto;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            font-size: 15px;
-            background-color: transparent;
-            white-space: pre-wrap;
+            margin-top: 30px;
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #444;
         ">
-            {row["contextual_factor_explanation"]}
+            Contextual Factors Reference
         </div>
+        <hr style="margin-top: 4px; margin-bottom: 16px; border: none; border-top: 1px solid #eee;">
         """,
         unsafe_allow_html=True
     )
 
-    # -----------------------
-# Task 2: Contextual Resolution
-# -----------------------
-
-# ======================
-# Internal-to-the-patient
-# ======================
-
-st.markdown(
-    """
-    <div style="
-        margin-top: 30px;
-        margin-bottom: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        color: #444;
-    ">
-        Contextual Factors Reference
-    </div>
-    <hr style="margin-top: 4px; margin-bottom: 16px; border: none; border-top: 1px solid #eee;">
-    """,
-    unsafe_allow_html=True
-)
-
-with st.expander("🧬 Species", expanded=False):
-    st.markdown("""
-Contradictions in drug–effect associations may result from cross-species differences.
-
-> *PMID 1595111:*  
-> **Wistar rats** (experiment 1)…  
-> **Claim 1:** Tirilazad reduces cortical infarction in transient but not permanent ischemia, an effect not related to improvement in regional cerebral blood flow. Tirilazad might prove to be useful as an adjuvant therapy after successful thrombolysis in acute stroke patients.
->
-> *PMID 11687138:*  
-> **Claim 2:** Tirilazad mesylate increased the combined end-point of “death or disability” by about one-fifth when given to **patients** with acute ischaemic stroke.
-
-These claims appear contradictory at first glance. However, Claim 1 is based on preclinical experiments in rats, whereas Claim 2 reports results from human clinical trials. Differences in disease manifestation and pharmacokinetics across species limit direct comparability. Therefore, the claims reflect **species-specific effects rather than a true contradiction**.
-""")
-
-with st.expander("👥 Population", expanded=False):
-    st.markdown("""
-Claims may target different demographic or genetic subpopulations (e.g., age, sex, or location).
-
-> *PMID 1595111:*  
-> **Claim 1:** A full course of 8-aminoquinolines should be added to mass drug administration to eliminate malaria in **four villages of the Lao PDR**.
->
-> **Claim 2:** G6PD deficiency is common in **African patients**, making 8-aminoquinoline use problematic.
-
-The apparent contradiction arises from population differences. The prevalence of G6PD deficiency differs across regions, allowing these claims to coexist when population context is considered.
-""")
-
-
-
-with st.expander("💊 Dosage and Exposure Duration", expanded=False):
-    st.markdown("""
-Different doses or exposure durations may produce different biological effects.
-
-> *PMID 27795670:*  
-> **Claim 1:** 10 mg intravenous dexamethasone showed no impact on postoperative pain.
->
-> *PMID 34749994:*  
-> **Claim 2:** Dexamethasone 1 mg/kg reduced pain and improved recovery.
-
-Differences in dosage and administration timing explain the divergent outcomes.
-""")
-
-with st.expander("💉 Route or mode of administration: ", expanded=False):
-    st.markdown("""
-Different delivery routes or timing of administration may change tissue targeting or absorption. For example:
-
-> **Intravaginal misoprostol** was reported as safe and effective.  
-> **Sublingual misoprostol** showed higher rates of tachysystole.
-
-Route of administration explains the differing safety profiles.
-""")
-
-with st.expander("📈 Evolving Scientific Evidence", expanded=False):
-    st.markdown("""
-Early hypotheses may be revised by later trials.
-
-> **Claim 1:** Adjunctive rifampicin was hypothesized to improve outcomes.  
-> **Claim 2:** Later trials showed no overall benefit.
-
-These findings represent different stages of scientific understanding.
-""")
-
-with st.expander("⚠️ Known Controversy", expanded=False):
-    st.markdown("""
-Some claims explicitly acknowledge uncertainty.
-
-> **Claim 1:** Fluoroquinolone treatment failure is associated with *S. Typhi*-H58.  
-> **Claim 2:** Fluoroquinolones are still recommended, but policies should change.
-
-The claims reflect an acknowledged controversy rather than a contradiction.
-""")
-
-with st.expander("🧪 Combined Drug Effects", expanded=False):
-    st.markdown("""
-Drug–drug interactions may yield different outcomes.
-
-> **Claim 1:** Gemcitabine combined with HF10 and erlotinib was safe.  
-> **Claim 2:** Gemcitabine combined with dual EGFR therapy increased toxicity.
-
-Different combination regimens explain the apparent contradiction.
-""")
+    with st.expander("🧬 Species", expanded=False):
+        st.markdown("""
+    Contradictions in drug–effect associations may result from cross-species differences.
+    
+    > *PMID 1595111:*  
+    > **Wistar rats** (experiment 1)…  
+    > **Claim 1:** Tirilazad reduces cortical infarction in transient but not permanent ischemia, an effect not related to improvement in regional cerebral blood flow. Tirilazad might prove to be useful as an adjuvant therapy after successful thrombolysis in acute stroke patients.
+    >
+    > *PMID 11687138:*  
+    > **Claim 2:** Tirilazad mesylate increased the combined end-point of “death or disability” by about one-fifth when given to **patients** with acute ischaemic stroke.
+    
+    These claims appear contradictory at first glance. However, Claim 1 is based on preclinical experiments in rats, whereas Claim 2 reports results from human clinical trials. Differences in disease manifestation and pharmacokinetics across species limit direct comparability. Therefore, the claims reflect **species-specific effects rather than a true contradiction**.
+    """)
+    
+    with st.expander("👥 Population", expanded=False):
+        st.markdown("""
+    Claims may target different demographic or genetic subpopulations (e.g., age, sex, or location).
+    
+    > *PMID 1595111:*  
+    > **Claim 1:** A full course of 8-aminoquinolines should be added to mass drug administration to eliminate malaria in **four villages of the Lao PDR**.
+    >
+    > **Claim 2:** G6PD deficiency is common in **African patients**, making 8-aminoquinoline use problematic.
+    
+    The apparent contradiction arises from population differences. The prevalence of G6PD deficiency differs across regions, allowing these claims to coexist when population context is considered.
+    """)
+    
+    
+    
+    with st.expander("💊 Dosage and Exposure Duration", expanded=False):
+        st.markdown("""
+    Different doses or exposure durations may produce different biological effects.
+    
+    > *PMID 27795670:*  
+    > **Claim 1:** 10 mg intravenous dexamethasone showed no impact on postoperative pain.
+    >
+    > *PMID 34749994:*  
+    > **Claim 2:** Dexamethasone 1 mg/kg reduced pain and improved recovery.
+    
+    Differences in dosage and administration timing explain the divergent outcomes.
+    """)
+    
+    with st.expander("💉 Route or mode of administration: ", expanded=False):
+        st.markdown("""
+    Different delivery routes or timing of administration may change tissue targeting or absorption. For example:
+    
+    > **Intravaginal misoprostol** was reported as safe and effective.  
+    > **Sublingual misoprostol** showed higher rates of tachysystole.
+    
+    Route of administration explains the differing safety profiles.
+    """)
+    
+    with st.expander("📈 Evolving Scientific Evidence", expanded=False):
+        st.markdown("""
+    Early hypotheses may be revised by later trials.
+    
+    > **Claim 1:** Adjunctive rifampicin was hypothesized to improve outcomes.  
+    > **Claim 2:** Later trials showed no overall benefit.
+    
+    These findings represent different stages of scientific understanding.
+    """)
+    
+    with st.expander("⚠️ Known Controversy", expanded=False):
+        st.markdown("""
+    Some claims explicitly acknowledge uncertainty.
+    
+    > **Claim 1:** Fluoroquinolone treatment failure is associated with *S. Typhi*-H58.  
+    > **Claim 2:** Fluoroquinolones are still recommended, but policies should change.
+    
+    The claims reflect an acknowledged controversy rather than a contradiction.
+    """)
+    
+    with st.expander("🧪 Combined Drug Effects", expanded=False):
+        st.markdown("""
+    Drug–drug interactions may yield different outcomes.
+    
+    > **Claim 1:** Gemcitabine combined with HF10 and erlotinib was safe.  
+    > **Claim 2:** Gemcitabine combined with dual EGFR therapy increased toxicity.
+    
+    Different combination regimens explain the apparent contradiction.
+    """)
 
 
-with st.expander("🔬 Study design", expanded=False):
-    st.markdown("""
-Contradictions may arise from differences in study methodology, which can influence the strength and interpretation of findings. These differences may include retrospective vs. prospective design, randomized vs. non-randomized allocation, or observational vs. interventional approaches. 
-""")
+    with st.expander("🔬 Study design", expanded=False):
+        st.markdown("""
+    Contradictions may arise from differences in study methodology, which can influence the strength and interpretation of findings. These differences may include retrospective vs. prospective design, randomized vs. non-randomized allocation, or observational vs. interventional approaches. 
+    """)
 
-with st.expander("📊 Outcome Measures", expanded=False):
-    st.markdown("""
-Contradictions can arise when the effects of a drug depend on the co-administered agents. Drug–drug interactions may produce different outcomes across different combination regimens. For example:
+    with st.expander("📊 Outcome Measures", expanded=False):
+        st.markdown("""
+    Contradictions can arise when the effects of a drug depend on the co-administered agents. Drug–drug interactions may produce different outcomes across different combination regimens. For example:
+    
+    > **Claim 1:** This study shows no significant influence of vitamin D supplementation on weight, fat mass, or waist circumference in type 2 diabetic obese vitamin D–deficient participants after one year.
+    >
+    > **Claim 2:** Daily vitamin D supplementation effectively reduced circulatory YKL-40 and MCP-1 levels in patients with type 2 diabetes and vitamin D deficiency.
+    
+    The apparent contradiction is explained by differences in outcome measures (clinical anthropometric outcomes vs. inflammatory biomarkers), rather than opposing findings on the same endpoint.
+    """)
 
-> **Claim 1:** This study shows no significant influence of vitamin D supplementation on weight, fat mass, or waist circumference in type 2 diabetic obese vitamin D–deficient participants after one year.
->
-> **Claim 2:** Daily vitamin D supplementation effectively reduced circulatory YKL-40 and MCP-1 levels in patients with type 2 diabetes and vitamin D deficiency.
+    with st.expander("🧩 Ambiguous Referent", expanded=False):
+        st.markdown("""
+    One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.""")
+            
+    with st.expander("❓ Other", expanded=False):
+        st.markdown("""None of the listed factors explain the contradiction. If choosing 'Other', explain the other potiential contextual factors that may apply to the scenario.""")
 
-The apparent contradiction is explained by differences in outcome measures (clinical anthropometric outcomes vs. inflammatory biomarkers), rather than opposing findings on the same endpoint.
-""")
+    st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Do you agree with the LLM’s contextual judgment?</p>", unsafe_allow_html=True)
+    st.radio("", options=["Agree", "Disagree"], key="contextual_agreement", horizontal=True)
 
-with st.expander("🧩 Ambiguous Referent", expanded=False):
-    st.markdown("""
-One or both claims lack clear specification of species, population, dosage, or route of administration, resulting in uncertainty about the basis of comparison.""")
-        
-with st.expander("❓ Other", expanded=False):
-    st.markdown("""None of the listed factors explain the contradiction. If choosing 'Other', explain the other potiential contextual factors that may apply to the scenario.""")
-
-st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Do you agree with the LLM’s contextual judgment?</p>", unsafe_allow_html=True)
-st.radio("", options=["Agree", "Disagree"], key="contextual_agreement", horizontal=True)
-
-if st.session_state.contextual_agreement == "Disagree":
-
-    st.multiselect(
-        "Which contextual factors explain the contradiction?",
-        options=CONTEXTUAL_FACTORS,
-        key="contextual_factors"
-    )
-
-    # -----------------------
-
-    # -----------------------
-    # Ambiguous Referent Dropdown
-    # -----------------------
-    if any(f.startswith("j. Ambiguous referent") 
-           for f in st.session_state.contextual_factors):
+    if st.session_state.contextual_agreement == "Disagree":
     
         st.multiselect(
-            "Specify the type of ambiguous referent:",
-            options=AMBIGUOUS_REFERENT_OPTIONS,
-            key="ambiguous_referent_type"
+            "Which contextual factors explain the contradiction?",
+            options=CONTEXTUAL_FACTORS,
+            key="contextual_factors"
         )
     
-        # Show textbox ONLY if "Other" is selected
-        if "Other" in st.session_state.ambiguous_referent_type:
+        # -----------------------
+
+        # -----------------------
+        # Ambiguous Referent Dropdown
+        # -----------------------
+        if any(f.startswith("j. Ambiguous referent") 
+               for f in st.session_state.contextual_factors):
+        
+            st.multiselect(
+                "Specify the type of ambiguous referent:",
+                options=AMBIGUOUS_REFERENT_OPTIONS,
+                key="ambiguous_referent_type"
+            )
+        
+            # Show textbox ONLY if "Other" is selected
+            if "Other" in st.session_state.ambiguous_referent_type:
+                st.text_area(
+                    "Please specify the other ambiguous referent:",
+                    key="ambiguous_referent_other_text",
+                    height=100
+                )
+            else:
+                st.session_state.ambiguous_referent_other_text = ""
+        
+        else:
+            st.session_state.ambiguous_referent_type = []
+            st.session_state.ambiguous_referent_other_text = ""
+
+    
+        # -----------------------
+        # Other Explanation Box
+        # -----------------------
+        if any(f.startswith("k. Other") 
+               for f in st.session_state.contextual_factors):
+    
             st.text_area(
-                "Please specify the other ambiguous referent:",
-                key="ambiguous_referent_other_text",
-                height=100
+                "Please explain the other contextual factor:",
+                key="contextual_explanation",
+                height=120
             )
         else:
-            st.session_state.ambiguous_referent_other_text = ""
-    
-    else:
-        st.session_state.ambiguous_referent_type = []
-        st.session_state.ambiguous_referent_other_text = ""
-
-
-    # -----------------------
-    # Other Explanation Box
-    # -----------------------
-    if any(f.startswith("k. Other") 
-           for f in st.session_state.contextual_factors):
-
-        st.text_area(
-            "Please explain the other contextual factor:",
-            key="contextual_explanation",
-            height=120
-        )
-    else:
-        # Clear stale value if unselected
+            # Clear stale value if unselected
+            st.session_state.contextual_explanation = ""
+        
+    elif st.session_state.contextual_agreement == "Agree":
+        st.session_state.contextual_factors = []
         st.session_state.contextual_explanation = ""
-    
-elif st.session_state.contextual_agreement == "Agree":
-    st.session_state.contextual_factors = []
-    st.session_state.contextual_explanation = ""
 
-    
+        
 # -----------------------
 # Save annotation
 # -----------------------
@@ -1039,43 +1049,61 @@ def save_annotation():
 
     new_row = {
         "id": row["id"],
+        "label": st.session_state.selected_label,
         "annotator": st.session_state.username,
-        "entity_reflection": st.session_state.get("entity_reflection", ""),
-        "contextual_agreement": st.session_state.contextual_agreement or "",
+        "entity_reflection": st.session_state.get("entity_reflection", "")
     }
 
-    if st.session_state.contextual_agreement == "Disagree":
+    # -----------------------
+    # Task 2 fields (only if LLM correct)
+    # -----------------------
+    if st.session_state.selected_label == "correct":
 
-        new_row["contextual_factors"] = "; ".join(
-            st.session_state.contextual_factors
-        )
+        new_row["contextual_agreement"] = st.session_state.contextual_agreement
 
-        if any(f.startswith("j. Ambiguous referent")
-               for f in st.session_state.contextual_factors):
+        if st.session_state.contextual_agreement == "Disagree":
 
-            new_row["ambiguous_referent_type"] = "; ".join(
-                st.session_state.ambiguous_referent_type
+            new_row["contextual_factors"] = "; ".join(
+                st.session_state.contextual_factors
             )
 
-            new_row["ambiguous_referent_other_text"] = (
-                st.session_state.get("ambiguous_referent_other_text", "").strip()
-            )
+            if any(f.startswith("j. Ambiguous referent")
+                   for f in st.session_state.contextual_factors):
+            
+                # Save selected predefined types (excluding "Other")
+                selected_types = [
+                    t for t in st.session_state.ambiguous_referent_type
+                ]
+            
+                new_row["ambiguous_referent_type"] = "; ".join(selected_types)
+            
+                # Save "Other" explanation in its own column
+                if "Other" in st.session_state.ambiguous_referent_type:
+                    new_row["ambiguous_referent_other_text"] = (
+                        st.session_state.get("ambiguous_referent_other_text", "").strip()
+                    )
+                else:
+                    new_row["ambiguous_referent_other_text"] = ""
+            
+            else:
+                new_row["ambiguous_referent_type"] = ""
+                new_row["ambiguous_referent_other_text"] = ""
+
+
+            if any(f.startswith("k. Other")
+                   for f in st.session_state.contextual_factors):
+
+                new_row["contextual_explanation"] = (
+                    st.session_state.contextual_explanation.strip()
+                )
+
         else:
-            new_row["ambiguous_referent_type"] = ""
-            new_row["ambiguous_referent_other_text"] = ""
+            # If Agree
+            new_row["contextual_factors"] = "Agree"
 
-        if any(f.startswith("k. Other")
-               for f in st.session_state.contextual_factors):
-
-            new_row["contextual_explanation"] = (
-                st.session_state.contextual_explanation.strip()
-            )
-        else:
-            new_row["contextual_explanation"] = ""
-
-    else:
-        new_row["contextual_factors"] = "Agree"
-
+    # -----------------------
+    # Remove previous annotation
+    # -----------------------
     annotations = annotations[
         ~(
             (annotations["id"] == row["id"]) &
@@ -1103,39 +1131,57 @@ col_prev, col_save, col_next = st.columns([1, 2, 1])
 # -----------------------
 def validate_and_save():
 
+    # -----------------------
+    # Task 1 validation
+    # -----------------------
     if not st.session_state.entity_reflection:
         st.warning("Please select whether the extracted claims reflect the entities.")
         return False
-
-    if not st.session_state.contextual_agreement:
-        st.warning("Please indicate agreement with contextual judgment.")
+    if not st.session_state.selected_label:
+        st.warning("Please select whether the LLM is correct.")
         return False
 
-    if st.session_state.contextual_agreement == "Disagree":
+    # -----------------------
+    # Task 2 validation (only if LLM correct)
+    # -----------------------
+    if st.session_state.selected_label == "correct":
 
-        if not st.session_state.contextual_factors:
-            st.warning("Please select at least one contextual factor.")
+        # Must choose Agree / Disagree
+        if not st.session_state.contextual_agreement:
+            st.warning("Please indicate agreement with the LLM’s contextual judgment.")
             return False
 
-        if any(f.startswith("j. Ambiguous referent")
-               for f in st.session_state.contextual_factors):
+        # If Disagree → must select contextual factors
+        if st.session_state.contextual_agreement == "Disagree":
 
-            if not st.session_state.ambiguous_referent_type:
-                st.warning("Please specify ambiguous referent type.")
+            if not st.session_state.contextual_factors:
+                st.warning("Please select at least one contextual factor.")
                 return False
 
-            if "Other" in st.session_state.ambiguous_referent_type:
-                if not st.session_state.get("ambiguous_referent_other_text", "").strip():
-                    st.warning("Please explain 'Other'.")
+            # 🚨 Ambiguous referent requires subtype
+            if any(f.startswith("j. Ambiguous referent")
+                   for f in st.session_state.contextual_factors):
+
+                if not st.session_state.ambiguous_referent_type:
+                    st.warning("Please specify the type of ambiguous referent.")
+                    return False
+                
+                # If "Other" selected → explanation required
+                if "Other" in st.session_state.ambiguous_referent_type:
+                    if not st.session_state.get("ambiguous_referent_other_text", "").strip():
+                        st.warning("Please explain the 'Other' ambiguous referent.")
+                        return False
+
+
+            # 🚨 Other requires explanation
+            if any(f.startswith("k. Other")
+                   for f in st.session_state.contextual_factors):
+
+                if not st.session_state.contextual_explanation.strip():
+                    st.warning("Please explain the 'Other' contextual factor.")
                     return False
 
-        if any(f.startswith("k. Other")
-               for f in st.session_state.contextual_factors):
-
-            if not st.session_state.contextual_explanation.strip():
-                st.warning("Please explain contextual factor.")
-                return False
-
+    # If everything is valid → save
     save_annotation()
     return True
 
