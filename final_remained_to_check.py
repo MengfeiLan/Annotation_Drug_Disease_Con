@@ -125,15 +125,6 @@ def push_annotations_to_github(local_file_path, commit_msg="Update annotations")
         # If file doesn't exist, create it
         repo.create_file(local_file_path, commit_msg, content)
 
-default_agreement = st.session_state.get("contextual_agreement", "Agree")
-
-st.session_state.contextual_agreement = st.radio(
-    "",
-    options=["Agree", "Disagree"],
-    index=0 if default_agreement == "Agree" else 1,
-    key="contextual_agreement"
-)
-
 # -----------------------
 # Helpers
 # -----------------------
