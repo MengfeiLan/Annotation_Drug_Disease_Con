@@ -740,6 +740,17 @@ with st.container(border=True):
         "Yes, the claims reflect the entities.",
         "No, the claims do not reflect the entities."
     ]
+
+
+    if "entity_reflection" not in st.session_state or st.session_state.entity_reflection is None:
+    st.session_state.entity_reflection = entity_reflection_options[0]  # DEFAULT = YES
+
+    st.radio(
+        "",
+        options=entity_reflection_options,
+        key="entity_reflection",
+        index=entity_reflection_options.index(st.session_state.entity_reflection)
+    )
     
     # Only pass index if there is a previous selection
     if st.session_state.get("entity_reflection") in entity_reflection_options:
@@ -805,7 +816,20 @@ with st.container(border=True):
     # Task 1: Contradiction Detection
     # -----------------------
     st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>", unsafe_allow_html=True)
-    st.radio("", options=list(LABELS.keys()), key="label_radio")
+    label_options = list(LABELS.keys())
+    
+    default_label = "LLM is correct: there's a contradiction in the drug-disease association across the claims"
+    
+    if "label_radio" not in st.session_state or st.session_state.label_radio is None:
+        st.session_state.label_radio = default_label
+    
+    st.radio(
+        "",
+        options=label_options,
+        key="label_radio",
+        index=label_options.index(st.session_state.label_radio)
+    )
+    
     st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
 
 
