@@ -622,8 +622,8 @@ with st.container(border=True):
     
             pub_entities = row.get("shared_entities", {}) or {}
     
-            drug_pub = ", ".join(pub_entities.get("Chemical", [])) or "N/A"
-            disease_pub = ", ".join(pub_entities.get("Disease", [])) or "N/A"
+            # drug_pub = ", ".join(pub_entities.get("Chemical", [])) or "N/A"
+            # disease_pub = ", ".join(pub_entities.get("Disease", [])) or "N/A"
     
             st.markdown(f"**💊 Drug:** {drug_pub}")
             st.markdown(f"**🦠 Disease:** {disease_pub}")
