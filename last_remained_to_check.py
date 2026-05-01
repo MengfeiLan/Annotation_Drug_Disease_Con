@@ -628,7 +628,7 @@ with st.container(border=True):
             # st.markdown(f"**💊 Drug:** {drug_pub}")
             # st.markdown(f"**🦠 Disease:** {disease_pub}")
     
-        st.markdown("")  # spacing
+        # st.markdown("")  # spacing
     
         # ---------- Original Text ----------
         # with st.container(border=True):
