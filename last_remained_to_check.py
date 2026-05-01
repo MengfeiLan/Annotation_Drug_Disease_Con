@@ -700,7 +700,7 @@ with st.container(border=True):
                 re.sub(r"\.(?=[A-Z])", ". ", row["claim_1"])
             )
         with st.expander("Claim 1 – Full Abstract"):
-            st.write(f"**PMID:** {row['pmid_1']}")
+            st.write(f"**PMID:** {row['pmid_a']}")
             st.write(row["claims_abs_1"])
 
     with col2:
@@ -710,7 +710,7 @@ with st.container(border=True):
                 re.sub(r"\.(?=[A-Z])", ". ", row["claim_2"])
             )
         with st.expander("Claim 2 – Full Abstract"):
-            st.write(f"**PMID:** {row['pmid_2']}")
+            st.write(f"**PMID:** {row['pmid_b']}")
             st.write(
                 re.sub(r"\.(?=[A-Z])", ". ", row["claims_abs_2"])
             )
