@@ -41,7 +41,7 @@ def load_annotations_from_github():
 # -----------------------
 # Configuration
 # -----------------------
-DATA_PATH = "annotation_file_with_new_categories_for_annotation_only.csv"
+DATA_PATH = "annotation_file_remained_to_check.csv"
 
 USERS = {
     "mengfei": "password456",
@@ -428,7 +428,7 @@ disagree, the annotators are asked to select the taxonomy factors that could exp
 # -----------------------
 # Configuration
 # -----------------------
-DATA_PATH = "annotation_file_with_new_categories_for_annotation_only.csv"
+DATA_PATH = "annotation_file_remained_to_check.csv"
 
 
 CONTEXTUAL_FACTORS = [
