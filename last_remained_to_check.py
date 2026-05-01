@@ -341,9 +341,9 @@ st.session_state.current_idx = max(
 
 row = df.iloc[st.session_state.current_idx]
 
-if st.session_state.get("loaded_id") != row["id"]:
-    load_existing_annotation(row["id"])
-    st.session_state.loaded_id = row["id"]
+# if st.session_state.get("loaded_id") != row["id"]:
+#     load_existing_annotation(row["id"])
+#     st.session_state.loaded_id = row["id"]
 
 # -----------------------
 # UI
