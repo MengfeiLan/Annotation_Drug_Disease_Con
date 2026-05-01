@@ -613,20 +613,20 @@ with st.container(border=True):
     
     col_se_l, col_se_r = st.columns([1.2, 1])
     
-    # ---------- LEFT COLUMN ----------
-    with col_se_l:
+    # # ---------- LEFT COLUMN ----------
+    # with col_se_l:
     
-        # ---------- PubTator ----------
-        with st.container(border=True):
-            st.markdown("#### PubTator Standardized Entities")
+    #     # ---------- PubTator ----------
+    #     with st.container(border=True):
+    #         st.markdown("#### PubTator Standardized Entities")
     
-            pub_entities = row.get("shared_entities", {}) or {}
+    #         pub_entities = row.get("shared_entities", {}) or {}
     
             # drug_pub = ", ".join(pub_entities.get("Chemical", [])) or "N/A"
             # disease_pub = ", ".join(pub_entities.get("Disease", [])) or "N/A"
     
-            st.markdown(f"**💊 Drug:** {drug_pub}")
-            st.markdown(f"**🦠 Disease:** {disease_pub}")
+            # st.markdown(f"**💊 Drug:** {drug_pub}")
+            # st.markdown(f"**🦠 Disease:** {disease_pub}")
     
         st.markdown("")  # spacing
     
