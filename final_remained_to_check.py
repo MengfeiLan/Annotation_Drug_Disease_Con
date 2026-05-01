@@ -743,31 +743,31 @@ with st.container(border=True):
 
 
     if "entity_reflection" not in st.session_state or st.session_state.entity_reflection is None:
-    st.session_state.entity_reflection = entity_reflection_options[0]  # DEFAULT = YES
-
-    st.radio(
-        "",
-        options=entity_reflection_options,
-        key="entity_reflection",
-        index=entity_reflection_options.index(st.session_state.entity_reflection)
-    )
+        st.session_state.entity_reflection = entity_reflection_options[0]  # DEFAULT = YES
     
-    # Only pass index if there is a previous selection
-    if st.session_state.get("entity_reflection") in entity_reflection_options:
-        selected_index = entity_reflection_options.index(st.session_state.entity_reflection)
         st.radio(
             "",
             options=entity_reflection_options,
             key="entity_reflection",
-            index=selected_index
+            index=entity_reflection_options.index(st.session_state.entity_reflection)
         )
-    else:
-        # No default selection
-        st.radio(
-            "",
-            options=entity_reflection_options,
-            key="entity_reflection"
-        )
+    
+        # Only pass index if there is a previous selection
+        if st.session_state.get("entity_reflection") in entity_reflection_options:
+            selected_index = entity_reflection_options.index(st.session_state.entity_reflection)
+            st.radio(
+                "",
+                options=entity_reflection_options,
+                key="entity_reflection",
+                index=selected_index
+            )
+        else:
+            # No default selection
+            st.radio(
+                "",
+                options=entity_reflection_options,
+                key="entity_reflection"
+            )
         
     # =====================================================
     # 3. LLM Explanation
