@@ -603,8 +603,12 @@ def load_existing_annotation(example_id):
 
 # Clamp index
 st.session_state.current_idx = max(0, min(st.session_state.current_idx, len(df) - 1))
-df["shared_entities"] = df["shared_entities"].apply(ast.literal_eval)
-df["shared_text"] = df["shared_text"].apply(ast.literal_eval)
+try:
+    df["shared_entities"] = df["shared_entities"].apply(ast.literal_eval)
+    df["shared_text"] = df["shared_text"].apply(ast.literal_eval)
+except:
+    df["shared_entities"] = []
+    df["shared_text"] = []
 
 row = df.iloc[st.session_state.current_idx]
 
