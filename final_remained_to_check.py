@@ -604,7 +604,7 @@ def load_existing_annotation(example_id):
 # Clamp index
 st.session_state.current_idx = max(0, min(st.session_state.current_idx, len(df) - 1))
 df["shared_entities"] = df["shared_entities"].apply(ast.literal_eval)
-# df["shared_text"] = df["shared_text"].apply(ast.literal_eval)
+df["shared_text"] = df["shared_text"].apply(ast.literal_eval)
 
 row = df.iloc[st.session_state.current_idx]
 
@@ -642,18 +642,18 @@ with st.container(border=True):
         with st.container(border=True):
             st.markdown("#### Original Text Entities")
 
-            # text_entities = row.get("shared_text", {}) or {}
-            # if isinstance(text_entities, str):
-            #     try:
-            #         text_entities = ast.literal_eval(text_entities)
-            #     except:
-            #         text_entities = {}
+            text_entities = row.get("shared_text", {}) or {}
+            if isinstance(text_entities, str):
+                try:
+                    text_entities = ast.literal_eval(text_entities)
+                except:
+                    text_entities = {}
     
-            # drug_text = ", ".join(text_entities.get("Chemical", [])) or "N/A"
-            # disease_text = ", ".join(text_entities.get("Disease", [])) or "N/A"
+            drug_text = ", ".join(text_entities.get("Chemical", [])) or "N/A"
+            disease_text = ", ".join(text_entities.get("Disease", [])) or "N/A"
     
-            # st.markdown(f"**💊 Drug:** {drug_text}")
-            # st.markdown(f"**🦠 Disease:** {disease_text}")
+            st.markdown(f"**💊 Drug:** {drug_text}")
+            st.markdown(f"**🦠 Disease:** {disease_text}")
     
     
     # ---------- RIGHT COLUMN ----------
@@ -740,34 +740,23 @@ with st.container(border=True):
         "Yes, the claims reflect the entities.",
         "No, the claims do not reflect the entities."
     ]
-
-
-    if "entity_reflection" not in st.session_state or st.session_state.entity_reflection is None:
-        st.session_state.entity_reflection = entity_reflection_options[0]  # DEFAULT = YES
     
+    # Only pass index if there is a previous selection
+    if st.session_state.get("entity_reflection") in entity_reflection_options:
+        selected_index = entity_reflection_options.index(st.session_state.entity_reflection)
         st.radio(
             "",
             options=entity_reflection_options,
             key="entity_reflection",
-            index=entity_reflection_options.index(st.session_state.entity_reflection)
+            index=selected_index
         )
-    
-        # Only pass index if there is a previous selection
-        if st.session_state.get("entity_reflection") in entity_reflection_options:
-            selected_index = entity_reflection_options.index(st.session_state.entity_reflection)
-            st.radio(
-                "",
-                options=entity_reflection_options,
-                key="entity_reflection",
-                index=selected_index
-            )
-        else:
-            # No default selection
-            st.radio(
-                "",
-                options=entity_reflection_options,
-                key="entity_reflection"
-            )
+    else:
+        # No default selection
+        st.radio(
+            "",
+            options=entity_reflection_options,
+            key="entity_reflection"
+        )
         
     # =====================================================
     # 3. LLM Explanation
@@ -816,20 +805,7 @@ with st.container(border=True):
     # Task 1: Contradiction Detection
     # -----------------------
     st.markdown("<p style='color:red; font-size:22px; font-weight:600;'>Is the LLM correct?</p>", unsafe_allow_html=True)
-    label_options = list(LABELS.keys())
-    
-    default_label = "LLM is correct: there's a contradiction in the drug-disease association across the claims"
-    
-    if "label_radio" not in st.session_state or st.session_state.label_radio is None:
-        st.session_state.label_radio = default_label
-    
-    st.radio(
-        "",
-        options=label_options,
-        key="label_radio",
-        index=label_options.index(st.session_state.label_radio)
-    )
-    
+    st.radio("", options=list(LABELS.keys()), key="label_radio")
     st.session_state.selected_label = LABELS.get(st.session_state.label_radio)
 
 
