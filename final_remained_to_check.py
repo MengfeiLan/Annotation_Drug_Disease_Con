@@ -634,11 +634,11 @@ with st.container(border=True):
     
             pub_entities = row.get("shared_entities", {}) or {}
     
-            drug_pub = ", ".join(pub_entities.get("Chemical", [])) or "N/A"
-            disease_pub = ", ".join(pub_entities.get("Disease", [])) or "N/A"
+            # drug_pub = ", ".join(pub_entities.get("Chemical", [])) or "N/A"
+            # disease_pub = ", ".join(pub_entities.get("Disease", [])) or "N/A"
     
-            st.markdown(f"**💊 Drug:** {drug_pub}")
-            st.markdown(f"**🦠 Disease:** {disease_pub}")
+            # st.markdown(f"**💊 Drug:** {drug_pub}")
+            # st.markdown(f"**🦠 Disease:** {disease_pub}")
     
         st.markdown("")  # spacing
     
@@ -653,11 +653,11 @@ with st.container(border=True):
                 except:
                     text_entities = {}
     
-            drug_text = ", ".join(text_entities.get("Chemical", [])) or "N/A"
-            disease_text = ", ".join(text_entities.get("Disease", [])) or "N/A"
+            # drug_text = ", ".join(text_entities.get("Chemical", [])) or "N/A"
+            # disease_text = ", ".join(text_entities.get("Disease", [])) or "N/A"
     
-            st.markdown(f"**💊 Drug:** {drug_text}")
-            st.markdown(f"**🦠 Disease:** {disease_text}")
+            # st.markdown(f"**💊 Drug:** {drug_text}")
+            # st.markdown(f"**🦠 Disease:** {disease_text}")
     
     
     # ---------- RIGHT COLUMN ----------
