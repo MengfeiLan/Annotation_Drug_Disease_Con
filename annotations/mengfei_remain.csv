@@ -19,3 +19,4 @@ id,label,contextual_agreement,contextual_factors,contextual_explanation,annotato
 17,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
 18,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
 19,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
+20,incorrect,,,,mengfei,,,"No, the claims do not reflect the entities."
