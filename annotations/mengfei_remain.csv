@@ -26,3 +26,4 @@ id,label,contextual_agreement,contextual_factors,contextual_explanation,annotato
 24,correct,Disagree,i. Outcome measures: contradictions may arise when studies assess different outcomes or evaluate the same outcome at different time points.,,mengfei,,,"Yes, the claims reflect the entities."
 26,correct,Agree,Agree,,mengfei,,,"Yes, the claims reflect the entities."
 25,incorrect,,,,mengfei,,,"Yes, the claims reflect the entities."
+27,correct,Agree,Agree,,mengfei,,,"Yes, the claims reflect the entities."
